@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import rootRoutes from './routes/rootRoute.js';
 
 const port = 8080;
 const app = express();
@@ -16,6 +17,4 @@ mongoose.connect(DB_URL, { useNewUrlParser: true})
     })
     .catch((error) => console.log(error.message));
 
-app.get('/', (req, res) => {
-    res.status(200).send("<h3>Server working</h3>");
-});
+app.use('/', rootRoutes);
