@@ -6,5 +6,8 @@ router.route('/')
     .get(rootHandlers.index);
 router.route('/register')
     .get(rootHandlers.register);
+router.route('/login')
+    .post(rootHandlers.login);
+
 
 export default router;
