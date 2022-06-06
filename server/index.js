@@ -14,10 +14,3 @@ app.use('/game', gameRoutes);
 
 const server = http.createServer(app);
 server.listen(port);
-
-import {createRandomSolutionWithRepetition, checkGuess} from "./model/gameLogic.js";
-let solution = ["Red", "Red", "Blue", "Yellow"];
-let attempt = ["Green", "Green", "Green", "Red"];
-console.log(solution);
-console.log(attempt);
-console.log(checkGuess(attempt, solution));

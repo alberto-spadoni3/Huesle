@@ -14,11 +14,9 @@ const searchMatch = (req, res) => {
 const doAttempt = (req, res) => {
     const username = req.query.username;
     const matchId = req.query.matchId;
-    const guess = req.query.guess;
+    const guess = JSON.parse(req.query.guess);
     dbManager.findMatch(matchId).then(match => {
-        let result1 = 0;
-        let result2 = 0;
-        return dbManager.addAttempt(matchId, username, guess, result1, result2);
+        return dbManager.addAttempt(matchId, username, guess);
     })
     res.status(200).send("<h2>Attempt pushed</h2>");
 }

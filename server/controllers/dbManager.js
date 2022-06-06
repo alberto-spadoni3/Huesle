@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {createRandomSolutionWithRepetition, elaborateTurn, GameStates, Colours} from "../model/gameLogic.js";
 
 const DB_URL = "mongodb://localhost:27017";
 
@@ -28,7 +29,7 @@ class SchemaBuilder {
         return pendingMatch;
     };
 
-    attemptSchema = new mongoose.Schema({playerId: String, colorSequence: String,
+    attemptSchema = new mongoose.Schema({playerId: String, colorSequence: [],
         rightC: Number, rightP: Number, date: Date});
     Attempt = mongoose.model('Attempt', this.attemptSchema, 'attempt');
 
@@ -43,17 +44,17 @@ class SchemaBuilder {
     }
 
     matchSchema = new mongoose.Schema({player1: String, player2: String, status: String,
-        turn: Number, attempts: [], solution: String, date: Date});
+        turn: Number, attempts: [], solution: [], date: Date});
     Match = mongoose.model('Match', this.matchSchema, 'match');
 
     buildMatch(player1, player2) {
         let match = new this.Match();
         match.player1 = player1;
         match.player2 = player2;
-        match.status = "P1 TURN";
+        match.status = GameStates.TURN_P1.name;
         match.turn = 0;
-        match.attemps = new Array[this.Attempt]();
-        match.solution = "CREATE SOLUTION";
+        match.attemps = new Array();
+        match.solution = createRandomSolutionWithRepetition();
         match.date = mongoose.now();
         return match;
     };
@@ -108,14 +109,15 @@ class DbManager {
         return schemaBuilder.Match.findOne({_id: matchId})
     }
 
-    addAttempt(matchId, username, guess, rightP, rightC) {
+    addAttempt(matchId, username, guess) {
         Promise.all([this.findMatch(matchId), this.#findUserId(username)]).then(values => {
             let match = values[0];
-            const attempt = schemaBuilder.buildAttempt(values[1]._id, guess, rightP, rightC);
+            const evaluation = elaborateTurn(guess, match.solution, match.status, match.turn);
+            const attempt = schemaBuilder.buildAttempt(values[1]._id, guess, evaluation.rightP, evaluation.rightC);
             if(match.attemps == null) match.attemps = new Array();
             match.attempts.push(attempt);
-            match.turn = match.turn + 1;
-            match.status = "change of turns";
+            match.turn = evaluation.turn;
+            match.status = evaluation.status;
             return match.save();
         });
 
