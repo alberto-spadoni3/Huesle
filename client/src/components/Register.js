@@ -7,12 +7,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
-    const userRef = useRef();
+    const emailRef = useRef();
     const errRef = useRef();
+
+    const [email, setEmail] = useState("");
+    const [validEmail, setValidEmail] = useState(false);
 
     const [user, setUser] = useState("");
     const [validName, setValidName] = useState(false);
@@ -30,8 +34,12 @@ const Register = () => {
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
-        userRef.current.focus();
+        emailRef.current.focus();
     }, []);
+
+    useEffect(() => {
+        setValidEmail(EMAIL_REGEX.test(email));
+    }, [email]);
 
     useEffect(() => {
         setValidName(USER_REGEX.test(user));
@@ -44,14 +52,15 @@ const Register = () => {
 
     useEffect(() => {
         setErrMsg("");
-    }, [user, pwd, matchPwd]);
+    }, [email, user, pwd, matchPwd]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         // if button enabled with JS hack
-        const v1 = USER_REGEX.test(user);
-        const v2 = PWD_REGEX.test(pwd);
-        if (!v1 || !v2) {
+        const v1 = EMAIL_REGEX.test(email);
+        const v2 = USER_REGEX.test(user);
+        const v3 = PWD_REGEX.test(pwd);
+        if (!v1 || !v2 || !v3) {
             setErrMsg("Invalid Entry");
             return;
         }
@@ -92,6 +101,32 @@ const Register = () => {
                     </p>
                     <h1>Register</h1>
                     <form onSubmit={handleSubmit}>
+                        <label htmlFor="email">
+                            Email:
+                            <FontAwesomeIcon
+                                icon={faCheck}
+                                className={validEmail ? "valid" : "hide"}
+                            />
+                            <FontAwesomeIcon
+                                icon={faTimes}
+                                className={
+                                    validEmail || !email ? "hide" : "invalid"
+                                }
+                            />
+                        </label>
+                        <input
+                            type="text"
+                            id="email"
+                            ref={emailRef}
+                            autoComplete="off"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            required
+                            aria-invalid={validEmail ? "false" : "true"}
+                            /* onFocus={() => setEmailFocus(true)}
+                            onBlur={() => setEmailFocus(false)} */
+                        />
+
                         <label htmlFor="username">
                             Username:
                             <FontAwesomeIcon
@@ -108,7 +143,6 @@ const Register = () => {
                         <input
                             type="text"
                             id="username"
-                            ref={userRef}
                             autoComplete="off"
                             onChange={(e) => setUser(e.target.value)}
                             value={user}
@@ -220,7 +254,10 @@ const Register = () => {
 
                         <button
                             disabled={
-                                !validName || !validPwd || !validMatch
+                                !validEmail ||
+                                !validName ||
+                                !validPwd ||
+                                !validMatch
                                     ? true
                                     : false
                             }
