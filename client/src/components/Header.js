@@ -1,10 +1,23 @@
 import React from "react";
+import { Container, Typography } from "@mui/material";
 
 const Header = () => {
     return (
-        <div>
-            <p className="app-name-text">Huesle</p>
-        </div>
+        <header>
+            <Container
+                maxWidth={"sm"}
+                sx={{
+                    position: "sticky",
+                    top: 10,
+                    width: "100%",
+                    borderBottom: "2px solid black",
+                }}
+            >
+                <Typography variant="h3" sx={{ margin: 1 }}>
+                    Huesle
+                </Typography>
+            </Container>
+        </header>
     );
 };
 

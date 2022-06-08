@@ -1,12 +1,36 @@
+import {
+    Box,
+    Container,
+    Card,
+    CardActions,
+    CardContent,
+    Typography,
+    Link,
+} from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 const Home = () => {
     return (
-        <div className="homepage">
-            <p>Homepage</p>
-            <Link to="/login">Login</Link>
-        </div>
+        <Container
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "600px",
+            }}
+        >
+            <Card variant="outlined">
+                <CardContent>
+                    <Typography variant="h5">Homepage</Typography>
+                </CardContent>
+                <CardActions>
+                    <Link component={RouterLink} to="/login">
+                        Login page
+                    </Link>
+                </CardActions>
+            </Card>
+        </Container>
     );
 };
 
