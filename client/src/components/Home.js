@@ -12,15 +12,16 @@ import { Link as RouterLink } from "react-router-dom";
 
 const Home = () => {
     return (
-        <Container
+        <Box
             sx={{
+                backgroundColor: "beige",
+                height: "100vh",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "600px",
             }}
         >
-            <Card variant="outlined">
+            <Card variant="outlined" sx={{ marginBottom: "200px" }}>
                 <CardContent>
                     <Typography variant="h5">Homepage</Typography>
                 </CardContent>
@@ -30,7 +31,7 @@ const Home = () => {
                     </Link>
                 </CardActions>
             </Card>
-        </Container>
+        </Box>
     );
 };
 
