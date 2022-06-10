@@ -1,10 +1,12 @@
 import express from 'express';
-import gameHandlers from '../controllers/gameController.js';
+import { gameController } from '../controllers/gameController.js';
+
 const router = express.Router();
 
-router.route('/searchMatch')
-    .post(gameHandlers.searchMatch);
-router.route('/doAttempt')
-    .put(gameHandlers.doAttempt);
+router.route('/searchMatch').post(gameController.searchMatch);
+
+router.route('/doGuess').put(gameController.doGuess);
+
+router.route('/leaveMatch').put(gameController.leaveMatch);
 
 export default router;
