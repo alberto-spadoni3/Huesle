@@ -28,9 +28,9 @@ const searchMatch = async (req, res) => {
     let pendingRequest;
     ////Not Working
     if(req.body.hasOwnProperty('secretCode')) {
-        pendingRequest = await PendingRequestModel.where('secret', req.body.secretCode).findOne();
+        pendingRequest = await PendingRequestModel.findOne({'secretCode': req.body.secretCode});
     } else {
-        pendingRequest = await PendingRequestModel.findOne({ "secret": { $equals: null}});
+        pendingRequest = await PendingRequestModel.findOne({ "secretCode": null});
     }
 
     if(pendingRequest) {
@@ -50,8 +50,7 @@ const searchMatch = async (req, res) => {
             playerId: requesterId
         }
         if(req.body.hasOwnProperty('secretCode')) {
-            console.log("secret code applied to pending");
-            pendingRequestToSave.secret = req.body.secretCode;
+            pendingRequestToSave.secretCode = req.body.secretCode;
         }
 
         const newPendingRequest = new PendingRequestModel(pendingRequestToSave);
