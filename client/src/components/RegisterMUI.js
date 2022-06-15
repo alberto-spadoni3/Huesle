@@ -1,9 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
@@ -11,7 +10,9 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "../api/axios";
+
+const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -30,6 +31,8 @@ export default function RegisterMUI() {
     const [matchPassword, setMatchPassword] = useState("");
     const [validMatchPassword, setValidMatchPassword] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         setValidEmail(EMAIL_REGEX.test(email));
     }, [email]);
@@ -43,13 +46,31 @@ export default function RegisterMUI() {
         setValidMatchPassword(password === matchPassword);
     }, [password, matchPassword]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+
+        try {
+            const response = await axios.post(
+                BACKEND_REGISTRATION_ENDPOINT,
+                JSON.stringify({ email, username, password }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+
+            if (response?.status === 201) {
+                navigate("/login", { replace: true });
+            }
+        } catch (error) {
+            if (!error?.response) {
+                console.log("No Server Response");
+            } else if (error.response?.status === 409) {
+                console.log(error.response?.data?.message);
+            } else {
+                console.log("Registration Failed");
+            }
+        }
     };
 
     return (
@@ -91,6 +112,7 @@ export default function RegisterMUI() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </Grid>
@@ -101,10 +123,11 @@ export default function RegisterMUI() {
                                 error={
                                     !validUsername && username ? true : false
                                 }
-                                id="userName"
+                                id="username"
                                 label="Username"
-                                name="userName"
+                                name="username"
                                 autoComplete="off"
+                                value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                         </Grid>
@@ -120,6 +143,7 @@ export default function RegisterMUI() {
                                 type="password"
                                 id="password"
                                 autoComplete="off"
+                                value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </Grid>
@@ -137,6 +161,7 @@ export default function RegisterMUI() {
                                 type="password"
                                 id="matchPassword"
                                 autoComplete="off"
+                                value={matchPassword}
                                 onChange={(e) =>
                                     setMatchPassword(e.target.value)
                                 }

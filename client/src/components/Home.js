@@ -1,6 +1,5 @@
 import {
     Box,
-    Container,
     Card,
     CardActions,
     CardContent,
@@ -9,12 +8,13 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Home = () => {
+    const { auth } = useAuth();
     return (
         <Box
             sx={{
-                backgroundColor: "beige",
                 height: "100vh",
                 display: "flex",
                 justifyContent: "center",
@@ -23,7 +23,9 @@ const Home = () => {
         >
             <Card variant="outlined" sx={{ marginBottom: "200px" }}>
                 <CardContent>
-                    <Typography variant="h5">Homepage</Typography>
+                    <Typography variant="h5">
+                        Homepage - {auth?.username}
+                    </Typography>
                 </CardContent>
                 <CardActions>
                     <Link component={RouterLink} to="/login">

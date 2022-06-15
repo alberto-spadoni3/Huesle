@@ -6,8 +6,11 @@ import Home from "./components/Home";
 import Settings from "./components/Settings";
 import LoginMUI from "./components/LoginMUI";
 import RegisterMUI from "./components/RegisterMUI";
+import UserProfile from "./components/UserProfile";
+import RequireAuth from "./components/RequireAuth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { getDesignTokens } from "./components/theme";
+// import PersistLogin from "./components/PersistLogin";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -16,6 +19,7 @@ const App = () => {
         <ThemeProvider theme={createTheme(getDesignTokens(themeMode))}>
             <Routes>
                 <Route path="/" element={<Layout />}>
+                    {/* Public routes */}
                     <Route index element={<Home />} />
                     <Route path="login" element={<LoginMUI />} />
                     <Route path="register" element={<RegisterMUI />} />
@@ -29,6 +33,13 @@ const App = () => {
                         }
                     />
                 </Route>
+
+                {/* Routes that require authentication */}
+                {/* <Route element={<PersistLogin />}> */}
+                <Route element={<RequireAuth />}>
+                    <Route path="user" element={<UserProfile />} />
+                </Route>
+                {/* </Route> */}
 
                 {/* No matching route */}
                 <Route path="*" element={<Missing />} />
