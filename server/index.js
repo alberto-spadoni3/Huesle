@@ -6,7 +6,10 @@ import rootRoutes from "./routes/rootRoute.js";
 import gameRoutes from "./routes/gameRoute.js";
 import userRoutes from "./routes/userRoutes.js";
 import mongoose from "mongoose";
+
+//TRIAL
 import './middlewares/fileUploader.js';
+import './middlewares/socketHandler.js';
 
 const port = 8080;
 const app = express();
