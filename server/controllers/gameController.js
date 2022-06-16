@@ -12,7 +12,7 @@ import {UserModel} from "../model/UserModel.js";
 import {MatchModel} from "../model/MatchModel.js";
 import {GuessModel} from "../model/GuessModel.js";
 
-async function findUserId(username, res) {
+async function findUserId(username) {
     const account = await UserModel.findOne({'username':username}, '_id')
     if(!account) return;
     else return account._id.toString();
@@ -20,7 +20,7 @@ async function findUserId(username, res) {
 
 const searchMatch = async (req, res) => {
     const {username} = req.body;
-    const requesterId = await findUserId(username, res);
+    const requesterId = await findUserId(username);
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
@@ -82,7 +82,7 @@ function createMatch(p1, p2, repetitions) {
 
 const doGuess = async (req, res) => {
     const {username, matchId, sequence} = req.body;
-    const userId = await findUserId(username, res);
+    const userId = await findUserId(username);
     if(!userId) return res.status(400).json({
         message: "Username not valid"
     });
@@ -147,6 +147,49 @@ const leaveMatch = async (req, res) => {
         });
     }
 }
+
+const getActiveMatchesOfUser = async (req, res) => {
+    const {username} = req.body;
+    const requesterId = await findUserId(username);
+    if(!requesterId) return res.status(400).json({
+        message: "Username not valid"
+    });
+    const matches = await MatchModel.find({$or: [
+        [{ players: {0:requesterId} }, { status: GameStates.TURN_P1 }],
+        [{ players: {1:requesterId} }, { status: GameStates.TURN_P2 }]
+]});
+    res.status(200).json({
+        matches: matches
+    });
+}
+
+const getAllMatchesOfUser = async (req, res) => {
+    const {username} = req.body;
+    const requesterId = await findUserId(username);
+    if(!requesterId) return res.status(400).json({
+        message: "Username not valid"
+    });
+    const matches = await MatchModel.find({player: requesterId})
+    res.status(200).json({
+        matches: matches
+    });
+}
+
+const getOngoingMatches = async (req, res) => {
+    const {username} = req.body;
+    const requesterId = await findUserId(username);
+    if(!requesterId) return res.status(400).json({
+        message: "Username not valid"
+    });
+    const matches = await MatchModel.find({player: requesterId,
+        $or: [{ status: GameStates.TURN_P1 }, { status: GameStates.TURN_P2 }]})
+    res.status(200).json({
+        matches: matches
+    });
+}
+
+const getUserStats = async (req, res) => {}
+
 
 export const gameController = {
     searchMatch,
