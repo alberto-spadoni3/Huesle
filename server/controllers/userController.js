@@ -157,9 +157,37 @@ const handleUserLogout = async (req, res) => {
     });
 };
 
+const getSettings = async (req, res) => {
+    const {username} = req.body;
+
+    const userDB = await UserModel.findOne({ username: username }, ['darkMode', 'colorblindMode']);
+    if (!userDB) {
+        return res.sendStatus(401);
+    }
+    res.status(200).json({
+        darkMode: userDB.darkMode,
+        colorblindMode: userDB.colorblindMode,
+    });;
+}
+
+const updateSettings = async (req, res) => {
+    const {username, darkMode, colorblindMode} = req.body;
+
+    const userDB = await UserModel.findOne({ username: username }, ['darkMode', 'colorblindMode']);
+    if (!userDB) {
+        return res.sendStatus(401);
+    }
+    userDB.darkMode = darkMode;
+    userDB.colorblindMode = colorblindMode;
+    await userDB.save();
+    res.sendStatus(200);
+}
+
 export const userController = {
     handleUserRegistration,
     handleUserLogin,
     refreshAccessToken,
     handleUserLogout,
+    getSettings,
+    updateSettings
 };

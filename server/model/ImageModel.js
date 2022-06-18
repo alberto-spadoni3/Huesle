@@ -3,12 +3,13 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const imageSchema = new Schema({
-    name: String,
-    desc: String,
-    img:
-        {
+    name: {
+        type: String,
+        required: true,
+    },
+    img: {
             data: Buffer,
-            contentType: String
+            contentType: String,
         }
 });
 
