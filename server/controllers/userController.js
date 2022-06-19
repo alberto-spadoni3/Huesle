@@ -157,6 +157,10 @@ const handleUserLogout = async (req, res) => {
     });
 };
 
+const updatePassword = async (req, res) => {}
+
+const updateUsername = async (req, res) => {}
+
 const getSettings = async (req, res) => {
     const {username} = req.body;
 

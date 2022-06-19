@@ -31,5 +31,5 @@ fs.readdir(directoryPath, function(err, filenames) {
 });
 
 async function eraseImages() {
-    await ImageModel.deleteMany();
+    await ImageModel.collection.drop();
 }

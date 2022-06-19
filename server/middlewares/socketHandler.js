@@ -1,47 +1,45 @@
 import {MatchModel} from "../model/MatchModel.js";
 import {UserModel} from "../model/UserModel.js";
+import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-import {Server} from "socket.io";
-import http from "http";
-
-const server = http.createServer();
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:3000",
-    },
-});
+const app = express();
+const httpServer = createServer(app);
+const io = new Server(3000, httpServer, { transports: ['websocket'], upgrade: false });
 
 io.use((socket, next) => {
     const sessionID = socket.handshake.auth.sessionID;
     if (sessionID) {
         // find existing session
-        /*const session = sessionStore.findSession(sessionID);
+        const session = sessionStore.findSession(sessionID);
         if (session) {
             socket.sessionID = sessionID;
             socket.userID = session.userID;
             socket.username = session.username;
             return next();
-        }*/
+        }
     }
-
     const username = socket.handshake.auth.username;
     if (!username) {
-        return next(new Error("invalid username"));
+        socket.userID = fetchUsernameId("paolo");
+    } else {
+        socket.userID = fetchUsernameId(username);
     }
     // create new session
     socket.sessionID = 0//randomId() ????????;
-    socket.userID = fetchUsernameId();
     socket.username = username;
     next();
+
 });
 
 //Single update to connected user with session details
 io.on("connection", (socket) => {
+    console.log(socket.userID + " connected");
     socket.emit("session", {
         sessionID: socket.sessionID,
         userID: socket.userID,
     });
-
     socket.join(socket.userID);
 
     //On event do
@@ -53,6 +51,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("newmove", ({ matchId, opponent }) => {
+        console.log("new move received");
         const match = fetchMatchById(matchId);
         const opponentId = fetchUsernameId(opponent);
         socket.to(opponentId).emit("notification", {
@@ -82,7 +81,9 @@ async function fetchMatchById(id) {
     return match;
 }
 
+//Doesn't work
 async function fetchUsernameId(username) {
-    const id = await UserModel.findOne({username: username}, ['_id']);
-    return id;
+    const id = await UserModel.findOne({'username':username}, '_id');
+    if(!id) return;
+    else return id._id.toString();
 }
