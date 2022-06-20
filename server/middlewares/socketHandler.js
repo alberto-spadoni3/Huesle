@@ -1,8 +1,10 @@
 import {MatchModel} from "../model/MatchModel.js";
 import {UserModel} from "../model/UserModel.js";
+import {GameStates} from "../model/gameLogic.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,50 +22,64 @@ io.use((socket, next) => {
             return next();
         }
     }
-    const username = socket.handshake.auth.username;
-    if (!username) {
-        socket.userID = fetchUsernameId("paolo");
-    } else {
-        socket.userID = fetchUsernameId(username);
-    }
-    // create new session
-    socket.sessionID = 0//randomId() ????????;
-    socket.username = username;
-    next();
 
+    var username;
+    if (!socket.handshake.auth.username) {
+        console.log("Error");
+    } else {
+        username = socket.handshake.auth.username;
+    }
+
+    // create new session
+     fetchUsernameId(username).then((id) => {
+        socket.userID = id;
+        socket.sessionID = 0//randomId() ????????;
+        socket.username = username;
+        next();
+    });
 });
 
 //Single update to connected user with session details
 io.on("connection", (socket) => {
-    console.log(socket.userID + " connected");
     socket.emit("session", {
         sessionID: socket.sessionID,
         userID: socket.userID,
     });
     socket.join(socket.userID);
 
+    connectUserToMatchSockets(socket.userID);
+
     //On event do
     socket.on("newmatch", ({ matchId }) => {
-        const match = fetchMatchById(matchId);
-        socket.to(match.players[0]).to(match.players[1]).emit("notification", {
-            content: "New Match Found!"
+        const match = fetchMatchById(matchId).then((match) => {
+            if(match) {
+                io.in(match.players).socketsJoin(matchId);
+                io.to(matchId).emit("notification", {
+                    content: "New Match Found!"
+                });
+            } else console.log("Error");
         });
     });
 
-    socket.on("newmove", ({ matchId, opponent }) => {
-        console.log("new move received");
-        const match = fetchMatchById(matchId);
-        const opponentId = fetchUsernameId(opponent);
-        socket.to(opponentId).emit("notification", {
-            content: "New move made on match" + matchId
+    socket.on("newmove", ({ matchId }) => {
+        io.in(matchId).fetchSockets().then(sockets => {
+            console.log(sockets.length)
+            for (const player of sockets) {
+                if (player.userID !== socket.userID) {
+                    //Maybe io. is needed
+                    socket.to(player.userID).emit("notification", {
+                        content: "New move made on match" + matchId
+                    });
+                }
+            }
         });
     });
 
     socket.on("matchover", ({ matchId }) => {
-        const match = fetchMatchById(matchId);
-        socket.to(match.players[0]).to(match.players[1]).emit("notification", {
-            content: "Match Over"
+        io.to(matchId).emit("notification", {
+            content: "Match is over"
         });
+        io.socketsLeave(matchId);
     });
 });
 
@@ -81,9 +97,18 @@ async function fetchMatchById(id) {
     return match;
 }
 
-//Doesn't work
 async function fetchUsernameId(username) {
     const id = await UserModel.findOne({'username':username}, '_id');
     if(!id) return;
     else return id._id.toString();
+}
+
+async function connectUserToMatchSockets(id) {
+    const matches = await MatchModel.find({
+            "players": id,
+            $or: [{status: GameStates.TURN_P1}, {status: GameStates.TURN_P2}]
+        }, "_id");
+    matches.forEach(match => {
+        io.in(id).socketsJoin(match._id.toString());
+    })
 }
