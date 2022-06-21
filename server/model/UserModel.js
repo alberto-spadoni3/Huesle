@@ -22,6 +22,7 @@ const userSchema = new Schema({
         type: String,
         unique: true,
     },
+    profilePicName: String,
     darkMode: {
         type: Boolean,
         default: false

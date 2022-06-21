@@ -39,10 +39,9 @@ const searchMatch = async (req, res) => {
         }
         pendingRequest.deleteOne();
         const newMatch = await createMatch(requesterId, pendingRequest.playerId, true);
-        res.status(200).json({
+        return res.status(200).json({
             matchId: newMatch._id
         });
-        return;
     } else {
         let pendingRequestToSave = {
             playerId: requesterId
@@ -53,10 +52,9 @@ const searchMatch = async (req, res) => {
 
         const newPendingRequest = new PendingRequestModel(pendingRequestToSave);
         await newPendingRequest.save();
-        res.status(200).json({
+        return res.status(200).json({
             message: "Searching other contestant"
-        });;
-        return;
+        });
     }
 }
 

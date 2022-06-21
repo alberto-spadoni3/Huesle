@@ -39,7 +39,6 @@ io.use((socket, next) => {
     });
 });
 
-//Single update to connected user with session details
 io.on("connection", (socket) => {
     socket.emit("session", {
         sessionID: socket.sessionID,
@@ -49,7 +48,6 @@ io.on("connection", (socket) => {
 
     connectUserToMatchSockets(socket.userID);
 
-    //On event do
     socket.on("newmatch", ({ matchId }) => {
         const match = fetchMatchById(matchId).then((match) => {
             if(match) {
@@ -80,15 +78,6 @@ io.on("connection", (socket) => {
             content: "Match is over"
         });
         io.socketsLeave(matchId);
-    });
-});
-
-//Broadcast to all others
-io.on("connection", (socket) => {
-    // notify existing users
-    socket.broadcast.emit("user connected", {
-        userID: socket.id,
-        username: socket.username,
     });
 });
 

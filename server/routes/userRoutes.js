@@ -11,8 +11,4 @@ router.route("/refreshToken").get(userController.refreshAccessToken);
 
 router.route("/logout").get(userController.handleUserLogout);
 
-router.route("/settings").get(userController.getSettings);
-
-router.route("/settings").put(userController.updateSettings);
-
 export default router;
