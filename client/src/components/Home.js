@@ -31,6 +31,9 @@ const Home = () => {
                     <Link component={RouterLink} to="/login">
                         Login page
                     </Link>
+                    <Link component={RouterLink} to="/user">
+                        User
+                    </Link>
                 </CardActions>
             </Card>
         </Box>

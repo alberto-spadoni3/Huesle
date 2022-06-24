@@ -1,4 +1,5 @@
-import { createContext, useState } from "react";
+import { getAutoHeightDuration } from "@mui/material/styles/createTransitions";
+import { createContext, useState, useEffect } from "react";
 
 const AuthContext = createContext({});
 

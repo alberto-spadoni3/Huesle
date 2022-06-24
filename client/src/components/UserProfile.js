@@ -4,6 +4,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import axios from "../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import useLogout from "../hooks/useLogout";
 
 const UserProfile = () => {
     const [userInfo, setUserInfo] = useState({});
@@ -11,8 +12,14 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { auth } = useAuth();
+    const logout = useLogout();
 
-    useEffect(() => {
+    const handleLogout = async () => {
+        await logout();
+        navigate("/");
+    };
+
+    /* useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
@@ -36,13 +43,13 @@ const UserProfile = () => {
             isMounted = false;
             controller.abort();
         };
-    }, []);
+    }, []); */
 
     return (
         <div>
             <h1>User Profile</h1>
-            <h3>Username: {userInfo.username}</h3>
-            <h3>email address: {userInfo.email}</h3>
+            <h3>Username: {auth.username}</h3>
+            <button onClick={handleLogout}>LOGOUT</button>
             <Link to="/">Home</Link>
         </div>
     );
