@@ -22,6 +22,15 @@ const userSchema = new Schema({
         type: String,
         unique: true,
     },
+    profilePicName: String,
+    darkMode: {
+        type: Boolean,
+        default: false
+    },
+    colorblindMode: {
+        type: Boolean,
+        default: false
+    }
 });
 
 export const UserModel = mongoose.model("User", userSchema, "users");

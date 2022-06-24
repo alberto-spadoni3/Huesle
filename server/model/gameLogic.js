@@ -24,16 +24,12 @@ export class Colours {
 }
 const colours = Object.keys(Colours);
 
-class GameStates {
-    static Draw = new GameStates("draw")
-    static TURN_P1 = new GameStates("p1turn")
-    static TURN_P2 = new GameStates("p2turn")
-    static WIN_P1 = new GameStates("p1win")
-    static WIN_P2 = new GameStates("p2win")
-
-    constructor(name) {
-        this.name = name
-    }
+export class GameStates {
+    static Draw = "Draw"
+    static TURN_P1 = "TURN_P1"
+    static TURN_P2 = "TURN_P2"
+    static WIN_P1 = "WIN_P1"
+    static WIN_P2 = "WIN_P2"
 }
 
 function createSolutionWithoutRepetition() {
@@ -74,13 +70,13 @@ function elaborateTurn(guess, solution, currentState, turn_n) {
     const values = checkGuess(guess, solution);
     turn_n++;
     if(turn_n < max_turns) {
-        switch (currentState.name) {
-            case GameStates.TURN_P1.name: {
+        switch (currentState) {
+            case GameStates.TURN_P1: {
                 if (values.position == code_length) currentState = GameStates.WIN_P1;
                 else currentState = GameStates.TURN_P2;
                 break;
             }
-            case GameStates.TURN_P2.name: {
+            case GameStates.TURN_P2: {
                 if (values.position == code_length) currentState = GameStates.WIN_P2;
                 else currentState = GameStates.TURN_P1;
                 break;
@@ -91,17 +87,17 @@ function elaborateTurn(guess, solution, currentState, turn_n) {
 }
 
 function isMatchOver(status) {
-    const terminatingStates = [GameStates.Draw.name, GameStates.WIN_P2.name, GameStates.WIN_P2.name];
-    return terminatingStates.includes(status.name);
+    const terminatingStates = [GameStates.Draw, GameStates.WIN_P2, GameStates.WIN_P2];
+    return terminatingStates.includes(status);
 }
 
 function isPlayerTurn(playerIndex, status) {
-    switch (status.name) {
-        case GameStates.TURN_P1.name: return playerIndex == 1;
-        case GameStates.TURN_P2.name: return playerIndex == 2;
+    switch (status) {
+        case GameStates.TURN_P1: return playerIndex == 1;
+        case GameStates.TURN_P2: return playerIndex == 2;
     }
     return false;
 }
 
 export {createSolutionWithoutRepetition, createRandomSolutionWithRepetition, checkGuess,
-    elaborateTurn, isMatchOver, isPlayerTurn, GameStates};
+    elaborateTurn, isMatchOver, isPlayerTurn};

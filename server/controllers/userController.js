@@ -161,5 +161,5 @@ export const userController = {
     handleUserRegistration,
     handleUserLogin,
     refreshAccessToken,
-    handleUserLogout,
+    handleUserLogout
 };
