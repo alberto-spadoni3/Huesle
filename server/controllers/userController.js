@@ -130,7 +130,7 @@ const refreshAccessToken = async (req, res) => {
             "secret",
             { expiresIn: "10m" }
         );
-        res.json({ newAccessToken });
+        res.json({ username: userInDB.username, newAccessToken });
     });
 };
 
