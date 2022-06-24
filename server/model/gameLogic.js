@@ -87,7 +87,7 @@ function elaborateTurn(guess, solution, currentState, turn_n) {
 }
 
 function isMatchOver(status) {
-    const terminatingStates = [GameStates.Draw, GameStates.WIN_P2, GameStates.WIN_P2];
+    const terminatingStates = [GameStates.Draw, GameStates.WIN_P1, GameStates.WIN_P2];
     return terminatingStates.includes(status);
 }
 

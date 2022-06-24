@@ -10,11 +10,17 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(3000, httpServer, { transports: ['websocket'], upgrade: false });
 
+export class MessageTypes {
+    static CONNECTION = "connection"
+    static SESSION = "session"
+    static NOTIFICATION = "notification"
+}
+
 io.use((socket, next) => {
-    const sessionID = socket.handshake.auth.sessionID;
+    const sessionID = null//socket.handshake.auth.sessionID;
     if (sessionID) {
         // find existing session
-        const session = sessionStore.findSession(sessionID);
+        const session = null//sessionStore.findSession(sessionID);
         if (session) {
             socket.sessionID = sessionID;
             socket.userID = session.userID;
@@ -25,7 +31,8 @@ io.use((socket, next) => {
 
     var username;
     if (!socket.handshake.auth.username) {
-        console.log("Error");
+        //console.log("Error");
+        username = "paolo"
     } else {
         username = socket.handshake.auth.username;
     }
@@ -39,52 +46,15 @@ io.use((socket, next) => {
     });
 });
 
-io.on("connection", (socket) => {
-    socket.emit("session", {
+io.on(MessageTypes.CONNECTION, (socket) => {
+    socket.emit(MessageTypes.SESSION, {
         sessionID: socket.sessionID,
         userID: socket.userID,
     });
     socket.join(socket.userID);
 
     connectUserToMatchSockets(socket.userID);
-
-    socket.on("newmatch", ({ matchId }) => {
-        const match = fetchMatchById(matchId).then((match) => {
-            if(match) {
-                io.in(match.players).socketsJoin(matchId);
-                io.to(matchId).emit("notification", {
-                    content: "New Match Found!"
-                });
-            } else console.log("Error");
-        });
-    });
-
-    socket.on("newmove", ({ matchId }) => {
-        io.in(matchId).fetchSockets().then(sockets => {
-            console.log(sockets.length)
-            for (const player of sockets) {
-                if (player.userID !== socket.userID) {
-                    //Maybe io. is needed
-                    socket.to(player.userID).emit("notification", {
-                        content: "New move made on match" + matchId
-                    });
-                }
-            }
-        });
-    });
-
-    socket.on("matchover", ({ matchId }) => {
-        io.to(matchId).emit("notification", {
-            content: "Match is over"
-        });
-        io.socketsLeave(matchId);
-    });
 });
-
-async function fetchMatchById(id) {
-    const match = await MatchModel.findById(id, ['players', 'status']);
-    return match;
-}
 
 async function fetchUsernameId(username) {
     const id = await UserModel.findOne({'username':username}, '_id');
@@ -100,4 +70,24 @@ async function connectUserToMatchSockets(id) {
     matches.forEach(match => {
         io.in(id).socketsJoin(match._id.toString());
     })
+}
+
+export function emitNewMatch(players, matchId) {
+    io.in(players).socketsJoin(matchId);
+    io.to(matchId).emit(MessageTypes.NOTIFICATION, {
+        content: "New Match Found!"
+    });
+}
+
+export function emitNewMove(playerNotified, matchId) {
+    io.to(playerNotified).emit(MessageTypes.NOTIFICATION, {
+        content: "New move made on match" + matchId
+    });
+}
+
+export function emitMatchOver(matchId, status) {
+    io.to(matchId).emit(MessageTypes.NOTIFICATION, {
+        content: "Match is over, " + status
+    });
+    io.socketsLeave(matchId);
 }
