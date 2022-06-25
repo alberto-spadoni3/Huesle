@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import {PendingRequestModel} from "../model/PendingRequestModel.js";
 import {UserModel} from "../model/UserModel.js";
 import {MatchModel} from "../model/MatchModel.js";
+import {emitNewMatch, emitNewMove, emitMatchOver} from "../middlewares/socketHandler.js"
 
 async function findUserId(username) {
     const account = await UserModel.findOne({'username':username}, '_id')
@@ -39,6 +40,7 @@ const searchMatch = async (req, res) => {
         }
         pendingRequest.deleteOne();
         const newMatch = await createMatch(requesterId, pendingRequest.playerId, true);
+        emitNewMatch(newMatch.players, newMatch._id);
         return res.status(200).json({
             matchId: newMatch._id
         });
@@ -110,6 +112,15 @@ const doGuess = async (req, res) => {
     match.turn = turn;
     match.status = status;
     match.save();
+
+    if(isMatchOver(status)) {
+        emitMatchOver(matchId, status);
+    } else if (status == GameStates.TURN_P1) {
+        emitNewMove(match.players[0], matchId)
+    } else {
+        emitNewMove(match.players[1], matchId)
+    }
+
     res.status(200).json({
         rightC: rightC,
         rightP: rightP,
@@ -134,6 +145,7 @@ const leaveMatch = async (req, res) => {
         const playerIndex = match.players.indexOf(userId);
         match.status = playerIndex == 1? GameStates.WIN_P2: GameStates.WIN_P1;
         match.save();
+        emitMatchOver(matchId, match.status);
         return res.status(200).json({
             message: "Conceded victory to adversary from " + username
         });
