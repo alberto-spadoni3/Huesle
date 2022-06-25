@@ -11,6 +11,7 @@ import RequireAuth from "./components/RequireAuth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { getDesignTokens } from "./components/theme";
 import PersistLogin from "./components/PersistLogin";
+import EditUserProfile from "./components/EditUserProfile";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -32,12 +33,21 @@ const App = () => {
                             />
                         }
                     />
-                </Route>
 
-                {/* Routes that require authentication */}
-                <Route element={<PersistLogin />}>
-                    <Route element={<RequireAuth />}>
-                        <Route path="user" element={<UserProfile />} />
+                    {/* Routes that require authentication */}
+                    <Route element={<PersistLogin />}>
+                        <Route element={<RequireAuth />}>
+                            <Route
+                                path="/user/profile"
+                                element={<UserProfile />}
+                            />
+                        </Route>
+                        <Route element={<RequireAuth />}>
+                            <Route
+                                path="/user/editProfile"
+                                element={<EditUserProfile />}
+                            />
+                        </Route>
                     </Route>
                 </Route>
 

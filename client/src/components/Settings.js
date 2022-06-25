@@ -10,6 +10,7 @@ import {
 import SettingsIcon from "@mui/icons-material/Settings";
 import React from "react";
 import { styled } from "@mui/system";
+import BackButton from "./BackButton";
 
 const Settings = ({ themeMode, setThemeMode }) => {
     const SettingContainer = ({ children }) => {
@@ -24,11 +25,11 @@ const Settings = ({ themeMode, setThemeMode }) => {
     const cbSwitch = { "aria-label": "Switch for colorblind mode" };
 
     return (
-        <Container maxWidth="xs">
+        <>
+            <BackButton />
             <Box
                 sx={{
                     width: "inherit",
-                    marginTop: 5,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -70,7 +71,7 @@ const Settings = ({ themeMode, setThemeMode }) => {
                     </SettingContainer>
                 </Stack>
             </Box>
-        </Container>
+        </>
     );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Box, Button, Container, IconButton, Typography } from "@mui/material";
+import { Box, Container, IconButton, Typography } from "@mui/material";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -11,36 +11,38 @@ const Header = () => {
     };
 
     return (
-        <Box>
-            <Container
-                maxWidth="md"
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    alighItems: "center",
-                    paddingTop: 1,
-                }}
-            >
-                <Typography
-                    variant="h3"
+        <header>
+            <Box>
+                <Container
+                    maxWidth="xs"
                     sx={{
-                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alighItems: "center",
+                        paddingTop: 1,
                     }}
                 >
-                    Huesle
-                </Typography>
-                <IconButton onClick={handleClick} aria-label="Settings">
-                    <SettingsIcon
+                    <Typography
+                        variant="h3"
                         sx={{
-                            border: "2px solid",
-                            borderColor: "palette.text.secondary",
-                            borderRadius: "10px",
-                            padding: "2px",
+                            textAlign: "center",
                         }}
-                    />
-                </IconButton>
-            </Container>
-        </Box>
+                    >
+                        Huesle
+                    </Typography>
+                    <IconButton onClick={handleClick} aria-label="Settings">
+                        <SettingsIcon
+                            sx={{
+                                border: "2px solid",
+                                borderColor: "palette.text.secondary",
+                                borderRadius: "10px",
+                                padding: "2px",
+                            }}
+                        />
+                    </IconButton>
+                </Container>
+            </Box>
+        </header>
     );
 };
 

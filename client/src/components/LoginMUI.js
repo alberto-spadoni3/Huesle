@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
+import BackButton from "./BackButton";
 
 const BACKEND_LOGIN_ENDPOINT = "/user/login";
 
@@ -72,10 +73,10 @@ export default function LoginMUI() {
     }, [persist]);
 
     return (
-        <Container component="main" maxWidth="xs">
+        <>
+            <BackButton />
             <Box
                 sx={{
-                    marginTop: 5,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -91,7 +92,7 @@ export default function LoginMUI() {
                 >
                     <LockOutlinedIcon fontSize="large" />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h4">
                     Sign in
                 </Typography>
                 <Box
@@ -132,13 +133,13 @@ export default function LoginMUI() {
                                 onChange={togglePersist}
                             />
                         }
-                        label="Remember me"
+                        label="Trust this device"
                     />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        color="primary"
+                        // color="primary"
                         sx={{ mt: 3, mb: 1 }}
                     >
                         Sign In
@@ -164,6 +165,6 @@ export default function LoginMUI() {
                     </Grid>
                 </Box>
             </Box>
-        </Container>
+        </>
     );
 }

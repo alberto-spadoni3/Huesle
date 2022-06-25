@@ -9,8 +9,8 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import axios from "../api/axios";
+import BackButton from "./BackButton";
 
 const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 
@@ -74,10 +74,10 @@ export default function RegisterMUI() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <>
+            <BackButton />
             <Box
                 sx={{
-                    marginTop: 5,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -93,9 +93,10 @@ export default function RegisterMUI() {
                 >
                     <LockOutlinedIcon fontSize="large" />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h4">
                     Sign up
                 </Typography>
+
                 <Box
                     component="form"
                     noValidate
@@ -196,6 +197,6 @@ export default function RegisterMUI() {
                     </Grid>
                 </Box>
             </Box>
-        </Container>
+        </>
     );
 }
