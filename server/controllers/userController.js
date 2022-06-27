@@ -29,8 +29,8 @@ const handleUserRegistration = async (req, res) => {
 
         // store the new user in the database
         const userToSave = {
-            email: email,
-            username: username,
+            email,
+            username,
             password: hashedPassword,
         };
 
@@ -54,7 +54,7 @@ const handleUserLogin = async (req, res) => {
         });
     }
 
-    const userInDB = await UserModel.findOne({ username: `${username}` });
+    const userInDB = await UserModel.findOne({ username });
     if (!userInDB) {
         return res.sendStatus(401);
     }
@@ -75,7 +75,6 @@ const handleUserLogin = async (req, res) => {
         const refreshToken = jwt.sign(
             {
                 email: userInDB.email,
-                username: userInDB.username,
             },
             "secret-refresh",
             { expiresIn: "1d" }
@@ -83,12 +82,7 @@ const handleUserLogin = async (req, res) => {
 
         // save the refresh token in the DB
         userInDB.refreshToken = refreshToken;
-        const tokenSavingResult = await userInDB.save();
-        if (tokenSavingResult) {
-            console.log("refresh token saved to the DB");
-        } else {
-            console.log("Problems while saving the refresh token into the DB");
-        }
+        await userInDB.save();
 
         // send the refresh token as an HTTP-only cookie
         const maxAge = 24 * 60 * 60 * 1000; // one day expressed in milliseconds
@@ -111,26 +105,26 @@ const refreshAccessToken = async (req, res) => {
     const refreshToken = cookies.jwtRefreshToken;
 
     // checking if there is a user with that refresh token associated
-    const userInDB = await UserModel.findOne({
-        refreshToken: `${refreshToken}`,
-    });
+    const userInDB = await UserModel.findOne({ refreshToken });
     if (!userInDB) {
         res.sendStatus(403);
     }
 
+    const username = userInDB.username;
+
     jwt.verify(refreshToken, "secret-refresh", (error, decodedRefreshToken) => {
-        if (error || userInDB.username !== decodedRefreshToken.username) {
+        if (error || userInDB.email !== decodedRefreshToken.email) {
             return res.sendStatus(403);
         }
         const newAccessToken = jwt.sign(
             {
                 email: decodedRefreshToken.email,
-                username: decodedRefreshToken.username,
+                username,
             },
             "secret",
             { expiresIn: "10m" }
         );
-        res.json({ username: userInDB.username, newAccessToken });
+        res.json({ username, newAccessToken });
     });
 };
 
@@ -144,9 +138,7 @@ const handleUserLogout = async (req, res) => {
         httpOnly: true,
     });
 
-    const userInDB = await UserModel.findOne({
-        refreshToken: `${refreshToken}`,
-    });
+    const userInDB = await UserModel.findOne({ refreshToken });
     if (!userInDB) return res.sendStatus(204);
 
     // now we delete the refresh token stored in the DB
@@ -161,5 +153,5 @@ export const userController = {
     handleUserRegistration,
     handleUserLogin,
     refreshAccessToken,
-    handleUserLogout
+    handleUserLogout,
 };

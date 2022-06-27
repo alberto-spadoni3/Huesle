@@ -13,16 +13,16 @@ const io = new Server(3001, httpServer, {
 });
 
 export class MessageTypes {
-    static CONNECTION = "connection"
-    static SESSION = "session"
-    static NOTIFICATION = "notification"
+    static CONNECTION = "connection";
+    static SESSION = "session";
+    static NOTIFICATION = "notification";
 }
 
 io.use((socket, next) => {
-    const sessionID = null//socket.handshake.auth.sessionID;
+    const sessionID = null; //socket.handshake.auth.sessionID;
     if (sessionID) {
         // find existing session
-        const session = null//sessionStore.findSession(sessionID);
+        const session = null; //sessionStore.findSession(sessionID);
         if (session) {
             socket.sessionID = sessionID;
             socket.userID = session.userID;
@@ -34,7 +34,7 @@ io.use((socket, next) => {
     var username;
     if (!socket.handshake.auth.username) {
         //console.log("Error");
-        username = "paolo"
+        username = "paolo";
     } else {
         username = socket.handshake.auth.username;
     }
@@ -77,30 +77,25 @@ async function connectUserToMatchSockets(id) {
     );
     matches.forEach((match) => {
         io.in(id).socketsJoin(match._id.toString());
-<<<<<<< HEAD
     });
-}
-=======
-    })
 }
 
 export function emitNewMatch(players, matchId) {
     io.in(players).socketsJoin(matchId);
     io.to(matchId).emit(MessageTypes.NOTIFICATION, {
-        content: "New Match Found!"
+        content: "New Match Found!",
     });
 }
 
 export function emitNewMove(playerNotified, matchId) {
     io.to(playerNotified).emit(MessageTypes.NOTIFICATION, {
-        content: "New move made on match" + matchId
+        content: "New move made on match" + matchId,
     });
 }
 
 export function emitMatchOver(matchId, status) {
     io.to(matchId).emit(MessageTypes.NOTIFICATION, {
-        content: "Match is over, " + status
+        content: "Match is over, " + status,
     });
     io.socketsLeave(matchId);
 }
->>>>>>> refs/remotes/origin/main
