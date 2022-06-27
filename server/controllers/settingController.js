@@ -3,53 +3,68 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const updatePassword = async (req, res) => {
-    const {username, prevPassword, newPassword} = req.body;
+    const { username, prevPassword, newPassword } = req.body;
 
-    const userInDB = await UserModel.findOne({ username: username });
+    console.log(username);
+    const userInDB = await UserModel.findOne({ username });
     if (!userInDB) {
         return res.sendStatus(401);
     }
 
     const match = await bcrypt.compare(prevPassword, userInDB.password);
-    if(match) {
+    if (match) {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         userInDB.password = hashedPassword;
         await userInDB.save();
+        return res.status(200).json({ message: "Password updated" });
     } else {
-        return res.status(400).json({ message: "The old password is wrong! No update is made."});
+        return res
+            .status(400)
+            .json({ message: "The old password is wrong! No update is made." });
     }
-}
+};
 
 const updateUsername = async (req, res) => {
-    const {newUsername} = req.body;
+    const { currentUsername, newUsername } = req.body;
 
-    const possibleDuplicateUsername = await UserModel.where("username").equals(username);
-    if (possibleDuplicateUser.length > 0)
-        return res.status(409).json({ message: "The username is already in use" });
+    const possibleDuplicateUsername = await UserModel.where("username").equals(
+        newUsername
+    );
 
-    const userInDB = await UserModel.findOne({ username: username }, 'username');
+    if (possibleDuplicateUsername.length > 0)
+        return res
+            .status(409)
+            .json({ message: "The username is already in use" });
+
+    const userInDB = await UserModel.findOne({ currentUsername });
     userInDB.username = newUsername;
     await userInDB.save();
-    return res.status(200).json({ message: "Username updated"})
-}
+    res.status(200).json({ message: "Username updated" });
+};
 
 const getSettings = async (req, res) => {
-    const {username} = req.body;
+    const { username } = req.body;
 
-    const userInDB = await UserModel.findOne({ username: username }, ['darkMode', 'colorblindMode']);
+    const userInDB = await UserModel.findOne({ username: username }, [
+        "darkMode",
+        "colorblindMode",
+    ]);
     if (!userInDB) {
         return res.sendStatus(401);
     }
     res.status(200).json({
         darkMode: userDB.darkMode,
         colorblindMode: userDB.colorblindMode,
-    });;
-}
+    });
+};
 
 const updateSettings = async (req, res) => {
-    const {username, darkMode, colorblindMode} = req.body;
+    const { username, darkMode, colorblindMode } = req.body;
 
-    const userDB = await UserModel.findOne({ username: username }, ['darkMode', 'colorblindMode']);
+    const userDB = await UserModel.findOne({ username: username }, [
+        "darkMode",
+        "colorblindMode",
+    ]);
     if (!userDB) {
         return res.sendStatus(401);
     }
@@ -57,11 +72,11 @@ const updateSettings = async (req, res) => {
     userDB.colorblindMode = colorblindMode;
     await userDB.save();
     res.sendStatus(200);
-}
+};
 
 const updateProfilePic = async (req, res) => {
-    const {username, picName} = req.body;
-    const image = await ImageModel.find({name : picName});
+    const { username, picName } = req.body;
+    const image = await ImageModel.find({ name: picName });
     const userInDB = await UserModel.findOne({ username: username });
     if (!userInDB || image) {
         return res.sendStatus(401);
@@ -69,14 +84,14 @@ const updateProfilePic = async (req, res) => {
     userInDB.profilePicName = picName;
     await userDB.save();
     res.sendStatus(200);
-}
+};
 
 const getAvailableProfilePics = async (req, res) => {
     const images = await ImageModel.find();
     res.status(200).json({
         images: images,
     });
-}
+};
 
 export const settingController = {
     updatePassword,
@@ -84,5 +99,5 @@ export const settingController = {
     getSettings,
     updateSettings,
     getAvailableProfilePics,
-    updateProfilePic
+    updateProfilePic,
 };
