@@ -12,13 +12,23 @@ import {
     Divider,
 } from "@mui/material";
 import BackButton from "./BackButton";
+import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
+import useRefreshToken from "../hooks/useRefreshToken";
 import { useState, useEffect } from "react";
 
+const BACKEND_UPDATE_USERNAME = "/setting/updateUsername";
+const BACKEND_UPDATE_PASSWORD = "/setting/updatePassword";
+
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const PASSWORD_REGEX =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const EditUserProfile = () => {
+    const { auth, setAuth } = useAuth();
+    const refresh = useRefreshToken();
+
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
 
@@ -38,13 +48,83 @@ const EditUserProfile = () => {
     }, [email]);
 
     useEffect(() => {
-        setValidUsername(USER_REGEX.test(username));
+        setValidUsername(USERNAME_REGEX.test(username));
     }, [username]);
 
     useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password));
+        setValidPassword(PASSWORD_REGEX.test(password));
         setValidMatchPassword(password === matchPassword);
     }, [password, matchPassword]);
+
+    const handleEditProfile = async (e) => {
+        const newUsername = username.trim() !== "" ? username : auth.username;
+
+        // update username if present
+        if (username.trim() !== "" && validUsername) {
+            console.log("updating username...");
+            try {
+                const response = await axios.post(
+                    BACKEND_UPDATE_USERNAME,
+                    JSON.stringify({
+                        currentUsername: auth.username,
+                        newUsername,
+                    }),
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
+                );
+
+                if (response.status === 200) {
+                    await refresh(); // refresh the username and the accessToken wich reflects the updated username
+                    console.log("success");
+                    setUsername("");
+                }
+            } catch (error) {
+                if (!error?.response) {
+                    console.log("No Server Response");
+                } else if (error.response?.status === 409) {
+                    console.log(error.response?.data?.message);
+                } else {
+                    console.log("Username update failed");
+                }
+            }
+        }
+
+        if (password.trim() !== "" && validPassword && validMatchPassword) {
+            try {
+                const response = await axios.post(
+                    BACKEND_UPDATE_PASSWORD,
+                    JSON.stringify({
+                        username: newUsername,
+                        prevPassword: oldPassword,
+                        newPassword: password,
+                    }),
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
+                );
+
+                if (response.status === 200) {
+                    console.log(response?.data.message);
+                    setOldPassword("");
+                    setPassword("");
+                    setMatchPassword("");
+                }
+            } catch (error) {
+                if (!error?.response) {
+                    console.log("No Server Response");
+                } else if (error.response?.status === 401) {
+                    console.log("Username not found in the database");
+                } else if (error.response?.status === 400) {
+                    console.log(error.response?.data?.message);
+                } else {
+                    console.log("Password update Failed");
+                }
+            }
+        }
+    };
 
     return (
         <>
@@ -151,6 +231,7 @@ const EditUserProfile = () => {
                             name="editEmail"
                             autoComplete="email"
                             value={email}
+                            disabled
                             onChange={(e) => setEmail(e.target.value)}
                             sx={{ mt: 1 }}
                         />
@@ -162,6 +243,7 @@ const EditUserProfile = () => {
                     variant="contained"
                     startIcon={<SaveIcon />}
                     aria-label="Save Changes"
+                    onClick={handleEditProfile}
                 >
                     Save changes
                 </Button>

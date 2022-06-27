@@ -3,7 +3,6 @@ import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import {
     Box,
     Grid,
-    Container,
     Typography,
     Button,
     TextField,
@@ -44,7 +43,7 @@ export default function LoginMUI() {
 
             // let's take and store the accessToken given by the backend
             const accessToken = response?.data?.accessToken;
-            setAuth({ username, password, accessToken });
+            setAuth({ username, accessToken });
 
             // cleaning the form
             setUsername("");
