@@ -7,10 +7,11 @@ import gameRoutes from "./routes/gameRoute.js";
 import userRoutes from "./routes/userRoutes.js";
 import settingRoutes from "./routes/settingRoutes.js";
 import mongoose from "mongoose";
+import { verifyJWT } from "./middlewares/verifyJWT.js";
 
 //TRIAL
-import './middlewares/fileUploader.js';
-import './middlewares/socketHandler.js';
+import "./middlewares/fileUploader.js";
+import "./middlewares/socketHandler.js";
 
 const port = 8080;
 const app = express();
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use("/", rootRoutes);
 app.use("/user", userRoutes);
 app.use("/game", gameRoutes);
+app.use(verifyJWT);
 app.use("/setting", settingRoutes);
 
 const DB_URL = "mongodb://localhost:27017";

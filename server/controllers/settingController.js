@@ -1,6 +1,5 @@
 import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const updatePassword = async (req, res) => {
     const { username, prevPassword, newPassword } = req.body;
@@ -24,7 +23,8 @@ const updatePassword = async (req, res) => {
 };
 
 const updateUsername = async (req, res) => {
-    const { currentUsername, newUsername } = req.body;
+    const currentUsername = req.username;
+    const { newUsername } = req.body;
 
     const possibleDuplicateUsername = await UserModel.where("username").equals(
         newUsername
@@ -42,12 +42,10 @@ const updateUsername = async (req, res) => {
 };
 
 const getSettings = async (req, res) => {
-    const username = req.params?.username;
+    const username = req.username;
 
     if (!username) {
-        return res.status(400).json({
-            message: "Username is required",
-        });
+        return res.sendStatus(401);
     }
 
     const userInDB = await UserModel.findOne({ username });
@@ -62,7 +60,8 @@ const getSettings = async (req, res) => {
 };
 
 const updateSettings = async (req, res) => {
-    const { username, darkMode, colorblindMode } = req.body;
+    const username = req.username;
+    const { darkMode, colorblindMode } = req.body;
 
     const userDB = await UserModel.findOne({ username: username }, [
         "darkMode",
@@ -78,7 +77,8 @@ const updateSettings = async (req, res) => {
 };
 
 const updateProfilePic = async (req, res) => {
-    const { username, picName } = req.body;
+    const username = req.username;
+    const { picName } = req.body;
     const image = await ImageModel.find({ name: picName });
     const userInDB = await UserModel.findOne({ username: username });
     if (!userInDB || image) {

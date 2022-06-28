@@ -7,9 +7,10 @@ router.route("/updateUsername").post(settingController.updateUsername);
 
 router.route("/updatePassword").post(settingController.updatePassword);
 
-router.route("/profileSetting").put(settingController.updateSettings);
-
-router.route("/profileSetting/:username").get(settingController.getSettings);
+router
+    .route("/profileSetting")
+    .put(settingController.updateSettings)
+    .get(settingController.getSettings);
 
 router
     .route("/profilePics")

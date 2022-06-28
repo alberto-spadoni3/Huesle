@@ -12,7 +12,7 @@ export const verifyJWT = (req, res, next) => {
         if (error) {
             return res.sendStatus(403); // the token is invalid
         }
-        req.user = decodedToken.username;
+        req.username = decodedToken.username;
         next();
     });
 };
