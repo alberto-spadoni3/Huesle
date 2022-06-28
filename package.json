@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "ejs": "^3.1.8",
-    "multer": "^1.4.5-lts.1"
-  }
-}
