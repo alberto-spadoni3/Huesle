@@ -18,19 +18,16 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
-    refreshToken: {
-        type: String,
-        unique: true,
-    },
+    refreshToken: String,
     profilePicName: String,
     darkMode: {
         type: Boolean,
-        default: false
+        default: true,
     },
     colorblindMode: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
 export const UserModel = mongoose.model("User", userSchema, "users");
