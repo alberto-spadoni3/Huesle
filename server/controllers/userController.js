@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 const handleUserRegistration = async (req, res) => {
     const { email, username, password } = req.body;
+    console.log(req.body);
     if (!email || !username || !password) {
         return res.status(400).json({
             message: "Username, password and email are all required.",
@@ -41,7 +42,7 @@ const handleUserRegistration = async (req, res) => {
             message: `User ${username} created successfully.`,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
     }
 };
 

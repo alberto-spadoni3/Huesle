@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 const updatePassword = async (req, res) => {
     const { username, prevPassword, newPassword } = req.body;
 
-    console.log(username);
     const userInDB = await UserModel.findOne({ username });
     if (!userInDB) {
         return res.sendStatus(401);
@@ -16,7 +15,7 @@ const updatePassword = async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         userInDB.password = hashedPassword;
         await userInDB.save();
-        return res.status(200).json({ message: "Password updated" });
+        res.status(200).json({ message: "Password updated" });
     } else {
         return res
             .status(400)
@@ -43,18 +42,22 @@ const updateUsername = async (req, res) => {
 };
 
 const getSettings = async (req, res) => {
-    const { username } = req.body;
+    const username = req.params?.username;
 
-    const userInDB = await UserModel.findOne({ username: username }, [
-        "darkMode",
-        "colorblindMode",
-    ]);
+    if (!username) {
+        return res.status(400).json({
+            message: "Username is required",
+        });
+    }
+
+    const userInDB = await UserModel.findOne({ username });
     if (!userInDB) {
         return res.sendStatus(401);
     }
+
     res.status(200).json({
-        darkMode: userDB.darkMode,
-        colorblindMode: userDB.colorblindMode,
+        darkMode: userInDB.darkMode,
+        colorblindMode: userInDB.colorblindMode,
     });
 };
 
