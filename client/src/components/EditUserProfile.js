@@ -12,7 +12,7 @@ import {
     Divider,
 } from "@mui/material";
 import BackButton from "./BackButton";
-import axios from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useAuth from "../hooks/useAuth";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useState, useEffect } from "react";
@@ -28,6 +28,7 @@ const PASSWORD_REGEX =
 
 const EditUserProfile = () => {
     const { auth, setAuth } = useAuth();
+    const axiosPrivate = useAxiosPrivate();
     const refresh = useRefreshToken();
 
     const [email, setEmail] = useState("");
@@ -62,14 +63,10 @@ const EditUserProfile = () => {
 
         // update username if present
         if (username.trim() !== "" && validUsername) {
-            console.log("updating username...");
             try {
-                const response = await axios.post(
+                const response = await axiosPrivate.post(
                     BACKEND_UPDATE_USERNAME,
-                    JSON.stringify({
-                        currentUsername: auth.username,
-                        newUsername,
-                    }),
+                    JSON.stringify({ newUsername }),
                     {
                         headers: { "Content-Type": "application/json" },
                         withCredentials: true,
@@ -77,6 +74,7 @@ const EditUserProfile = () => {
                 );
 
                 if (response.status === 200) {
+                    console.log("username updated");
                     // refresh the username and the accessToken wich reflects the updated username
                     await refresh();
                     setUsername("");
@@ -94,7 +92,7 @@ const EditUserProfile = () => {
 
         if (password.trim() !== "" && validPassword && validMatchPassword) {
             try {
-                const response = await axios.post(
+                const response = await axiosPrivate.post(
                     BACKEND_UPDATE_PASSWORD,
                     JSON.stringify({
                         username: newUsername,
@@ -108,6 +106,7 @@ const EditUserProfile = () => {
                 );
 
                 if (response.status === 200) {
+                    console.log("password updated");
                     setOldPassword("");
                     setPassword("");
                     setMatchPassword("");
@@ -115,10 +114,10 @@ const EditUserProfile = () => {
             } catch (error) {
                 if (!error?.response) {
                     console.log("No Server Response");
-                } else if (error.response?.status === 401) {
-                    console.log("Username not found in the database");
                 } else if (error.response?.status === 400) {
                     console.log(error.response?.data?.message);
+                } else if (error.response?.status === 401) {
+                    console.log("Username not found in the database");
                 } else {
                     console.log("Password update Failed");
                 }

@@ -1,10 +1,10 @@
 import { Box, Typography, Avatar, Stack, Switch } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect } from "react";
-import axios from "../api/axios";
 import BackButton from "./BackButton";
 import useAuth from "../hooks/useAuth";
 import { BACKEND_SETTINGS_ENDPOINT } from "../api/backend_endpoints";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Settings = ({
     themeMode,
@@ -13,6 +13,7 @@ const Settings = ({
     setColorblindMode,
 }) => {
     const { auth } = useAuth();
+    const axiosPrivate = useAxiosPrivate();
     const dmSwitch = { "aria-label": "Switch for dark mode" };
     const cbSwitch = { "aria-label": "Switch for colorblind mode" };
 
@@ -27,8 +28,8 @@ const Settings = ({
     useEffect(() => {
         const loadUserSettings = async () => {
             try {
-                const response = await axios.get(
-                    BACKEND_SETTINGS_ENDPOINT + `/${auth.username}`
+                const response = await axiosPrivate.get(
+                    BACKEND_SETTINGS_ENDPOINT
                 );
                 if (response.status === 200) {
                     const themeMode = response?.data?.darkMode
@@ -48,7 +49,7 @@ const Settings = ({
     const saveSettings = async (darkMode, colorblindMode) => {
         try {
             const username = auth.username;
-            const response = await axios.put(
+            const response = await axiosPrivate.put(
                 BACKEND_SETTINGS_ENDPOINT,
                 JSON.stringify({ username, darkMode, colorblindMode }),
                 {

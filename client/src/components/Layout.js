@@ -3,18 +3,19 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import MainContainer from "./MainContainer";
 import { useEffect } from "react";
-import axios from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useAuth from "../hooks/useAuth";
 import { BACKEND_SETTINGS_ENDPOINT } from "../api/backend_endpoints";
 
 const Layout = ({ setThemeMode }) => {
     const { auth } = useAuth();
+    const axiosPrivate = useAxiosPrivate();
 
     // this useEffect it's used to load the preferred theme mod after the login is done
     useEffect(() => {
         if (auth?.username) {
-            axios
-                .get(BACKEND_SETTINGS_ENDPOINT + `/${auth.username}`)
+            axiosPrivate
+                .get(BACKEND_SETTINGS_ENDPOINT)
                 .then((response) => {
                     if (response.status === 200) {
                         const themeMode = response?.data?.darkMode
