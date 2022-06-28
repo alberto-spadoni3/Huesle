@@ -35,7 +35,7 @@ const updateUsername = async (req, res) => {
             .status(409)
             .json({ message: "The username is already in use" });
 
-    const userInDB = await UserModel.findOne({ currentUsername });
+    const userInDB = await UserModel.findOne({ username: currentUsername });
     userInDB.username = newUsername;
     await userInDB.save();
     res.status(200).json({ message: "Username updated" });
@@ -63,10 +63,7 @@ const updateSettings = async (req, res) => {
     const username = req.username;
     const { darkMode, colorblindMode } = req.body;
 
-    const userDB = await UserModel.findOne({ username: username }, [
-        "darkMode",
-        "colorblindMode",
-    ]);
+    const userDB = await UserModel.findOne({ username });
     if (!userDB) {
         return res.sendStatus(401);
     }
@@ -80,7 +77,7 @@ const updateProfilePic = async (req, res) => {
     const username = req.username;
     const { picName } = req.body;
     const image = await ImageModel.find({ name: picName });
-    const userInDB = await UserModel.findOne({ username: username });
+    const userInDB = await UserModel.findOne({ username });
     if (!userInDB || image) {
         return res.sendStatus(401);
     }

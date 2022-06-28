@@ -2,6 +2,9 @@ import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const ACCESS_TOKEN_EXPIRES_IN = "15s";
+const REFRESH_TOKEN_EXPIRES_IN = "1d";
+
 const handleUserRegistration = async (req, res) => {
     const { email, username, password } = req.body;
     console.log(req.body);
@@ -69,16 +72,16 @@ const handleUserLogin = async (req, res) => {
                 email: userInDB.email,
                 username: userInDB.username,
             },
-            "secret",
-            { expiresIn: "10m" }
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
         );
 
         const refreshToken = jwt.sign(
             {
                 email: userInDB.email,
             },
-            "secret-refresh",
-            { expiresIn: "1d" }
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
         );
 
         // save the refresh token in the DB
@@ -113,20 +116,25 @@ const refreshAccessToken = async (req, res) => {
 
     const username = userInDB.username;
 
-    jwt.verify(refreshToken, "secret-refresh", (error, decodedRefreshToken) => {
-        if (error || userInDB.email !== decodedRefreshToken.email) {
-            return res.sendStatus(403);
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (error, decodedRefreshToken) => {
+            if (error || userInDB.email !== decodedRefreshToken.email) {
+                return res.sendStatus(403);
+            }
+
+            const newAccessToken = jwt.sign(
+                {
+                    email: decodedRefreshToken.email,
+                    username,
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+            );
+            res.json({ username, newAccessToken });
         }
-        const newAccessToken = jwt.sign(
-            {
-                email: decodedRefreshToken.email,
-                username,
-            },
-            "secret",
-            { expiresIn: "10m" }
-        );
-        res.json({ username, newAccessToken });
-    });
+    );
 };
 
 const handleUserLogout = async (req, res) => {
