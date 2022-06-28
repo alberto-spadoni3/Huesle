@@ -15,8 +15,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import BackButton from "./BackButton";
-
-const BACKEND_LOGIN_ENDPOINT = "/user/login";
+import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
 export default function LoginMUI() {
     const { setAuth, persist, setPersist } = useAuth();

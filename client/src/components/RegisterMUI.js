@@ -11,8 +11,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import axios from "../api/axios";
 import BackButton from "./BackButton";
-
-const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
+import { BACKEND_REGISTRATION_ENDPOINT } from "../api/backend_endpoints";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -68,7 +67,7 @@ export default function RegisterMUI() {
             } else if (error.response?.status === 409) {
                 console.log(error.response?.data?.message);
             } else {
-                console.log("Registration Failed");
+                console.log("Registration Failed " + error.message);
             }
         }
     };

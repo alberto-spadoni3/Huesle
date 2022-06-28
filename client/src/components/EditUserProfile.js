@@ -16,9 +16,10 @@ import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useState, useEffect } from "react";
-
-const BACKEND_UPDATE_USERNAME = "/setting/updateUsername";
-const BACKEND_UPDATE_PASSWORD = "/setting/updatePassword";
+import {
+    BACKEND_UPDATE_USERNAME,
+    BACKEND_UPDATE_PASSWORD,
+} from "../api/backend_endpoints";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -76,8 +77,8 @@ const EditUserProfile = () => {
                 );
 
                 if (response.status === 200) {
-                    await refresh(); // refresh the username and the accessToken wich reflects the updated username
-                    console.log("success");
+                    // refresh the username and the accessToken wich reflects the updated username
+                    await refresh();
                     setUsername("");
                 }
             } catch (error) {
@@ -107,7 +108,6 @@ const EditUserProfile = () => {
                 );
 
                 if (response.status === 200) {
-                    console.log(response?.data.message);
                     setOldPassword("");
                     setPassword("");
                     setMatchPassword("");

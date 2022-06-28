@@ -15,24 +15,19 @@ import EditUserProfile from "./components/EditUserProfile";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
+    const [colorblindMode, setColorblindMode] = useState(false);
 
     return (
         <ThemeProvider theme={createTheme(getDesignTokens(themeMode))}>
             <Routes>
-                <Route path="/" element={<Layout />}>
+                <Route
+                    path="/"
+                    element={<Layout setThemeMode={setThemeMode} />}
+                >
                     {/* Public routes */}
                     <Route index element={<Home />} />
                     <Route path="login" element={<LoginMUI />} />
                     <Route path="register" element={<RegisterMUI />} />
-                    <Route
-                        path="settings"
-                        element={
-                            <Settings
-                                themeMode={themeMode}
-                                setThemeMode={setThemeMode}
-                            />
-                        }
-                    />
 
                     {/* Routes that require authentication */}
                     <Route element={<PersistLogin />}>
@@ -46,6 +41,19 @@ const App = () => {
                             <Route
                                 path="/user/editProfile"
                                 element={<EditUserProfile />}
+                            />
+                        </Route>
+                        <Route element={<RequireAuth />}>
+                            <Route
+                                path="settings"
+                                element={
+                                    <Settings
+                                        themeMode={themeMode}
+                                        setThemeMode={setThemeMode}
+                                        colorblindMode={colorblindMode}
+                                        setColorblindMode={setColorblindMode}
+                                    />
+                                }
                             />
                         </Route>
                     </Route>
