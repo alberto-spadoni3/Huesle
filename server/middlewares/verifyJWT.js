@@ -8,11 +8,15 @@ export const verifyJWT = (req, res, next) => {
 
     const accessToken = authHeader.split(" ")[1];
 
-    jwt.verify(accessToken, "secret", (error, decodedToken) => {
-        if (error) {
-            return res.sendStatus(403); // the token is invalid
+    jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET,
+        (error, decodedToken) => {
+            if (error) {
+                return res.sendStatus(403); // the token is invalid
+            }
+            req.username = decodedToken.username;
+            next();
         }
-        req.user = decodedToken.username;
-        next();
-    });
+    );
 };

@@ -1,13 +1,44 @@
-import React from "react";
+import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LoginIcon from "@mui/icons-material/Login";
 import { Box, Container, IconButton, Typography } from "@mui/material";
 
-const Header = () => {
+const Header = (setThemeMode) => {
+    const { auth } = useAuth();
     const navigate = useNavigate();
 
-    const handleClick = (event) => {
-        navigate("/settings");
+    const SettingsButton = () => {
+        return (
+            <IconButton
+                onClick={(e) => navigate("/settings")}
+                aria-label="settings"
+            >
+                <SettingsIcon
+                    sx={{
+                        border: "2px solid",
+                        borderColor: "palette.text.secondary",
+                        borderRadius: "10px",
+                        padding: "2px",
+                    }}
+                />
+            </IconButton>
+        );
+    };
+
+    const LoginButton = () => {
+        return (
+            <IconButton onClick={(e) => navigate("/login")} aria-label="Login">
+                <LoginIcon
+                    sx={{
+                        border: "2px solid",
+                        borderColor: "palette.text.secondary",
+                        borderRadius: "10px",
+                        padding: "2px",
+                    }}
+                />
+            </IconButton>
+        );
     };
 
     return (
@@ -30,16 +61,7 @@ const Header = () => {
                     >
                         Huesle
                     </Typography>
-                    <IconButton onClick={handleClick} aria-label="Settings">
-                        <SettingsIcon
-                            sx={{
-                                border: "2px solid",
-                                borderColor: "palette.text.secondary",
-                                borderRadius: "10px",
-                                padding: "2px",
-                            }}
-                        />
-                    </IconButton>
+                    {auth?.username ? <SettingsButton /> : <LoginButton />}
                 </Container>
             </Box>
         </header>

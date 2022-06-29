@@ -7,12 +7,14 @@ router.route("/updateUsername").post(settingController.updateUsername);
 
 router.route("/updatePassword").post(settingController.updatePassword);
 
-router.route("/profileSetting").get(settingController.getSettings);
+router
+    .route("/profileSetting")
+    .put(settingController.updateSettings)
+    .get(settingController.getSettings);
 
-router.route("/profileSetting").put(settingController.updateSettings);
-
-router.route("/getProfilePics").get(settingController.getAvailableProfilePics);
-
-router.route("/updateProfilePics").put(settingController.updateProfilePic);
+router
+    .route("/profilePics")
+    .get(settingController.getAvailableProfilePics)
+    .put(settingController.updateProfilePic);
 
 export default router;

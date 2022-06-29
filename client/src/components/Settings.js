@@ -1,18 +1,22 @@
-import {
-    Box,
-    Container,
-    Typography,
-    Avatar,
-    Stack,
-    FormControlLabel,
-    Switch,
-} from "@mui/material";
+import { Box, Typography, Avatar, Stack, Switch } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import React from "react";
-import { styled } from "@mui/system";
+import { useEffect } from "react";
 import BackButton from "./BackButton";
+import useAuth from "../hooks/useAuth";
+import { BACKEND_SETTINGS_ENDPOINT } from "../api/backend_endpoints";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-const Settings = ({ themeMode, setThemeMode }) => {
+const Settings = ({
+    themeMode,
+    setThemeMode,
+    colorblindMode,
+    setColorblindMode,
+}) => {
+    const { auth } = useAuth();
+    const axiosPrivate = useAxiosPrivate();
+    const dmSwitch = { "aria-label": "Switch for dark mode" };
+    const cbSwitch = { "aria-label": "Switch for colorblind mode" };
+
     const SettingContainer = ({ children }) => {
         return (
             <Stack direction="row" justifyContent="space-between" paddingX={2}>
@@ -21,8 +25,51 @@ const Settings = ({ themeMode, setThemeMode }) => {
         );
     };
 
-    const dmSwitch = { "aria-label": "Switch for dark mode" };
-    const cbSwitch = { "aria-label": "Switch for colorblind mode" };
+    useEffect(() => {
+        const loadUserSettings = async () => {
+            try {
+                const response = await axiosPrivate.get(
+                    BACKEND_SETTINGS_ENDPOINT
+                );
+                if (response.status === 200) {
+                    const themeMode = response?.data?.darkMode
+                        ? "dark"
+                        : "light";
+                    setThemeMode(themeMode);
+                    setColorblindMode(response?.data?.colorblindMode);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        loadUserSettings();
+    }, []);
+
+    const saveSettings = async (darkMode, colorblindMode) => {
+        try {
+            const username = auth.username;
+            const response = await axiosPrivate.put(
+                BACKEND_SETTINGS_ENDPOINT,
+                JSON.stringify({ username, darkMode, colorblindMode }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+
+            if (response.status === 200) {
+                console.log(`Settings for ${username} updated succesfully`);
+            }
+        } catch (error) {
+            if (!error?.response) {
+                console.log("No Server Response");
+            } else if (error.response?.status === 401) {
+                console.log("Unauthorized");
+            } else {
+                console.log("Save settings failed");
+            }
+        }
+    };
 
     return (
         <>
@@ -55,11 +102,15 @@ const Settings = ({ themeMode, setThemeMode }) => {
                         </Typography>
                         <Switch
                             checked={themeMode === "dark"}
-                            onChange={(e) =>
-                                setThemeMode(
-                                    themeMode === "dark" ? "light" : "dark"
-                                )
-                            }
+                            onChange={(e) => {
+                                const darkMode =
+                                    themeMode === "dark" ? "light" : "dark";
+                                setThemeMode(darkMode);
+                                saveSettings(
+                                    darkMode === "dark",
+                                    colorblindMode
+                                );
+                            }}
                             inputProps={dmSwitch}
                         />
                     </SettingContainer>
@@ -67,7 +118,15 @@ const Settings = ({ themeMode, setThemeMode }) => {
                         <Typography variant="h6" textAlign={"center"}>
                             Colorblind mode
                         </Typography>
-                        <Switch inputProps={cbSwitch} />
+                        <Switch
+                            checked={colorblindMode}
+                            onClick={(e) => {
+                                const cbMode = !colorblindMode;
+                                setColorblindMode(cbMode);
+                                saveSettings(themeMode === "dark", cbMode);
+                            }}
+                            inputProps={cbSwitch}
+                        />
                     </SettingContainer>
                 </Stack>
             </Box>

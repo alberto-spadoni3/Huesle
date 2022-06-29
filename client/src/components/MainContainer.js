@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const MainContainer = () => {
     return (
-        <Container component="contaienr" maxWidth="xs">
+        <Container maxWidth="xs">
             <Outlet />
         </Container>
     );
