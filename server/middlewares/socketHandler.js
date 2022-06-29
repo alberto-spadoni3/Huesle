@@ -77,10 +77,6 @@ async function connectUserToMatchSockets(id) {
     );
     matches.forEach((match) => {
         io.in(id).socketsJoin(match._id.toString());
-<<<<<<< HEAD
-    });
-}
-=======
     })
 }
 
@@ -103,4 +99,3 @@ export function emitMatchOver(matchId, status) {
     });
     io.socketsLeave(matchId);
 }
->>>>>>> refs/remotes/origin/main

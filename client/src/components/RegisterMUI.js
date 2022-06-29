@@ -9,8 +9,11 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Snackbar  from "@mui/material/Snackbar";
+import Alert  from "@mui/material/Alert";
 import axios from "../api/axios";
 import BackButton from "./BackButton";
+
 
 const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 
