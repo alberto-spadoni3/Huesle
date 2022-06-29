@@ -17,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 import BackButton from "./BackButton";
 import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
-export default function LoginMUI() {
+export default function Login() {
     const { setAuth, persist, setPersist } = useAuth();
 
     const navigate = useNavigate();
