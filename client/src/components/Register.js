@@ -9,8 +9,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Snackbar  from "@mui/material/Snackbar";
-import Alert  from "@mui/material/Alert";
 import axios from "../api/axios";
 import BackButton from "./BackButton";
 import { BACKEND_REGISTRATION_ENDPOINT } from "../api/backend_endpoints";
@@ -20,7 +18,7 @@ const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-export default function Register() {
+export default function Register({setSnackbarAlertState}) {
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
 

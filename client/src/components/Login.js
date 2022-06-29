@@ -17,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 import BackButton from "./BackButton";
 import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
-export default function Login() {
+export default function Login({setSnackbarAlertState}) {
     const { setAuth, persist, setPersist } = useAuth();
 
     const navigate = useNavigate();
@@ -27,17 +27,10 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [snackbarAlertState, setSnackbarAlertState] = React.useState({
-        open: false,
-        message: "",
-        severity: "success"
-    });
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            console.log(snackbarAlertState);
             const response = await axios.post(
                 BACKEND_LOGIN_ENDPOINT,
                 JSON.stringify({ username, password }),
@@ -84,7 +77,6 @@ export default function Login() {
 
     return (
         <>
-            <SnackbarAlert state={snackbarAlertState} setState={setSnackbarAlertState} />
             <BackButton />
             <Box
                 sx={{
