@@ -12,6 +12,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { getDesignTokens } from "./components/theme";
 import PersistLogin from "./components/PersistLogin";
 import EditUserProfile from "./components/EditUserProfile";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -37,12 +38,14 @@ const App = () => {
                                 element={<UserProfile />}
                             />
                         </Route>
+
                         <Route element={<RequireAuth />}>
                             <Route
                                 path="/user/editProfile"
                                 element={<EditUserProfile />}
                             />
                         </Route>
+
                         <Route element={<RequireAuth />}>
                             <Route
                                 path="settings"
@@ -55,6 +58,10 @@ const App = () => {
                                     />
                                 }
                             />
+                        </Route>
+
+                        <Route element={<RequireAuth />}>
+                            <Route path="/dashboard" element={<Dashboard />} />
                         </Route>
                     </Route>
                 </Route>
