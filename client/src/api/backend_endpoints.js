@@ -7,3 +7,5 @@ export const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 export const BACKEND_UPDATE_USERNAME = "/setting/updateUsername";
 
 export const BACKEND_UPDATE_PASSWORD = "/setting/updatePassword";
+
+export const BACKEND_LEAVE_SEARCH_PRIVATE_MATCH_ENDPOINT = "/game/searchMatch";

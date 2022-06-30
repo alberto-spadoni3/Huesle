@@ -9,7 +9,7 @@ import {
     Avatar,
     Link,
     FormControlLabel,
-    Checkbox,
+    Checkbox
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
@@ -17,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 import BackButton from "./BackButton";
 import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
-export default function Login() {
+export default function Login({setSnackbarAlertState}) {
     const { setAuth, persist, setPersist } = useAuth();
 
     const navigate = useNavigate();
@@ -49,15 +49,20 @@ export default function Login() {
             setPassword("");
 
             navigate(from, { replace: true });
+            setSnackbarAlertState({open: true, message: "Login Successful", severity: "success"});
         } catch (error) {
             if (!error?.response) {
                 console.log("No Server Response");
+                setSnackbarAlertState({open: true, message: "No Server Response", severity: "error"});
             } else if (error.response?.status === 400) {
                 console.log("Missing Username or Password");
+                setSnackbarAlertState({open: true, message: "Missing Username or Password", severity: "warning"});
             } else if (error.response?.status === 401) {
                 console.log("Unauthorized");
+                setSnackbarAlertState({open: true, message: "Unauthorized", severity: "error"});
             } else {
                 console.log("Login Failed");
+                setSnackbarAlertState({open: true, message: "Login Failed", severity: "info"});
             }
         }
     };
