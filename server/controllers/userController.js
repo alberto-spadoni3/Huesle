@@ -2,7 +2,7 @@ import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const ACCESS_TOKEN_EXPIRES_IN = "15s";
+const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
 
 const handleUserRegistration = async (req, res) => {
