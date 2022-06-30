@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import SearchMatchDialog from "./components/SearchMatchDialog";
 import UserProfile from "./components/UserProfile";
 import RequireAuth from "./components/RequireAuth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -36,6 +37,7 @@ const App = () => {
                     <Route index element={<Home />} />
                     <Route path="login" element={<Login setSnackbarAlertState={setSnackbarAlertState}/>} />
                     <Route path="register" element={<Register setSnackbarAlertState={setSnackbarAlertState}/>} />
+                    <Route path="dialog" element={<SearchMatchDialog privateCode={34345}/>} />
 
                     {/* Routes that require authentication */}
                     <Route element={<PersistLogin />}>

@@ -60,6 +60,27 @@ const searchMatch = async (req, res) => {
     }
 }
 
+const leaveSearchPrivateMatch = async (req, res) => {
+    const {username} = req.body;
+    const requesterId = await findUserId(username);
+    if(!requesterId) return res.status(400).json({
+        message: "Username not valid"
+    });
+
+    pendingRequest = await PendingRequestModel.where("secretCode").ne(null).findOne();
+
+    if(pendingRequest) {
+        pendingRequest.deleteOne();
+        return res.status(200).json({
+            message: "Search abandoned successfully"
+        });
+    } else {
+        return res.status(400).json({
+            message: "No pending request found"
+        });
+    }
+}
+
 function createMatch(p1, p2, repetitions) {
     const matchDoc = {
         players: [p1, p2],
@@ -231,6 +252,7 @@ const getUserStats = async (req, res) => {
 
 export const gameController = {
     searchMatch,
+    leaveSearchPrivateMatch,
     doGuess,
     leaveMatch,
     getActiveMatchesOfUser,
