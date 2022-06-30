@@ -13,14 +13,9 @@ const UserProfile = () => {
     const { auth } = useAuth();
     const logout = useLogout();
 
-    const handleLogout = async () => {
-        await logout();
-        navigate("/");
-    };
-
     const StatisticsCard = styled(Box)(({ theme }) => ({
-        width: "90%",
-        backgroundColor: "black",
+        width: "100%",
+        backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
         display: "flex",
         justifyContent: "center",
@@ -63,6 +58,7 @@ const UserProfile = () => {
                 <Button
                     sx={{ width: "100%", mb: 2 }}
                     variant="contained"
+                    color="primary"
                     startIcon={<EditIcon />}
                     aria-label="Edit Profile"
                     onClick={(e) => navigate("/user/editProfile")}
@@ -75,7 +71,7 @@ const UserProfile = () => {
                     color="error"
                     startIcon={<LogoutIcon />}
                     aria-label="Logout"
-                    onClick={handleLogout}
+                    onClick={logout}
                 >
                     Logout
                 </Button>

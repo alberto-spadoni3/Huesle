@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "./useAuth";
 
 const BACKEND_LOGOUT_ENDPOINT = "/user/logout";
 
 const useLogout = () => {
+    const navigate = useNavigate();
     const { setAuth } = useAuth();
 
     const logout = async () => {
@@ -12,6 +14,7 @@ const useLogout = () => {
             const response = await axios.get(BACKEND_LOGOUT_ENDPOINT, {
                 withCredentials: true,
             });
+            navigate("/");
         } catch (error) {
             console.error(error);
         }

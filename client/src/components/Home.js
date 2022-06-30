@@ -27,8 +27,8 @@ const Home = () => {
                     <Link component={RouterLink} to="/login">
                         Login page
                     </Link>
-                    <Link component={RouterLink} to="/user/profile">
-                        User
+                    <Link component={RouterLink} to="/dashboard">
+                        Dashboard
                     </Link>
                 </CardActions>
             </Card>

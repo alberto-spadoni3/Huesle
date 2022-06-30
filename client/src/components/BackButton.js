@@ -11,7 +11,7 @@ const BackButton = () => {
                 <ArrowBackIcon
                     sx={{
                         border: "2px solid",
-                        borderColor: "palette.text.secondary",
+                        borderColor: "palette.text.primary",
                         borderRadius: "50%",
                         padding: "2px",
                     }}

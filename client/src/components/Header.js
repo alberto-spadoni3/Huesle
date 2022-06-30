@@ -48,20 +48,20 @@ const Header = (setThemeMode) => {
                     maxWidth="xs"
                     sx={{
                         display: "flex",
-                        justifyContent: "space-between",
                         alighItems: "center",
                         paddingTop: 1,
                     }}
                 >
                     <Typography
                         variant="h3"
+                        color="text.primary"
                         sx={{
                             textAlign: "center",
                         }}
                     >
                         Huesle
                     </Typography>
-                    {auth?.username ? <SettingsButton /> : <LoginButton />}
+                    {/* {auth?.username ? <SettingsButton /> : <LoginButton />} */}
                 </Container>
             </Box>
         </header>
