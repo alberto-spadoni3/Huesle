@@ -7,19 +7,11 @@ const REFRESH_TOKEN_EXPIRES_IN = "1d";
 
 const handleUserRegistration = async (req, res) => {
     const { email, username, password } = req.body;
-    console.log(req.body);
     if (!email || !username || !password) {
         return res.status(400).json({
             message: "Username, password and email are all required.",
         });
     }
-
-    // check for duplicate username
-    const possibleDuplicateUser = await UserModel.where("username").equals(
-        username
-    );
-    if (possibleDuplicateUser.length > 0)
-        return res.status(409).json({ message: "The username already exists" });
 
     // check for duplicate email
     const possibleDuplicateEmail = await UserModel.where("email").equals(email);
@@ -27,6 +19,13 @@ const handleUserRegistration = async (req, res) => {
         return res
             .status(409)
             .json({ message: "The email address already exists" });
+
+    // check for duplicate username
+    const possibleDuplicateUser = await UserModel.where("username").equals(
+        username
+    );
+    if (possibleDuplicateUser.length > 0)
+        return res.status(409).json({ message: "The username already exists" });
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,7 +50,6 @@ const handleUserRegistration = async (req, res) => {
 
 const handleUserLogin = async (req, res) => {
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({
             message: "Username and password are both required.",
