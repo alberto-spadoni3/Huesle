@@ -13,11 +13,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { getDesignTokens } from "./components/theme";
 import PersistLogin from "./components/PersistLogin";
 import EditUserProfile from "./components/EditUserProfile";
-<<<<<<< HEAD
 import Dashboard from "./components/Dashboard";
-=======
-import SnackbarAlert from './components/SnackbarAlert.js';
->>>>>>> refs/remotes/origin/main
+import SnackbarAlert from "./components/SnackbarAlert.js";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -26,12 +23,15 @@ const App = () => {
     const [snackbarAlertState, setSnackbarAlertState] = useState({
         open: false,
         message: "",
-        severity: "success"
+        severity: "success",
     });
 
     return (
         <ThemeProvider theme={createTheme(getDesignTokens(themeMode))}>
-            <SnackbarAlert state={snackbarAlertState} setState={setSnackbarAlertState} />
+            <SnackbarAlert
+                state={snackbarAlertState}
+                setState={setSnackbarAlertState}
+            />
             <Routes>
                 <Route
                     path="/"
@@ -39,9 +39,26 @@ const App = () => {
                 >
                     {/* Public routes */}
                     <Route index element={<Home />} />
-                    <Route path="login" element={<Login setSnackbarAlertState={setSnackbarAlertState}/>} />
-                    <Route path="register" element={<Register setSnackbarAlertState={setSnackbarAlertState}/>} />
-                    <Route path="dialog" element={<SearchMatchDialog privateCode={34345}/>} />
+                    <Route
+                        path="login"
+                        element={
+                            <Login
+                                setSnackbarAlertState={setSnackbarAlertState}
+                            />
+                        }
+                    />
+                    <Route
+                        path="register"
+                        element={
+                            <Register
+                                setSnackbarAlertState={setSnackbarAlertState}
+                            />
+                        }
+                    />
+                    <Route
+                        path="dialog"
+                        element={<SearchMatchDialog privateCode={34345} />}
+                    />
 
                     {/* Routes that require authentication */}
                     <Route element={<PersistLogin />}>
