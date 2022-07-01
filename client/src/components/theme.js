@@ -11,6 +11,7 @@ export const getDesignTokens = (mode) => ({
                   },
                   text: {
                       primary: grey[800],
+                      link: "#2692E6",
                   },
                   action: {
                       active: grey[800],
@@ -34,6 +35,7 @@ export const getDesignTokens = (mode) => ({
                       main: "#404040",
                   },
                   text: {
+                      link: "#2692E6",
                       primary: "#fff",
                       secondary: grey[300],
                   },

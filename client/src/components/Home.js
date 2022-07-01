@@ -24,10 +24,14 @@ const Home = () => {
                     <Typography variant="h5">Homepage</Typography>
                 </CardContent>
                 <CardActions>
-                    <Link component={RouterLink} to="/login">
+                    <Link component={RouterLink} to="/login" color="text.link">
                         Login page
                     </Link>
-                    <Link component={RouterLink} to="/dashboard">
+                    <Link
+                        component={RouterLink}
+                        to="/dashboard"
+                        color="text.link"
+                    >
                         Dashboard
                     </Link>
                 </CardActions>
