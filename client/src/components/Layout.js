@@ -31,7 +31,7 @@ const Layout = ({ setThemeMode }) => {
     }, [auth.username]);
 
     return (
-        <Box bgcolor="background.default" color="text.secondary" height="100vh">
+        <Box color="text.secondary" height="100vh">
             <Header />
             <MainContainer>
                 <Outlet />

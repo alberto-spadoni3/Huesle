@@ -1,4 +1,4 @@
-import { deepOrange, grey } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 export const getDesignTokens = (mode) => ({
     palette: {

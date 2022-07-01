@@ -11,7 +11,7 @@ const useLogout = () => {
     const logout = async () => {
         setAuth({});
         try {
-            const response = await axios.get(BACKEND_LOGOUT_ENDPOINT, {
+            await axios.get(BACKEND_LOGOUT_ENDPOINT, {
                 withCredentials: true,
             });
             navigate("/");

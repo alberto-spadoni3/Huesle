@@ -145,7 +145,7 @@ const Dashboard = (/* { theme } */) => {
                         </Typography>
                         <IconButton
                             onClick={(e) => handleMenuOpening(e)}
-                            aria-label="settings"
+                            aria-label="Open menu"
                         >
                             <MenuRoundedIcon
                                 fontSize="large"
