@@ -6,7 +6,7 @@ import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import SearchMatchDialog from "./components/SearchMatchDialog";
+import InsertPrivateMatchCodeDialog from "./components/InsertPrivateMatchCodeDialog";
 import UserProfile from "./components/UserProfile";
 import RequireAuth from "./components/RequireAuth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -57,7 +57,7 @@ const App = () => {
                     />
                     <Route
                         path="dialog"
-                        element={<SearchMatchDialog privateCode={34345} />}
+                        element={<InsertPrivateMatchCodeDialog />}
                     />
 
                     {/* Routes that require authentication */}

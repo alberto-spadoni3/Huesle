@@ -18,87 +18,6 @@ async function findUserId(username) {
     else return account._id.toString();
 }
 
-const searchMatch = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-
-    let pendingRequest;
-    if(req.body.hasOwnProperty('secretCode')) {
-        pendingRequest = await PendingRequestModel.where({'secretCode': req.body.secretCode}).findOne();
-    } else {
-        pendingRequest = await PendingRequestModel.where({ "secretCode": null}).findOne();
-    }
-
-    if(pendingRequest) {
-        if(pendingRequest.playerId == requesterId) {
-            return res.status(400).json({
-                message: "User already pending for match with those specifics"
-            });
-        }
-        pendingRequest.deleteOne();
-        const newMatch = await createMatch(requesterId, pendingRequest.playerId, true);
-        emitNewMatch(newMatch.players, newMatch._id);
-        return res.status(200).json({
-            matchId: newMatch._id
-        });
-    } else {
-        let pendingRequestToSave = {
-            playerId: requesterId
-        }
-        if(req.body.hasOwnProperty('secretCode')) {
-            pendingRequestToSave.secretCode = req.body.secretCode;
-        }
-
-        const newPendingRequest = new PendingRequestModel(pendingRequestToSave);
-        await newPendingRequest.save();
-        return res.status(200).json({
-            message: "Searching other contestant"
-        });
-    }
-}
-
-const leaveSearchPrivateMatch = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-
-    pendingRequest = await PendingRequestModel.where("secretCode").ne(null).findOne();
-
-    if(pendingRequest) {
-        pendingRequest.deleteOne();
-        return res.status(200).json({
-            message: "Search abandoned successfully"
-        });
-    } else {
-        return res.status(400).json({
-            message: "No pending request found"
-        });
-    }
-}
-
-function createMatch(p1, p2, repetitions) {
-    const matchDoc = {
-        players: [p1, p2],
-        status: GameStates.TURN_P1,
-        turn: 0,
-        date: mongoose.now()
-    }
-
-    if(repetitions) {
-        matchDoc.solution = createRandomSolutionWithRepetition();
-    } else {
-        matchDoc.solution = createSolutionWithoutRepetition();
-    }
-
-    const newMatch = new MatchModel(matchDoc);
-    return newMatch.save();
-}
-
 const doGuess = async (req, res) => {
     const {username, matchId, sequence} = req.body;
     const userId = await findUserId(username);
@@ -251,8 +170,6 @@ const getUserStats = async (req, res) => {
 
 
 export const gameController = {
-    searchMatch,
-    leaveSearchPrivateMatch,
     doGuess,
     leaveMatch,
     getActiveMatchesOfUser,
