@@ -11,14 +11,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import axios from "../api/axios";
 import BackButton from "./BackButton";
+import SnackbarAlert from "./SnackbarAlert";
 import { BACKEND_REGISTRATION_ENDPOINT } from "../api/backend_endpoints";
-
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-export default function Register({setSnackbarAlertState}) {
+export default function Register({ setSnackbarAlertState }) {
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
 
@@ -60,15 +60,36 @@ export default function Register({setSnackbarAlertState}) {
             );
 
             if (response?.status === 201) {
+                setSnackbarAlertState({
+                    open: true,
+                    message:
+                        "Your account is created successfully. You can now login!",
+                    severity: "success",
+                });
                 navigate("/login", { replace: true });
             }
         } catch (error) {
             if (!error?.response) {
                 console.log("No Server Response");
+                setSnackbarAlertState({
+                    open: true,
+                    message: "No server response",
+                    severity: "info",
+                });
             } else if (error.response?.status === 409) {
                 console.log(error.response?.data?.message);
+                setSnackbarAlertState({
+                    open: true,
+                    message: error.response?.data?.message,
+                    severity: "error",
+                });
             } else {
                 console.log("Registration Failed " + error.message);
+                setSnackbarAlertState({
+                    open: true,
+                    message: "Registration Failed: " + error.message,
+                    severity: "error",
+                });
             }
         }
     };
