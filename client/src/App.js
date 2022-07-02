@@ -14,7 +14,8 @@ import { getDesignTokens } from "./components/theme";
 import PersistLogin from "./components/PersistLogin";
 import EditUserProfile from "./components/EditUserProfile";
 import Dashboard from "./components/Dashboard";
-import SnackbarAlert from "./components/SnackbarAlert.js";
+import { CssBaseline } from "@mui/material";
+import { SnackbarProvider } from "notistack";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -26,79 +27,106 @@ const App = () => {
         severity: "success",
     });
 
+    const anchorOrigin = {
+        vertical: "bottom",
+        horizontal: "center",
+    };
+
     return (
         <ThemeProvider theme={createTheme(getDesignTokens(themeMode))}>
-            <SnackbarAlert
+            <CssBaseline />
+            {/* <SnackbarAlert
                 state={snackbarAlertState}
                 setState={setSnackbarAlertState}
-            />
-            <Routes>
-                <Route
-                    path="/"
-                    element={<Layout setThemeMode={setThemeMode} />}
-                >
-                    {/* Public routes */}
-                    <Route index element={<Home />} />
+            /> */}
+            <SnackbarProvider
+                maxSnack={2}
+                anchorOrigin={anchorOrigin}
+                autoHideDuration={3000}
+            >
+                <Routes>
                     <Route
-                        path="login"
-                        element={
-                            <Login
-                                setSnackbarAlertState={setSnackbarAlertState}
-                            />
-                        }
-                    />
-                    <Route
-                        path="register"
-                        element={
-                            <Register
-                                setSnackbarAlertState={setSnackbarAlertState}
-                            />
-                        }
-                    />
-                    <Route
-                        path="dialog"
-                        element={<InsertPrivateMatchCodeDialog />}
-                    />
+                        path="/"
+                        element={<Layout setThemeMode={setThemeMode} />}
+                    >
+                        {/* Public routes */}
+                        <Route index element={<Home />} />
+                        <Route
+                            path="login"
+                            element={
+                                <Login
+                                    setSnackbarAlertState={
+                                        setSnackbarAlertState
+                                    }
+                                />
+                            }
+                        />
+                        <Route
+                            path="register"
+                            element={
+                                <Register
+                                    setSnackbarAlertState={
+                                        setSnackbarAlertState
+                                    }
+                                />
+                            }
+                        />
+                        <Route
+                            path="dialog"
+                            element={<InsertPrivateMatchCodeDialog />}
+                        />
 
-                    {/* Routes that require authentication */}
-                    <Route element={<PersistLogin />}>
-                        <Route element={<RequireAuth />}>
-                            <Route
-                                path="/user/profile"
-                                element={<UserProfile />}
-                            />
-                        </Route>
+                        {/* Routes that require authentication */}
+                        <Route element={<PersistLogin />}>
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="/user/profile"
+                                    element={<UserProfile />}
+                                />
+                            </Route>
 
-                        <Route element={<RequireAuth />}>
-                            <Route
-                                path="/user/editProfile"
-                                element={<EditUserProfile />}
-                            />
-                        </Route>
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="/user/editProfile"
+                                    element={
+                                        <EditUserProfile
+                                            setSnackbarAlertState={
+                                                setSnackbarAlertState
+                                            }
+                                        />
+                                    }
+                                />
+                            </Route>
 
-                        <Route element={<RequireAuth />}>
-                            <Route
-                                path="settings"
-                                element={
-                                    <Settings
-                                        themeMode={themeMode}
-                                        setThemeMode={setThemeMode}
-                                        colorblindMode={colorblindMode}
-                                        setColorblindMode={setColorblindMode}
-                                    />
-                                }
-                            />
-                        </Route>
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="settings"
+                                    element={
+                                        <Settings
+                                            themeMode={themeMode}
+                                            setThemeMode={setThemeMode}
+                                            colorblindMode={colorblindMode}
+                                            setColorblindMode={
+                                                setColorblindMode
+                                            }
+                                        />
+                                    }
+                                />
+                            </Route>
 
-                        <Route element={<RequireAuth />}>
-                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="/dashboard"
+                                    element={<Dashboard />}
+                                />
+                            </Route>
                         </Route>
                     </Route>
-                </Route>
 
-                {/* No matching route */}
-                <Route path="*" element={<Missing />} />
-            </Routes>
+                    {/* No matching route */}
+                    <Route path="*" element={<Missing />} />
+                </Routes>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 };

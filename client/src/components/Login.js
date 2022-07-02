@@ -15,10 +15,12 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import BackButton from "./BackButton";
+import { useSnackbar } from "notistack";
 import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
-export default function Login({ setSnackbarAlertState }) {
+export default function Login() {
     const { setAuth, persist, setPersist } = useAuth();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -49,39 +51,30 @@ export default function Login({ setSnackbarAlertState }) {
             setPassword("");
 
             navigate(from, { replace: true });
-            setSnackbarAlertState({
-                open: true,
-                message: "Login Successful",
-                severity: "success",
+            enqueueSnackbar("Login Successful", {
+                variant: "success",
+                autoHideDuration: 2500,
             });
         } catch (error) {
             if (!error?.response) {
                 console.log("No Server Response");
-                setSnackbarAlertState({
-                    open: true,
-                    message: "No Server Response",
-                    severity: "info",
+                enqueueSnackbar({
+                    variant: "info",
                 });
             } else if (error.response?.status === 400) {
                 console.log("Missing Username or Password");
-                setSnackbarAlertState({
-                    open: true,
-                    message: "Missing Username or Password",
-                    severity: "warning",
+                enqueueSnackbar("Missing Username or Password", {
+                    variant: "warning",
                 });
             } else if (error.response?.status === 401) {
-                console.log("Unauthorized");
-                setSnackbarAlertState({
-                    open: true,
-                    message: "Unauthorized",
-                    severity: "error",
+                console.log("Username or password not valid");
+                enqueueSnackbar("Username or password not valid", {
+                    variant: "error",
                 });
             } else {
                 console.log("Login Failed");
-                setSnackbarAlertState({
-                    open: true,
-                    message: "Login Failed",
-                    severity: "error",
+                enqueueSnackbar("Login Failed", {
+                    variant: "error",
                 });
             }
         }

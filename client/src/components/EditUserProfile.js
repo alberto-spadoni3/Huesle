@@ -16,6 +16,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useAuth from "../hooks/useAuth";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useState, useEffect } from "react";
+import { useSnackbar } from "notistack";
 import {
     BACKEND_UPDATE_USERNAME,
     BACKEND_UPDATE_PASSWORD,
@@ -30,6 +31,7 @@ const EditUserProfile = () => {
     const { auth, setAuth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const refresh = useRefreshToken();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
@@ -60,9 +62,12 @@ const EditUserProfile = () => {
 
     const handleEditProfile = async (e) => {
         const newUsername = username.trim() !== "" ? username : auth.username;
+        const usernamePresentAndValid = username.trim() !== "" && validUsername;
+        const passwordPresentAndValid =
+            password.trim() !== "" && validPassword && validMatchPassword;
 
         // update username if present
-        if (username.trim() !== "" && validUsername) {
+        if (usernamePresentAndValid) {
             try {
                 const response = await axiosPrivate.post(
                     BACKEND_UPDATE_USERNAME,
@@ -78,19 +83,27 @@ const EditUserProfile = () => {
                     // refresh the username and the accessToken wich reflects the updated username
                     await refresh();
                     setUsername("");
+                    enqueueSnackbar("Username updated", { variant: "success" });
                 }
             } catch (error) {
                 if (!error?.response) {
                     console.log("No Server Response");
+                    enqueueSnackbar("Username updated", { variant: "info" });
                 } else if (error.response?.status === 409) {
                     console.log(error.response?.data?.message);
+                    enqueueSnackbar(error.response?.data?.message, {
+                        variant: "warning",
+                    });
                 } else {
                     console.log("Username update failed");
+                    enqueueSnackbar("Username update failed", {
+                        variant: "error",
+                    });
                 }
             }
         }
 
-        if (password.trim() !== "" && validPassword && validMatchPassword) {
+        if (passwordPresentAndValid) {
             try {
                 const response = await axiosPrivate.post(
                     BACKEND_UPDATE_PASSWORD,
@@ -107,6 +120,9 @@ const EditUserProfile = () => {
 
                 if (response.status === 200) {
                     console.log("password updated");
+                    enqueueSnackbar("Password updated successfully", {
+                        variant: "success",
+                    });
                     setOldPassword("");
                     setPassword("");
                     setMatchPassword("");
@@ -114,15 +130,31 @@ const EditUserProfile = () => {
             } catch (error) {
                 if (!error?.response) {
                     console.log("No Server Response");
+                    enqueueSnackbar("No Server Response", { variant: "info" });
                 } else if (error.response?.status === 400) {
                     console.log(error.response?.data?.message);
+                    enqueueSnackbar(error.response?.data?.message, {
+                        variant: "error",
+                    });
                 } else if (error.response?.status === 401) {
                     console.log("Username not found in the database");
+                    enqueueSnackbar(
+                        "Your current username not found in the database",
+                        {
+                            variant: "warning",
+                        }
+                    );
                 } else {
                     console.log("Password update Failed");
+                    enqueueSnackbar("Password update Failed", {
+                        variant: "error",
+                    });
                 }
             }
         }
+
+        if (!(usernamePresentAndValid || passwordPresentAndValid))
+            enqueueSnackbar("Anything has changed");
     };
 
     return (
@@ -238,7 +270,11 @@ const EditUserProfile = () => {
                 </Box>
 
                 <Button
-                    sx={{ width: "100%", height: "50px", marginTop: 3 }}
+                    sx={{
+                        width: "100%",
+                        height: "50px",
+                        margin: "24px 0 24px 0",
+                    }}
                     variant="contained"
                     startIcon={<SaveIcon />}
                     aria-label="Save Changes"
