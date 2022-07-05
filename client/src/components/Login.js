@@ -144,7 +144,6 @@ export default function Login() {
                         control={
                             <Checkbox
                                 value="remember"
-                                color="primary"
                                 checked={persist}
                                 onChange={togglePersist}
                             />
@@ -155,7 +154,7 @@ export default function Login() {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        // color="primary"
+                        color="button"
                         sx={{ mt: 3, mb: 1 }}
                     >
                         Sign In
@@ -175,7 +174,7 @@ export default function Login() {
                                 component={RouterLink}
                                 to="/register"
                             >
-                                {"Don't have an account? Sign Up"}
+                                Don't have an account? Sign Up
                             </Link>
                         </Grid>
                     </Grid>

@@ -15,7 +15,11 @@ import EditUserProfile from "./components/EditUserProfile";
 import Dashboard from "./components/Dashboard";
 import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
+<<<<<<< HEAD
 import SearchMatch from "./components/SearchMatch";
+=======
+import GameBoard from "./components/GameBoard";
+>>>>>>> 6e28e9190555ea61885575a3076166ea07134313
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -76,14 +80,14 @@ const App = () => {
                         <Route element={<PersistLogin />}>
                             <Route element={<RequireAuth />}>
                                 <Route
-                                    path="/user/profile"
+                                    path="user/profile"
                                     element={<UserProfile />}
                                 />
                             </Route>
 
                             <Route element={<RequireAuth />}>
                                 <Route
-                                    path="/user/editProfile"
+                                    path="user/editProfile"
                                     element={
                                         <EditUserProfile
                                             setSnackbarAlertState={
@@ -112,7 +116,7 @@ const App = () => {
 
                             <Route element={<RequireAuth />}>
                                 <Route
-                                    path="/dashboard"
+                                    path="dashboard"
                                     element={<Dashboard />}
                                 />
                             </Route>
@@ -120,6 +124,12 @@ const App = () => {
                                 <Route
                                     path="/searchMatch"
                                     element={<SearchMatch />}
+                                />
+                            </Route>
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="gameboard"
+                                    element={<GameBoard />}
                                 />
                             </Route>
                         </Route>

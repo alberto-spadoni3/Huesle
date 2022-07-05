@@ -24,13 +24,10 @@ const Home = () => {
                     <Typography variant="h5">Homepage</Typography>
                 </CardContent>
                 <CardActions>
-                    <Link component={RouterLink} to="/login" color="text.link">
-                        Login page
-                    </Link>
                     <Link
                         component={RouterLink}
                         to="/dashboard"
-                        color="text.link"
+                        color="link.main"
                     >
                         Dashboard
                     </Link>
@@ -40,6 +37,13 @@ const Home = () => {
                         color="text.link"
                     >
                         SearchMatch
+                    </Link>
+                    <Link
+                        component={RouterLink}
+                        to="/gameboard"
+                        color="link.main"
+                    >
+                        Game Board
                     </Link>
                 </CardActions>
             </Card>
