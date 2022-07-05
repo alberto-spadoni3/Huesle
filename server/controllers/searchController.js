@@ -66,11 +66,12 @@ const searchMatch = async (req, res) => {
     const newPendingRequest = new PendingRequestModel(pendingRequestToSave);
     await newPendingRequest.save();
     return res.status(200).json({
-        message: "Searching other contestant"
+        message: "Searching other contestant",
+        secretCode: pendingRequestToSave.secretCode
     });
 }
 
-const searchPrivateMatch = async (req, res) => {
+const joinPrivateMatch = async (req, res) => {
     const {username, secretCode} = req.body;
     const requesterId = await findUserId(username);
     if(!requesterId) return res.status(400).json({
@@ -97,12 +98,16 @@ const searchPrivateMatch = async (req, res) => {
 
 const leaveSearchPrivateMatch = async (req, res) => {
     const {username} = req.body;
+
     const requesterId = await findUserId(username);
     if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
+            error: "Username not valid"
+        });
 
-    const pendingRequest = await PendingRequestModel.where("secretCode").ne(null).findOne();
+    const pendingRequest = await PendingRequestModel
+        .where("playerId").equals(requesterId)
+        //.where("secretCode").ne(null)
+        .findOne();
 
     if(pendingRequest) {
         pendingRequest.deleteOne();
@@ -111,7 +116,7 @@ const leaveSearchPrivateMatch = async (req, res) => {
         });
     } else {
         return res.status(400).json({
-            message: "No pending request found"
+            error: "No pending request found"
         });
     }
 }
@@ -141,11 +146,12 @@ async function generateSecretCode() {
         secretCode = Math.floor(Math.random() * 99999);
         duplicateCode = await PendingRequestModel.where("secretCode").equals(secretCode).findOne();
     } while (duplicateCode);
+    while(secretCode.toString().length < 5) secretCode = "0" + secretCode;
     return secretCode;
 }
 
 export const searchController = {
     searchMatch,
-    searchPrivateMatch,
+    joinPrivateMatch,
     leaveSearchPrivateMatch,
 };

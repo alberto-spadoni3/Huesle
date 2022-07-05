@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.route('/searchMatch').post(searchController.searchMatch);
 
-router.route('/searchPrivateMatch').post(searchController.searchPrivateMatch);
-
 router.route('/searchMatch').delete(searchController.leaveSearchPrivateMatch);
+
+router.route('/joinPrivateMatch').post(searchController.joinPrivateMatch);
 
 export default router;

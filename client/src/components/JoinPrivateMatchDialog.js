@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -10,9 +9,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import axios from "../api/axios";
-import { BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
+import axiosPrivate from "../api/axios";
+import { BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import {useState} from "react";
+import {useSnackbar} from "notistack";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -23,15 +23,11 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function InsertPrivateMatchCodeDialog({privateCode}) {
-    const [codeOpen, setCodeOpen] = React.useState(false);
-    const [searchingOpen, setSearchingOpen] = React.useState(false);
+export default function JoinPrivateMatchDialog({open, setOpen}) {
+    const [searchingOpen, setSearchingOpen] = useState(false);
 
     const [secretCode, setSecretCode] = useState("");
-
-    const handleClickOpen = () => {
-        setCodeOpen(true);
-    };
+    const {enqueueSnackbar} = useSnackbar();
 
     const handleSearch =  async (event) => {
         event.preventDefault();
@@ -39,13 +35,20 @@ export default function InsertPrivateMatchCodeDialog({privateCode}) {
         setSearchingOpen(true);
         try {
             const username = "pippa";
-            const response = await axios.post(
-                BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
-                JSON.stringify({secretCode, username}),
+            console.log(secretCode);
+            const response = await axiosPrivate.post(
+                BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT,
+                JSON.stringify({username, secretCode}),
                 {
                     headers: {"Content-Type": "application/json"},
                     withCredentials: true,
                 });
+            if(response) {
+                enqueueSnackbar("Match found: " + response.data.matchId, {
+                    variant: "success",
+                    autoHideDuration: 2500,
+                });
+            }
         } catch (error) {
             console.log(error)
         }
@@ -53,7 +56,7 @@ export default function InsertPrivateMatchCodeDialog({privateCode}) {
     };
 
     const handleCodeClose =  () => {
-        setCodeOpen(false);
+        setOpen(false);
     };
 
     const handleSearchClose =  () => {
@@ -63,11 +66,8 @@ export default function InsertPrivateMatchCodeDialog({privateCode}) {
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Slide in alert dialog
-            </Button>
             <Dialog
-                open={codeOpen}
+                open={open}
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleCodeClose}

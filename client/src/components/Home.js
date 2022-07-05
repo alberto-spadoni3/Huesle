@@ -34,6 +34,13 @@ const Home = () => {
                     >
                         Dashboard
                     </Link>
+                    <Link
+                        component={RouterLink}
+                        to="/searchMatch"
+                        color="text.link"
+                    >
+                        SearchMatch
+                    </Link>
                 </CardActions>
             </Card>
         </Box>

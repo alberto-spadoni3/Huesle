@@ -6,7 +6,6 @@ import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import InsertPrivateMatchCodeDialog from "./components/InsertPrivateMatchCodeDialog";
 import UserProfile from "./components/UserProfile";
 import RequireAuth from "./components/RequireAuth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -16,6 +15,7 @@ import EditUserProfile from "./components/EditUserProfile";
 import Dashboard from "./components/Dashboard";
 import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
+import SearchMatch from "./components/SearchMatch";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -71,10 +71,6 @@ const App = () => {
                                 />
                             }
                         />
-                        <Route
-                            path="dialog"
-                            element={<InsertPrivateMatchCodeDialog />}
-                        />
 
                         {/* Routes that require authentication */}
                         <Route element={<PersistLogin />}>
@@ -118,6 +114,12 @@ const App = () => {
                                 <Route
                                     path="/dashboard"
                                     element={<Dashboard />}
+                                />
+                            </Route>
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="/searchMatch"
+                                    element={<SearchMatch />}
                                 />
                             </Route>
                         </Route>
