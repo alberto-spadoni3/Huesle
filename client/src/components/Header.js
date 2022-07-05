@@ -4,7 +4,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LoginIcon from "@mui/icons-material/Login";
 import { Box, Container, IconButton, Typography } from "@mui/material";
 
-const Header = (setThemeMode) => {
+const Header = () => {
     const { auth } = useAuth();
     const navigate = useNavigate();
 
