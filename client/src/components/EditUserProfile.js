@@ -71,11 +71,7 @@ const EditUserProfile = () => {
             try {
                 const response = await axiosPrivate.post(
                     BACKEND_UPDATE_USERNAME,
-                    JSON.stringify({ newUsername }),
-                    {
-                        headers: { "Content-Type": "application/json" },
-                        withCredentials: true,
-                    }
+                    JSON.stringify({ newUsername })
                 );
 
                 if (response.status === 200) {

@@ -51,10 +51,7 @@ const Settings = ({
             const username = auth.username;
             const response = await axiosPrivate.put(
                 BACKEND_SETTINGS_ENDPOINT,
-                JSON.stringify({ username, darkMode, colorblindMode }),
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
+                JSON.stringify({ username, darkMode, colorblindMode })
             );
 
             if (response.status === 200) {

@@ -31,11 +31,7 @@ export default function SearchPrivateMatchDialog({
             const secret = true;
             const response = await axiosPrivate.post(
                 BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
-                JSON.stringify({ username, secret }),
-                {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                }
+                JSON.stringify({ username, secret })
             );
             return response;
         } catch (error) {
