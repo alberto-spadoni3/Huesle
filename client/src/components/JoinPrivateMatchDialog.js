@@ -32,11 +32,7 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
             console.log(secretCode);
             const response = await axiosPrivate.post(
                 BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT,
-                JSON.stringify({ username, secretCode }),
-                {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                }
+                JSON.stringify({ username, secretCode })
             );
             if (response) {
                 enqueueSnackbar("Match found: " + response.data.matchId, {
@@ -63,18 +59,20 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
         <div>
             <Dialog
                 open={open}
+                fullWidth
+                maxWidth="xs"
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleCodeClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Ricerca Partita Privata"}</DialogTitle>
+                <DialogTitle>{"Private Match Search"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText
                         id="alert-dialog-slide-description"
                         textAlign="center"
                     >
-                        Inserisci codice segreto della partita
+                        Insert match's secret code and hit SEARCH
                     </DialogContentText>
                     <TextField
                         margin="normal"
@@ -89,8 +87,8 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCodeClose}>Abbandona</Button>
-                    <Button onClick={handleSearch}>Prosegui</Button>
+                    <Button onClick={handleCodeClose}>Cancel</Button>
+                    <Button onClick={handleSearch}>Search</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

@@ -1,7 +1,6 @@
 import {
     Box,
     Button,
-    styled,
     Stack,
     Avatar,
     Typography,
@@ -14,6 +13,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
+import BackButton from "./BackButton";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
@@ -29,6 +29,7 @@ const SearchMatch = () => {
 
     return (
         <>
+            <BackButton />
             <Box
                 sx={{
                     display: "flex",
@@ -41,7 +42,7 @@ const SearchMatch = () => {
                     color="text.primary"
                     sx={{
                         textAlign: "center",
-                        marginTop: 2,
+                        marginTop: 1,
                     }}
                 >
                     Public Matches
@@ -55,6 +56,7 @@ const SearchMatch = () => {
                         marginBottom: 2,
                     }}
                     variant="contained"
+                    color="button"
                     startIcon={<SearchIcon />}
                     aria-label="Search Match"
                     onClick={(e) => navigate("/searchMatch")}
@@ -67,6 +69,7 @@ const SearchMatch = () => {
                     color="text.primary"
                     sx={{
                         textAlign: "center",
+                        marginTop: 2,
                     }}
                 >
                     Private Matches
@@ -76,6 +79,7 @@ const SearchMatch = () => {
                     sx={{ width: "100%", height: "50px", marginTop: 2 }}
                     variant="contained"
                     startIcon={<SearchIcon />}
+                    color="button"
                     aria-label="Create Match"
                     onClick={() => setSearchPrivateOpen(true)}
                 >
@@ -91,10 +95,10 @@ const SearchMatch = () => {
                         width: "100%",
                         height: "50px",
                         marginTop: 2,
-                        marginBottom: 2,
                     }}
                     variant="contained"
                     startIcon={<SearchIcon />}
+                    color="button"
                     aria-label="Join Match"
                     onClick={(e) => setJoinPrivateOpen(true)}
                 >
@@ -104,6 +108,8 @@ const SearchMatch = () => {
                     open={joinPrivateOpen}
                     setOpen={setJoinPrivateOpen}
                 />
+
+                {/* FOOTER */}
                 <Box
                     sx={{
                         display: "flex",
