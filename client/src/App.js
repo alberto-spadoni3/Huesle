@@ -15,21 +15,12 @@ import EditUserProfile from "./components/EditUserProfile";
 import Dashboard from "./components/Dashboard";
 import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
-<<<<<<< HEAD
 import SearchMatch from "./components/SearchMatch";
-=======
 import GameBoard from "./components/GameBoard";
->>>>>>> 6e28e9190555ea61885575a3076166ea07134313
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
     const [colorblindMode, setColorblindMode] = useState(false);
-
-    const [snackbarAlertState, setSnackbarAlertState] = useState({
-        open: false,
-        message: "",
-        severity: "success",
-    });
 
     const anchorOrigin = {
         vertical: "bottom",
@@ -39,12 +30,8 @@ const App = () => {
     return (
         <ThemeProvider theme={createTheme(getDesignTokens(themeMode))}>
             <CssBaseline />
-            {/* <SnackbarAlert
-                state={snackbarAlertState}
-                setState={setSnackbarAlertState}
-            /> */}
             <SnackbarProvider
-                maxSnack={2}
+                maxSnack={3}
                 anchorOrigin={anchorOrigin}
                 autoHideDuration={3000}
             >
@@ -55,26 +42,8 @@ const App = () => {
                     >
                         {/* Public routes */}
                         <Route index element={<Home />} />
-                        <Route
-                            path="login"
-                            element={
-                                <Login
-                                    setSnackbarAlertState={
-                                        setSnackbarAlertState
-                                    }
-                                />
-                            }
-                        />
-                        <Route
-                            path="register"
-                            element={
-                                <Register
-                                    setSnackbarAlertState={
-                                        setSnackbarAlertState
-                                    }
-                                />
-                            }
-                        />
+                        <Route path="login" element={<Login />} />
+                        <Route path="register" element={<Register />} />
 
                         {/* Routes that require authentication */}
                         <Route element={<PersistLogin />}>
@@ -88,13 +57,7 @@ const App = () => {
                             <Route element={<RequireAuth />}>
                                 <Route
                                     path="user/editProfile"
-                                    element={
-                                        <EditUserProfile
-                                            setSnackbarAlertState={
-                                                setSnackbarAlertState
-                                            }
-                                        />
-                                    }
+                                    element={<EditUserProfile />}
                                 />
                             </Route>
 
