@@ -13,6 +13,9 @@ export const getDesignTokens = (mode) => ({
                       primary: grey[900],
                       link: "#2692E6",
                   },
+                  link: {
+                      main: "#2692E6",
+                  },
                   action: {
                       button: "#6573C3",
                       active: grey[800],

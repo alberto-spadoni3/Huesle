@@ -34,7 +34,7 @@ const Home = () => {
                     <Link
                         component={RouterLink}
                         to="/searchMatch"
-                        color="text.link"
+                        color="link.main"
                     >
                         SearchMatch
                     </Link>
