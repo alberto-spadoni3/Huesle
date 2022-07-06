@@ -5,7 +5,7 @@ import {
     Stack,
     Avatar,
     Typography,
-    IconButton
+    IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import DashboardMenu from "./DashboardMenu";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 
-const Dashboard = (/* { theme } */) => {
+const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const open = Boolean(anchorElement);
@@ -41,21 +41,26 @@ const Dashboard = (/* { theme } */) => {
                     color="text.primary"
                     sx={{
                         textAlign: "center",
-                        marginTop: 2
+                        marginTop: 2,
                     }}
                 >
                     Public Matches
                 </Typography>
 
-                    <Button
-                        sx={{ width: "100%", height: "50px", marginTop: 2, marginBottom: 2 }}
-                        variant="contained"
-                        startIcon={<SearchIcon />}
-                        aria-label="Search Match"
-                        onClick={(e) => navigate("/searchMatch")}
-                    >
-                        Search Match
-                    </Button>
+                <Button
+                    sx={{
+                        width: "100%",
+                        height: "50px",
+                        marginTop: 2,
+                        marginBottom: 2,
+                    }}
+                    variant="contained"
+                    startIcon={<SearchIcon />}
+                    aria-label="Search Match"
+                    onClick={(e) => navigate("/searchMatch")}
+                >
+                    Search Match
+                </Button>
 
                 <Typography
                     variant="h5"
@@ -67,27 +72,38 @@ const Dashboard = (/* { theme } */) => {
                     Private Matches
                 </Typography>
 
-                    <Button
-                        sx={{ width: "100%", height: "50px", marginTop: 2 }}
-                        variant="contained"
-                        startIcon={<SearchIcon />}
-                        aria-label="Search Match"
-                        onClick={() => setSearchPrivateOpen(true)}
-                    >
-                        Create Match
-                    </Button>
-                    <SearchPrivateMatchDialog connectOpen={searchPrivateOpen} setConnectOpen={setSearchPrivateOpen}/>
+                <Button
+                    sx={{ width: "100%", height: "50px", marginTop: 2 }}
+                    variant="contained"
+                    startIcon={<SearchIcon />}
+                    aria-label="Create Match"
+                    onClick={() => setSearchPrivateOpen(true)}
+                >
+                    Create Match
+                </Button>
+                <SearchPrivateMatchDialog
+                    connectOpen={searchPrivateOpen}
+                    setConnectOpen={setSearchPrivateOpen}
+                />
 
-                    <Button
-                        sx={{ width: "100%", height: "50px", marginTop: 2, marginBottom: 2  }}
-                        variant="contained"
-                        startIcon={<SearchIcon />}
-                        aria-label="Search Match"
-                        onClick={(e) => setJoinPrivateOpen(true)}
-                    >
-                        Join Match
-                    </Button>
-                    <JoinPrivateMatchDialog open={joinPrivateOpen} setOpen={setJoinPrivateOpen}/>
+                <Button
+                    sx={{
+                        width: "100%",
+                        height: "50px",
+                        marginTop: 2,
+                        marginBottom: 2,
+                    }}
+                    variant="contained"
+                    startIcon={<SearchIcon />}
+                    aria-label="Join Match"
+                    onClick={(e) => setJoinPrivateOpen(true)}
+                >
+                    Join Match
+                </Button>
+                <JoinPrivateMatchDialog
+                    open={joinPrivateOpen}
+                    setOpen={setJoinPrivateOpen}
+                />
                 <Box
                     sx={{
                         display: "flex",
@@ -137,4 +153,4 @@ const Dashboard = (/* { theme } */) => {
     );
 };
 
-export default Dashboard;
+export default SearchMatch;
