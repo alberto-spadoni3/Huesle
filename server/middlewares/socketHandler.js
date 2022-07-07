@@ -7,15 +7,22 @@ import { Server } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(3001, httpServer, {
-    transports: ["websocket"],
+const io = new Server(3001, {
     upgrade: false,
+    cors: {
+        origin: "http://localhost:3000",
+        credentials: true,
+        methods: ["GET", "POST"],
+        transports: ['websocket']
+    }
 });
+io.attach(httpServer);
 
 export class MessageTypes {
     static CONNECTION = "connection";
     static SESSION = "session";
     static NOTIFICATION = "notification";
+    static SEARCHING = "searching";
 }
 
 io.use((socket, next) => {
@@ -31,10 +38,10 @@ io.use((socket, next) => {
         }
     }
 
-    var username;
+    let username;
     if (!socket.handshake.auth.username) {
         //console.log("Error");
-        username = "paolo";
+        username = "pappa";
     } else {
         username = socket.handshake.auth.username;
     }

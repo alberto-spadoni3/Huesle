@@ -11,3 +11,6 @@ export const BACKEND_UPDATE_PASSWORD = "/setting/updatePassword";
 export const BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT = "/search/searchMatch";
 
 export const BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT = "/search/joinPrivateMatch";
+
+
+export const BACKEND_SOCKET_ENDPOINT = "http://localhost:3001";

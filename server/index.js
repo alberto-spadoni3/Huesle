@@ -31,11 +31,14 @@ app.use("/setting", settingRoutes);
 
 const DB_URL = "mongodb://localhost:27017";
 
-mongoose
-    .connect(DB_URL, { dbName: "huesle" })
-    .then(() => {
-        console.log("DB ready");
-        // the server start listening only after the DB is up and running
-        app.listen(port, () => console.log(`Server listening on port ${port}`));
-    })
-    .catch((error) => console.log(error.message));
+try {
+    mongoose
+        .connect(DB_URL, {dbName: "huesle"}, () => {
+            console.log("DB ready");
+            // the server start listening only after the DB is up and running
+            app.listen(port, () => console.log(`Server listening on port ${port}`));
+        })
+} catch(error) {
+    console.log(error.message)
+};
+
