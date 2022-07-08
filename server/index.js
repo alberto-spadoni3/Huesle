@@ -6,6 +6,7 @@ import rootRoute from "./routes/rootRoute.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 import settingRoutes from "./routes/settingRoutes.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -26,6 +27,7 @@ app.use("/", rootRoute);
 app.use("/user", userRoutes);
 app.use("/game", gameRoutes);
 app.use("/search", searchRoutes);
+app.use("/stats", statsRoutes);
 app.use(verifyJWT);
 app.use("/setting", settingRoutes);
 

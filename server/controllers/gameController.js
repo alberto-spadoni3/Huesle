@@ -1,16 +1,11 @@
 import {
-    createRandomSolutionWithRepetition,
-    createSolutionWithoutRepetition,
     elaborateTurn,
     GameStates, isMatchOver, isPlayerTurn
 } from "../model/gameLogic.js";
 
-import mongoose from "mongoose";
-
-import {PendingRequestModel} from "../model/PendingRequestModel.js";
 import {UserModel} from "../model/UserModel.js";
 import {MatchModel} from "../model/MatchModel.js";
-import {emitNewMatch, emitNewMove, emitMatchOver} from "../middlewares/socketHandler.js"
+import {emitNewMove, emitMatchOver} from "../middlewares/socketHandler.js"
 
 async function findUserId(username) {
     const account = await UserModel.findOne({'username':username}, '_id')
@@ -96,85 +91,7 @@ const leaveMatch = async (req, res) => {
     }
 }
 
-const getMatch = async (req, res) => {
-    const {matchId} = req.body;
-    const match = await MatchModel.findById(matchId);
-    res.status(200).json({
-        match: match
-    });
-}
-
-const getActiveMatchesOfUser = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-    const matches = await MatchModel.find({$or: [
-            { "players.0": requesterId , status: GameStates.TURN_P1 },
-            { "players.1": requesterId , status: GameStates.TURN_P2 }
-    ]}, "_id");
-    res.status(200).json({
-        matches: matches
-    });
-}
-
-const getAllMatchesOfUser = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-    const matches = await MatchModel.find({player: requesterId}, "_id")
-    res.status(200).json({
-        matches: matches
-    });
-}
-
-const getOngoingMatches = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-    const matches = await MatchModel.find({player: requesterId,
-        $or: [{ status: GameStates.TURN_P1 }, { status: GameStates.TURN_P2 }]}, "_id")
-    res.status(200).json({
-        matches: matches
-    });
-}
-
-const getUserStats = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
-    if(!requesterId) return res.status(400).json({
-        message: "Username not valid"
-    });
-    const matches_won = await MatchModel.find({$or: [
-            { "players.0": requesterId , status: GameStates.WIN_P1 },
-            { "players.1": requesterId , status: GameStates.WIN_P2 }
-        ]
-    }).count();
-    const matches_lost = await MatchModel.find({$or: [
-            { "players.0": requesterId, status: GameStates.WIN_P2 },
-            { "players.1": requesterId, status: GameStates.WIN_P1 }
-        ]
-    }).count();
-    const matches_draw = await MatchModel.find({ players: requesterId, status: GameStates.Draw}).count();
-    res.status(200).json({
-        matches_won: matches_won,
-        matches_lost: matches_lost,
-        matches_draw: matches_draw
-    });
-}
-
-
 export const gameController = {
     doGuess,
-    leaveMatch,
-    getActiveMatchesOfUser,
-    getOngoingMatches,
-    getAllMatchesOfUser,
-    getUserStats,
-    getMatch
+    leaveMatch
 };

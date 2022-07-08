@@ -5,10 +5,11 @@ export default axios.create({
     baseURL: BASE_URL,
 });
 
-export const axiosPrivate = axios.create({
+const axiosPrivate = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true,
-    headers: {
-        "Content-Type": "application/json"
-    }
+    withCredentials: true
 });
+
+axiosPrivate.defaults.headers.post["Content-Type"] = "application/json";
+
+export {axiosPrivate};

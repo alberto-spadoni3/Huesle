@@ -11,7 +11,7 @@ import {
 import socketIOClient from "socket.io-client";
 import {axiosPrivate} from "../api/axios";
 import {
-    BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
+    BACKEND_SEARCH_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
 import socket, {MessageTypes} from "../api/socket_instance";
 import { useSnackbar } from "notistack";
@@ -37,7 +37,7 @@ export default function SearchPrivateMatchDialog({
             const username = "pappa";
             const secret = true;
             const response = await axiosPrivate.post(
-                BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
+                BACKEND_SEARCH_MATCH_ENDPOINT,
                 JSON.stringify({ username, secret }),
             );
             return response;
@@ -69,7 +69,7 @@ export default function SearchPrivateMatchDialog({
             const username = "pappa";
             socket.disconnect();
             await axiosPrivate.delete(
-                BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
+                BACKEND_SEARCH_MATCH_ENDPOINT,
                 {
                     data: JSON.stringify({ username }),
                 }
