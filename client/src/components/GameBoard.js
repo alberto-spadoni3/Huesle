@@ -101,7 +101,6 @@ const GameBoard = () => {
                 </Button>
             </Box>
             <div style={{ height: "8px" }}></div>
-            <Button onClick={(e) => console.log(currentPegsColor)}>Clck</Button>
         </>
     );
 };
