@@ -14,10 +14,14 @@ import DashboardMenu from "./DashboardMenu";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
+import {axiosPrivate} from "../api/axios";
+import {BACKEND_SEARCH_MATCH_ENDPOINT} from "../api/backend_endpoints";
+import {useSnackbar} from "notistack";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
+    const { enqueueSnackbar } = useSnackbar();
     const open = Boolean(anchorElement);
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
@@ -25,6 +29,28 @@ const SearchMatch = () => {
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
+    };
+
+    const generatePublicMatch = async () => {
+        try {
+            const username = "pappa";
+            const secret = false;
+            await axiosPrivate.post(
+                BACKEND_SEARCH_MATCH_ENDPOINT,
+                JSON.stringify({ username, secret }),
+            );
+            enqueueSnackbar("Searching for new Match...", {
+                variant: "success",
+                autoHideDuration: 2500,
+            });
+            navigate("/dashboard", { replace: true });
+            return;
+        } catch (error) {
+            enqueueSnackbar("Error in comunicating with Server", {
+                variant: "error",
+                autoHideDuration: 2500,
+            });
+        }
     };
 
     return (
@@ -59,7 +85,7 @@ const SearchMatch = () => {
                     color="button"
                     startIcon={<SearchIcon />}
                     aria-label="Search Match"
-                    onClick={(e) => navigate("/searchMatch")}
+                    onClick={(e) => generatePublicMatch()}
                 >
                     Search Match
                 </Button>

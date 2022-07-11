@@ -1,16 +1,21 @@
 import React, { useState, useEffect, forwardRef } from "react";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-import axiosPrivate from "../api/axios";
-import { BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
+import {
+    Button,
+    LinearProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Slide } from "@mui/material";
+import socketIOClient from "socket.io-client";
+import {axiosPrivate} from "../api/axios";
+import {
+    BACKEND_SEARCH_MATCH_ENDPOINT,
+} from "../api/backend_endpoints";
+import socket, {MessageTypes} from "../api/socket_instance";
 import { useSnackbar } from "notistack";
+import {useNavigate} from "react-router-dom";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -20,9 +25,11 @@ export default function SearchPrivateMatchDialog({
     connectOpen,
     setConnectOpen,
 }) {
+
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
     const generateMatch = async () => {
         setConnectOpen(true);
@@ -30,8 +37,8 @@ export default function SearchPrivateMatchDialog({
             const username = "pappa";
             const secret = true;
             const response = await axiosPrivate.post(
-                BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
-                JSON.stringify({ username, secret })
+                BACKEND_SEARCH_MATCH_ENDPOINT,
+                JSON.stringify({ username, secret }),
             );
             return response;
         } catch (error) {
@@ -43,16 +50,27 @@ export default function SearchPrivateMatchDialog({
         }
     };
 
+    const listenOnSocket = async () => {
+        socket.on(MessageTypes.NOTIFICATION, data => {
+            enqueueSnackbar(data.content, {
+                variant: "success",
+                autoHideDuration: 2500,
+            });
+            setSearchPrivateOpen(false);
+            navigate("/dashboard", { replace: true });
+        });
+
+    }
+
     const handleClose = async (event) => {
         event.preventDefault();
 
         try {
             const username = "pappa";
-            const response = await axiosPrivate.delete(
-                BACKEND_SEARCH_PRIVATE_MATCH_ENDPOINT,
+            socket.disconnect();
+            await axiosPrivate.delete(
+                BACKEND_SEARCH_MATCH_ENDPOINT,
                 {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
                     data: JSON.stringify({ username }),
                 }
             );
@@ -79,6 +97,7 @@ export default function SearchPrivateMatchDialog({
                         variant: "success",
                         autoHideDuration: 2500,
                     });
+                    listenOnSocket();
                 }
             });
         }

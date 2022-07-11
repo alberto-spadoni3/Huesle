@@ -18,7 +18,8 @@
         "react-dom": "^18.1.0",
         "react-router-dom": "^6.3.0",
         "react-scripts": "^5.0.1",
-        "safe-buffer": "^5.2.1"
+        "safe-buffer": "^5.2.1",
+        "socket.io-client": "^4.5.1"
     },
     "scripts": {
         "start": "react-scripts start",

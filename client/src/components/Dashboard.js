@@ -15,11 +15,13 @@ import {
     Paper,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
+import {axiosPrivate} from "../api/axios";
+import {BACKEND_GET_MATCHES_ENDPOINT,} from "../api/backend_endpoints";
 
 const Dashboard = (/* { theme } */) => {
     const navigate = useNavigate();
@@ -47,17 +49,46 @@ const Dashboard = (/* { theme } */) => {
         margin: "1rem 0 0.4rem 0",
     }));
 
-    function createData(name, status) {
-        return { name, status };
+
+
+    const [rows, setRows] = useState([]);
+
+    async function updateMatches() {
+        const username = "pappa";
+        try {
+            const temp_rows = [];
+            const response = await axiosPrivate.get(
+                BACKEND_GET_MATCHES_ENDPOINT,
+                { params: { username: username}}
+            );
+            const {pending, matches} = response.data;
+            console.log(pending);
+
+            matches.forEach(match => {
+                if(match.players.includes(username)) {
+                    const opponent = match.players.filter(name => name != username);
+                    temp_rows.push(createData(match.id, opponent, match.status));
+                }
+            });
+            if(pending) temp_rows.push("wait", "Waiting for new match", "");
+            setRows(temp_rows);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    const rows = [
-        createData("Richard", "waiting"),
-        createData("Mark", "your turn"),
-        createData("Lana", "lost"),
-        createData("Annah", "lost"),
-        createData("Rebecca", "won"),
-    ];
+    function createData(id, name, status) {
+        return { id, name, status };
+    }
+
+    let flag = true;
+
+    useEffect(() => {
+        if(flag) {
+            updateMatches();
+            flag = false;
+        }
+    },[])
 
     return (
         <>
@@ -101,7 +132,7 @@ const Dashboard = (/* { theme } */) => {
                             <TableBody>
                                 {rows.map((row) => (
                                     <TableRow
-                                        key={row.name}
+                                        key={row.id + row.name}
                                         /* sx={{
                                             "&:last-child td, &:last-child th":
                                                 {

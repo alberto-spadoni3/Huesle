@@ -9,14 +9,4 @@ router.route('/leaveMatch').put(gameController.leaveMatch);
 
 router.route('/leaveMatch').put(gameController.leaveMatch);
 
-router.route('/getMatch').get(gameController.getMatch);
-
-router.route('/activeMatches').get(gameController.getActiveMatchesOfUser);
-
-router.route('/ongoingMatches').get(gameController.getOngoingMatches);
-
-router.route('/allMatches').get(gameController.getAllMatchesOfUser);
-
-router.route('/userStats').get(gameController.getUserStats);
-
 export default router;

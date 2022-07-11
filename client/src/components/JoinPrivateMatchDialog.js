@@ -8,10 +8,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import axiosPrivate from "../api/axios";
+import {axiosPrivate} from "../api/axios";
 import { BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
+import {useNavigate} from "react-router-dom";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -22,14 +23,23 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
 
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
     const handleSearch = async (event) => {
         event.preventDefault();
+
+        if(secretCode.length != 5) {
+            enqueueSnackbar("Secret Code not valid", {
+                variant: "warning",
+                autoHideDuration: 2500,
+            });
+            return;
+        }
+
         handleCodeClose();
         setSearchingOpen(true);
         try {
             const username = "pippa";
-            console.log(secretCode);
             const response = await axiosPrivate.post(
                 BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT,
                 JSON.stringify({ username, secretCode })
@@ -39,9 +49,13 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                     variant: "success",
                     autoHideDuration: 2500,
                 });
+                navigate("/dashboard", { replace: true });
             }
         } catch (error) {
-            console.log(error);
+            enqueueSnackbar("No match found with that secret code", {
+                variant: "warning",
+                autoHideDuration: 2500,
+            });
         }
         handleSearchClose();
     };

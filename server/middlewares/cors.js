@@ -1,6 +1,6 @@
 import cors from "cors";
 
-const allowedOrigins = "http://localhost:3000";
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -13,9 +13,9 @@ const corsOptions = {
     allowedHeaders: [
         "Content-Type",
         "Authorization",
-        "Origin",
+        "origin",
         "Accept",
-        "X-Requested-With",
+        "X-Requested-With"
     ],
     credentials: true,
     methods: "GET,PUT,PATCH,POST,DELETE",
