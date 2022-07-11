@@ -31,7 +31,7 @@ const EditUserProfile = () => {
     const { auth, setAuth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const refresh = useRefreshToken();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);

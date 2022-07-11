@@ -20,37 +20,8 @@ export const getDesignTokens = (mode) => ({
                       button: "#6573C3",
                       active: grey[800],
                   },
-                  colorBox: {
-                      main: grey[900],
-                  },
-              }
-            : {
-                  // palette values for dark mode
-                  /* primary: {
-                      main: "#3f51b5",
-                      button: "#3f51b5",
-                      //dark: grey[800],
-                  }, */
-                  action: {
-                      active: grey[100],
-                  },
                   button: {
                       main: "#3f51b5",
-                  },
-                  background: {
-                      default: "#303030",
-                      paper: "#1a1a1a",
-                      dashboardMenu: "#262626",
-                  },
-                  tooltip: {
-                      main: "#404040",
-                  },
-                  link: {
-                      main: "#2692E6",
-                  },
-                  text: {
-                      primary: grey[200],
-                      secondary: grey[300],
                   },
                   colorBox: {
                       main: grey[900],
@@ -58,6 +29,34 @@ export const getDesignTokens = (mode) => ({
                   neutral: {
                       main: "#64748B",
                       contrastText: "#fff",
+                  },
+              }
+            : {
+                  // palette values for dark mode
+                  text: {
+                      primary: grey[200],
+                      secondary: grey[300],
+                  },
+                  link: {
+                      main: "#2692E6",
+                  },
+                  action: {
+                      active: grey[100],
+                  },
+                  button: {
+                      main: "#3f51b5",
+                  },
+                  colorBox: {
+                      main: grey[900],
+                  },
+                  neutral: {
+                      main: "#64748B",
+                      contrastText: "#fff",
+                  },
+                  background: {
+                      default: "#303030",
+                      paper: "#1a1a1a",
+                      dashboardMenu: "#262626",
                   },
               }),
     },

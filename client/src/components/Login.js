@@ -20,7 +20,7 @@ import { BACKEND_LOGIN_ENDPOINT } from "../api/backend_endpoints";
 
 export default function Login() {
     const { setAuth, persist, setPersist } = useAuth();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const navigate = useNavigate();
     const location = useLocation();
