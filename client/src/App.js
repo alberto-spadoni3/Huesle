@@ -17,6 +17,7 @@ import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import SearchMatch from "./components/SearchMatch";
 import GameBoard from "./components/GameBoard";
+import { GameDataProvider } from "./context/GameDataProvider";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -92,7 +93,13 @@ const App = () => {
                             <Route element={<RequireAuth />}>
                                 <Route
                                     path="gameboard"
-                                    element={<GameBoard />}
+                                    element={
+                                        <>
+                                            <GameDataProvider>
+                                                <GameBoard />
+                                            </GameDataProvider>
+                                        </>
+                                    }
                                 />
                             </Route>
                         </Route>

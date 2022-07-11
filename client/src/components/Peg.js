@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import useGameData from "../hooks/useGameData";
 
-const ColorBox = ({ color, tiny }) => {
-    const [boxColor, setBoxColor] = useState(color ? color : "");
+const Peg = ({ pegID, isInRow, tiny }) => {
+    const [pegColor, setPegColor] = useState("");
+    const { selectedColor, setCurrentPegsColor, currentRow } = useGameData();
 
     const handleClick = () => {
-        setBoxColor("");
+        if (selectedColor && isInRow === currentRow && pegID >= 0) {
+            setPegColor(selectedColor);
+            setCurrentPegsColor((map) => map.set(pegID, selectedColor));
+        }
     };
 
     return (
         <label
             style={{
-                backgroundColor: boxColor,
+                backgroundColor: pegColor,
                 height: tiny ? "14px" : "52px",
                 width: tiny ? "14px" : "52px",
-                borderColor: "palette.text.primary",
-                border: "2px solid",
+                borderColor: "white",
+                border: "3px solid",
                 borderRadius: "50%",
                 display: "inline-block",
+                cursor:
+                    isInRow === currentRow && selectedColor && !tiny
+                        ? "copy"
+                        : "default",
             }}
             onClick={handleClick}
-        ></label>
+        />
     );
 };
 
-export default ColorBox;
+export default Peg;

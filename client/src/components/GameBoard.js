@@ -1,131 +1,107 @@
-import { Grid, Box, Stack, Button } from "@mui/material";
-import { useState, useEffect } from "react";
+import { Box, Stack, Button } from "@mui/material";
 import BackButton from "./BackButton";
-import ColorBox from "./ColorBox";
-
-const NUMBER_OF_ATTEMPTS = 10;
+import DecodeRow from "./DecodeRow";
+import ColorSelector from "./ColorSelector";
+import useGameData from "../hooks/useGameData";
+import { useSnackbar } from "notistack";
 
 const GameBoard = () => {
-    const [selectedColor, setSelectedColor] = useState("");
-    const gameColors = [
-        "crimson",
-        "coral",
-        "gold",
-        "forestgreen",
-        "mediumblue",
-        "rebeccapurple",
-    ];
+    const {
+        selectedColor,
+        setSelectedColor,
+        currentPegsColor,
+        currentRow,
+        setCurrentRow,
+        NUMBER_OF_ATTEMPTS,
+        PEGS_PER_ROW,
+    } = useGameData();
 
-    const GridItem = ({ children }) => {
-        return (
-            <Grid
-                item
-                xs={1}
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                {children}
-            </Grid>
-        );
+    const { enqueueSnackbar } = useSnackbar();
+
+    const handleSubmitRow = (_) => {
+        if (currentPegsColor.size !== 4) {
+            enqueueSnackbar(
+                `Complete a row with all the ${PEGS_PER_ROW} colors before submitting the attempt`,
+                { variant: "info" }
+            );
+            return;
+        }
+
+        Array(PEGS_PER_ROW)
+            .fill()
+            .forEach((_, index) =>
+                console.log(
+                    `Peg [${index + 1}] - ${currentPegsColor.get(index)}`
+                )
+            );
+
+        currentPegsColor.clear();
+        setCurrentRow((prevValue) => {
+            return (prevValue + 1) % 10;
+        });
     };
-
-    const HintContainer = () => {
-        return (
-            <Box height="52px" width="52px">
-                <Grid container columns={2} height="100%">
-                    {Array.from(Array(4)).map((_, index) => (
-                        <GridItem key={index}>
-                            <ColorBox tiny />
-                        </GridItem>
-                    ))}
-                </Grid>
-            </Box>
-        );
-    };
-
-    useEffect(() => {
-        if (selectedColor) console.log(selectedColor);
-    }, [selectedColor]);
 
     return (
         <>
             <BackButton />
+
             <Box
                 sx={{
-                    border: "3px solid",
+                    border: "3px ridge",
                     borderColor: "palette.text.primary",
                     borderRadius: "10px",
-                    backgroundColor: "peru",
-                    marginTop: 1,
-                    padding: "8px 0",
+                    backgroundColor: "rgb(96,56,31)",
+                    marginBottom: 1,
+                    paddingY: "5px",
                 }}
             >
-                <Grid
-                    container
-                    columns={5}
-                    rowSpacing={2}
-                    columnSpacing={2}
-                    justifyContent="center"
+                <Stack
+                    direction="column-reverse"
+                    alignItems="center"
+                    spacing={1}
                 >
-                    {Array.from(Array(NUMBER_OF_ATTEMPTS * 5)).map((_, index) =>
-                        index + 1 !== 0 && (index + 1) % 5 === 0 ? (
-                            <GridItem key={index}>
-                                <HintContainer />
-                            </GridItem>
-                        ) : (
-                            <GridItem key={index}>
-                                <ColorBox />
-                            </GridItem>
-                        )
-                    )}
-                </Grid>
-            </Box>
-            <Box
-                sx={{
-                    border: "2px solid",
-                    borderColor: "palette.text.primary",
-                    borderRadius: "10px",
-                    backgroundColor: "background.paper",
-                    padding: "4px 2px",
-                    marginTop: 1,
-                }}
-            >
-                <Stack direction="row">
-                    {Array.from(Array(6)).map((_, index) => (
-                        <Button
-                            key={index}
-                            sx={{
-                                backgroundColor: gameColors[index],
-                                marginX: "2px",
-                                minWidth: "unset",
-                                height: "50px",
-                                width: "62px",
-                                "&:hover": {
-                                    backgroundColor: gameColors[index],
-                                    opacity: 0.7,
-                                    width: "80px",
-                                },
-                            }}
-                            onClick={(e) => setSelectedColor(gameColors[index])}
-                        ></Button>
-                    ))}
+                    {Array(NUMBER_OF_ATTEMPTS)
+                        .fill()
+                        .map((_, index) => (
+                            <DecodeRow
+                                currentRow={currentRow}
+                                key={index}
+                                rowID={index}
+                                selectedColor={selectedColor}
+                            />
+                        ))}
                 </Stack>
             </Box>
-            <Button
+
+            <Box
                 sx={{
-                    width: "100%",
-                    border: "1px solid white",
-                    borderRadius: "5px",
-                    marginY: 2,
+                    border: "3px groove",
+                    borderColor: "palette.text.primary",
+                    borderRadius: "10px",
+                    backgroundColor: "#1a1a1a",
+                    padding: "5px",
+                    marginBottom: 2,
                 }}
-                variant="contained"
-                color="neutral"
             >
-                Send Attempt
-            </Button>
+                <ColorSelector
+                    selectedColor={selectedColor}
+                    setSelectedColor={setSelectedColor}
+                />
+                <Button
+                    sx={{
+                        width: "100%",
+                        border: "1px solid white",
+                        borderRadius: "5px",
+                    }}
+                    variant="contained"
+                    color="neutral"
+                    onClick={handleSubmitRow}
+                >
+                    Send Attempt
+                </Button>
+            </Box>
+            <div style={{ height: "8px" }}></div>
+            <Button onClick={(e) => console.log(currentPegsColor)}>Clck</Button>
         </>
     );
 };
