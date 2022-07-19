@@ -18,6 +18,7 @@ import { SnackbarProvider } from "notistack";
 import SearchMatch from "./components/SearchMatch";
 import GameBoard from "./components/GameBoard";
 import { GameDataProvider } from "./context/GameDataProvider";
+import GameRules from "./components/GameRules";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -45,6 +46,8 @@ const App = () => {
                         <Route index element={<Home />} />
                         <Route path="login" element={<Login />} />
                         <Route path="register" element={<Register />} />
+
+                        <Route path="rules" element={<GameRules />} />
 
                         {/* Routes that require authentication */}
                         <Route element={<PersistLogin />}>

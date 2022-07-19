@@ -1,6 +1,11 @@
 import { grey } from "@mui/material/colors";
 
 export const getDesignTokens = (mode) => ({
+    typography: {
+        body1: {
+            fontSize: "1.1rem",
+        },
+    },
     palette: {
         mode,
         ...(mode === "light"
