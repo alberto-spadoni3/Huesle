@@ -3,42 +3,100 @@ import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
 import useGameData from "../hooks/useGameData";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 
 const GameBoard = () => {
+    const { enqueueSnackbar } = useSnackbar();
+
+    const colorSequence = new Map();
+    colorSequence.set(0, "gold");
+    colorSequence.set(1, "forestgreen");
+    colorSequence.set(2, "coral");
+    colorSequence.set(3, "gold");
+
     const {
-        selectedColor,
-        setSelectedColor,
         currentPegsColor,
+        setCurrentPegsColor,
         currentRow,
         setCurrentRow,
+        setExactMatches,
+        setColorMatches,
+        setEndGame,
+        success,
+        setSuccess,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
 
-    const { enqueueSnackbar } = useSnackbar();
+    useEffect(() => {
+        if (success) enqueueSnackbar("You Won!", { variant: "success" });
+    }, [success]);
 
-    const handleSubmitRow = (_) => {
+    const handleSubmitRow = () => {
         if (currentPegsColor.size !== 4) {
             enqueueSnackbar(
                 `Complete a row with all the ${PEGS_PER_ROW} colors before submitting the attempt`,
-                { variant: "info" }
+                { variant: "info", autoHideDuration: 3000 }
             );
             return;
         }
 
-        Array(PEGS_PER_ROW)
-            .fill()
-            .forEach((_, index) =>
-                console.log(
-                    `Peg [${index + 1}] - ${currentPegsColor.get(index)}`
-                )
-            );
+        let code = new Map(colorSequence);
+        let pegs = new Map(currentPegsColor);
+        let foundKey;
+        let exactMatches = 0;
+        let colorMatches = 0;
 
-        currentPegsColor.clear();
-        setCurrentRow((prevValue) => {
-            return (prevValue + 1) % 10;
+        // function used to check whether a given color is present inside the current guess
+        const keyOf = (map, colorToFind) => {
+            for (let [pegID, color] of map) {
+                if (colorToFind === color) {
+                    return pegID;
+                }
+            }
+
+            return -1;
+        };
+
+        // First pass: Look for both value and position matches
+        // Safely remove items if they match
+        for (let [pegID, color] of pegs) {
+            if (color === code.get(pegID)) {
+                exactMatches++;
+                pegs.delete(pegID);
+                code.delete(pegID);
+            }
+        }
+
+        // Second pass: Look for color matches anywhere in the current guess
+        for (let [_, color] of pegs) {
+            // attempt to find the peg in the remaining code
+            foundKey = keyOf(code, color);
+            if (foundKey !== -1) {
+                colorMatches++;
+                // remove the matched code peg, since it's been matched
+                code.delete(foundKey);
+            }
+        }
+
+        if (exactMatches === PEGS_PER_ROW) {
+            setEndGame(true);
+            setSuccess(true);
+        } else if (currentRow + 1 === NUMBER_OF_ATTEMPTS) {
+            setEndGame(true);
+        }
+
+        // Updating state
+        setExactMatches(exactMatches);
+        setColorMatches(colorMatches);
+        setCurrentPegsColor(new Map());
+        setCurrentRow((prevRow) => {
+            return prevRow + 1;
         });
+
+        console.log("Exact matches ->", exactMatches);
+        console.log("Color matches ->", colorMatches + "\n");
     };
 
     return (
@@ -63,12 +121,7 @@ const GameBoard = () => {
                     {Array(NUMBER_OF_ATTEMPTS)
                         .fill()
                         .map((_, index) => (
-                            <DecodeRow
-                                currentRow={currentRow}
-                                key={index}
-                                rowID={index}
-                                selectedColor={selectedColor}
-                            />
+                            <DecodeRow key={index} rowID={index} />
                         ))}
                 </Stack>
             </Box>
@@ -83,16 +136,14 @@ const GameBoard = () => {
                     marginBottom: 2,
                 }}
             >
-                <ColorSelector
-                    selectedColor={selectedColor}
-                    setSelectedColor={setSelectedColor}
-                />
+                <ColorSelector />
                 <Button
                     sx={{
                         width: "100%",
                         border: "1px solid white",
                         borderRadius: "5px",
                     }}
+                    disabled={currentRow === NUMBER_OF_ATTEMPTS}
                     variant="contained"
                     color="neutral"
                     onClick={handleSubmitRow}

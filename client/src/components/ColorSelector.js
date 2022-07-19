@@ -22,11 +22,11 @@ const ColorSelector = () => {
                 .fill()
                 .map((_, index) => (
                     <Radio
+                        key={index}
                         checked={selectedColor === guessableColors[index]}
                         onChange={handleChange}
                         value={guessableColors[index]}
                         name="color-selector-radio"
-                        key={index}
                         sx={{
                             ...pegColor(index),
                             borderRadius: "8px",

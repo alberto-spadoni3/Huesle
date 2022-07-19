@@ -1,7 +1,32 @@
 import { Grid, Box } from "@mui/material";
+import useGameData from "../hooks/useGameData";
 import Peg from "./Peg";
 
 const Hints = ({ isInRow }) => {
+    const { exactMatches, colorMatches, currentRow, HintTypes, PEGS_PER_ROW } =
+        useGameData();
+
+    const hints = [];
+    let exact_matches = exactMatches;
+    let color_matches = colorMatches;
+
+    const generateHint = (id) => {
+        let hintType = HintTypes.NoMatch;
+
+        // Update current row
+        if (isInRow === currentRow - 1) {
+            if (exact_matches > 0) {
+                hintType = HintTypes.ExactMatch;
+                exact_matches--;
+            } else if (color_matches > 0) {
+                hintType = HintTypes.ColorMatch;
+                color_matches--;
+            }
+        }
+
+        return <Peg key={id} isInRow={isInRow} hintPeg hintType={hintType} />;
+    };
+
     const GridItem = ({ children }) => {
         return (
             <Grid
@@ -21,12 +46,10 @@ const Hints = ({ isInRow }) => {
     return (
         <Box height="52px" width="52px">
             <Grid container columns={2} height="100%">
-                {Array(4)
+                {Array(PEGS_PER_ROW)
                     .fill()
                     .map((_, index) => (
-                        <GridItem key={index}>
-                            <Peg tiny isInRow={isInRow} />
-                        </GridItem>
+                        <GridItem key={index}>{generateHint(index)}</GridItem>
                     ))}
             </Grid>
         </Box>

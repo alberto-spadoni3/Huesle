@@ -1,29 +1,53 @@
-import { useState } from "react";
 import useGameData from "../hooks/useGameData";
+import { useState, useEffect } from "react";
 
-const Peg = ({ pegID, isInRow, tiny }) => {
+const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
+    const {
+        selectedColor,
+        setCurrentPegsColor,
+        currentRow,
+        HintTypes,
+        exactMatches,
+        colorMatches,
+    } = useGameData();
+
     const [pegColor, setPegColor] = useState("");
-    const { selectedColor, setCurrentPegsColor, currentRow } = useGameData();
 
     const handleClick = () => {
-        if (selectedColor && isInRow === currentRow && pegID >= 0) {
+        if (selectedColor && isInRow === currentRow && !hintPeg) {
             setPegColor(selectedColor);
             setCurrentPegsColor((map) => map.set(pegID, selectedColor));
         }
     };
 
+    useEffect(() => {
+        if (hintPeg && isInRow === currentRow - 1) {
+            switch (hintType) {
+                case HintTypes.ExactMatch:
+                    setPegColor("white");
+                    break;
+                case HintTypes.ColorMatch:
+                    setPegColor("grey");
+                    break;
+                default:
+                    setPegColor("");
+                    break;
+            }
+        }
+    }, [exactMatches, colorMatches]);
+
     return (
         <label
             style={{
                 backgroundColor: pegColor,
-                height: tiny ? "14px" : "52px",
-                width: tiny ? "14px" : "52px",
+                height: hintPeg ? "16px" : "52px",
+                width: hintPeg ? "16px" : "52px",
                 borderColor: "white",
-                border: "3px solid",
+                border: hintPeg ? "2px solid" : "3px solid",
                 borderRadius: "50%",
                 display: "inline-block",
                 cursor:
-                    isInRow === currentRow && selectedColor && !tiny
+                    isInRow === currentRow && selectedColor && !hintPeg
                         ? "copy"
                         : "default",
             }}

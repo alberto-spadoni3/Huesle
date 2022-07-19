@@ -18,7 +18,7 @@ const DecodeRow = ({ rowID }) => {
             cssProps = {
                 ...cssProps,
                 borderStyle: "dashed",
-                borderColor: "lightblue",
+                borderColor: "springgreen",
             };
         else if (rowID < currentRow)
             cssProps = { ...cssProps, borderColor: "rgb(239,226,219)" };
@@ -41,7 +41,7 @@ const DecodeRow = ({ rowID }) => {
                 .map((_, index) => (
                     <Peg key={index} pegID={index} isInRow={rowID} />
                 ))}
-            <Hints isInRow={rowID} />
+            <Hints key={rowID + 1} isInRow={rowID} />
         </Stack>
     );
 };
