@@ -62,7 +62,7 @@ const Dashboard = (/* { theme } */) => {
                 { params: { username: username}}
             );
             const {pending, matches} = response.data;
-            console.log(pending);
+            if(pending) temp_rows.push(createData("wait", "???", "Waiting for new match"));
 
             matches.forEach(match => {
                 if(match.players.includes(username)) {
@@ -70,7 +70,6 @@ const Dashboard = (/* { theme } */) => {
                     temp_rows.push(createData(match.id, opponent, match.status));
                 }
             });
-            if(pending) temp_rows.push("wait", "Waiting for new match", "");
             setRows(temp_rows);
         } catch (error) {
             console.log(error);
@@ -81,13 +80,8 @@ const Dashboard = (/* { theme } */) => {
         return { id, name, status };
     }
 
-    let flag = true;
-
     useEffect(() => {
-        if(flag) {
-            updateMatches();
-            flag = false;
-        }
+        updateMatches();
     },[])
 
     return (
