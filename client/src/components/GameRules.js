@@ -20,7 +20,7 @@ const GameRules = () => {
         flexDirection: "column",
         justifyContent: "flex-start",
         marginTop: "16px",
-        padding: "5px",
+        padding: "8px",
     }));
 
     return (

@@ -67,7 +67,7 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
                 <Avatar /> My profile
             </MenuItem>
             <Divider />
-            <MenuItem onClick={(e) => navigate("/how-to-play")}>
+            <MenuItem onClick={(e) => navigate("/rules")}>
                 <ListItemIcon>
                     <QuestionMarkIcon fontSize="small" />
                 </ListItemIcon>
