@@ -1,4 +1,11 @@
-import { Avatar, Box, Stack, Typography, Button } from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Stack,
+    Typography,
+    Button,
+    AvatarGroup,
+} from "@mui/material";
 import React from "react";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
@@ -39,12 +46,12 @@ const Match = () => {
         return (
             <Stack
                 direction="row"
-                spacing={3}
+                spacing={2}
                 alignItems="center"
                 marginBottom={2}
             >
                 <Player name={player} hideLabel />
-                <Stack direction="row" spacing={1}>
+                <AvatarGroup max={4}>
                     {attempt.split(" ").map((hint, index) => {
                         const hintColor =
                             hint === "C"
@@ -60,7 +67,7 @@ const Match = () => {
                             )
                         );
                     })}
-                </Stack>
+                </AvatarGroup>
             </Stack>
         );
     };
@@ -87,16 +94,16 @@ const Match = () => {
 
                 <Typography variant="h4">Attempts</Typography>
                 {attemptsSoFar.map((item, index) => (
-                    <>
-                        <Typography variant="h6" marginBottom={1}>
-                            {"Attempt " + (index + 1)}
-                        </Typography>
-                        <Attempt
-                            key={index}
-                            player={item.player}
-                            attempt={item.attempt}
-                        />
-                    </>
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        marginY={1}
+                        key={index}
+                    >
+                        <Typography variant="h6">{index + 1 + ")"}</Typography>
+                        <Attempt player={item.player} attempt={item.attempt} />
+                    </Stack>
                 ))}
 
                 <Button
