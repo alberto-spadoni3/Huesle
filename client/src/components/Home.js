@@ -45,6 +45,13 @@ const Home = () => {
                     >
                         Game Board
                     </Link>
+                    <Link
+                        component={RouterLink}
+                        to="/match-details"
+                        color="link.main"
+                    >
+                        Match
+                    </Link>
                 </CardActions>
             </Card>
         </Box>

@@ -19,6 +19,7 @@ import SearchMatch from "./components/SearchMatch";
 import GameBoard from "./components/GameBoard";
 import { GameDataProvider } from "./context/GameDataProvider";
 import GameRules from "./components/GameRules";
+import Match from "./components/Match";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -87,6 +88,14 @@ const App = () => {
                                     element={<Dashboard />}
                                 />
                             </Route>
+
+                            <Route element={<RequireAuth />}>
+                                <Route
+                                    path="match-details"
+                                    element={<Match />}
+                                />
+                            </Route>
+
                             <Route element={<RequireAuth />}>
                                 <Route
                                     path="/searchMatch"
