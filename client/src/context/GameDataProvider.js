@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import {useState, createContext, useEffect} from "react";
 
 const GameDataContext = createContext({});
 
@@ -14,6 +14,8 @@ export const GameDataProvider = ({ children }) => {
 
     const [endGame, setEndGame] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    const [matchHistory, setMatchHistory] = useState([]);
 
     const NUMBER_OF_ATTEMPTS = 10;
     const PEGS_PER_ROW = 4;
@@ -50,6 +52,8 @@ export const GameDataProvider = ({ children }) => {
                 setEndGame,
                 success,
                 setSuccess,
+                matchHistory,
+                setMatchHistory,
                 NUMBER_OF_ATTEMPTS,
                 PEGS_PER_ROW,
                 guessableColors,

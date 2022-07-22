@@ -29,19 +29,21 @@ const DecodeRow = ({ rowID }) => {
 
     return (
         <Stack
+            id={rowID}
             direction="row"
             spacing={2}
             justifyContent="center"
             alignItems="center"
             height="72px"
             sx={getRowAspect}
+
         >
             {Array(PEGS_PER_ROW)
                 .fill()
                 .map((_, index) => (
-                    <Peg key={index} pegID={index} isInRow={rowID} />
+                    <Peg key={index} pegID={"peg" + index} isInRow={rowID} />
                 ))}
-            <Hints key={rowID + 1} isInRow={rowID} />
+            <Hints key={rowID + "hints"} isInRow={rowID} />
         </Stack>
     );
 };

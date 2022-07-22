@@ -5,15 +5,17 @@ import ColorSelector from "./ColorSelector";
 import useGameData from "../hooks/useGameData";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
+import {axiosPrivate} from "../api/axios";
+import {
+    BACKEND_DO_GUESS_ENDPOINT,
+    BACKEND_GET_MATCH_ENDPOINT,
+    BACKEND_GET_MATCHES_ENDPOINT
+} from "../api/backend_endpoints";
+import useAuth from "../hooks/useAuth";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
-
-    const colorSequence = new Map();
-    colorSequence.set(0, "gold");
-    colorSequence.set(1, "forestgreen");
-    colorSequence.set(2, "coral");
-    colorSequence.set(3, "gold");
+    const matchId = "62c6e93edd8d24de9a35f47f";
 
     const {
         currentPegsColor,
@@ -22,18 +24,58 @@ const GameBoard = () => {
         setCurrentRow,
         setExactMatches,
         setColorMatches,
-        setEndGame,
-        success,
-        setSuccess,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
 
-    useEffect(() => {
-        if (success) enqueueSnackbar("You Won!", { variant: "success" });
-    }, [success]);
+    const { auth } = useAuth();
 
-    const handleSubmitRow = () => {
+    function getPegRowID(rowIndex, pegIndex) {
+        return "row"+rowIndex+".peg"+pegIndex;
+    }
+
+    function getHintRowID(rowIndex, hintIndex) {
+        return "row"+rowIndex+".hint"+hintIndex;
+    }
+
+    let flag = true;
+
+    useEffect(() => {
+        if(flag) {
+            const response = axiosPrivate.get(
+                BACKEND_GET_MATCH_ENDPOINT,
+                {params: {matchId: matchId}}
+            );
+            response.then(response => {
+                const match = response.data.match;
+                for (let rowIndex in match.attempts) {
+                    for (let pegIndex in match.attempts[rowIndex].sequence) {
+                        const peg = document.getElementById(getPegRowID(rowIndex, pegIndex));
+                        peg.style.backgroundColor = match.attempts[rowIndex].sequence[pegIndex];
+                    }
+                    let hintIndex = 0;
+                    while( hintIndex < PEGS_PER_ROW) {
+                        const hint = document.getElementById(getHintRowID(rowIndex, hintIndex));
+                        if(match.attempts[rowIndex].rightPositions > 0) {
+                            hint.style.backgroundColor = "white";
+                            match.attempts[rowIndex].rightPositions--;
+                        } else if (match.attempts[rowIndex].rightColours > 0) {
+                            hint.style.backgroundColor = "gray";
+                            match.attempts[rowIndex].rightColours--;
+                        }
+                        hintIndex++;
+                    }
+                }
+                //TO FIX
+                setCurrentRow("row" + (match.attempts.length));
+            })
+            flag = false;
+        }
+    }, [flag]);
+
+
+
+    const handleSubmitRow = async () => {
         if (currentPegsColor.size !== 4) {
             enqueueSnackbar(
                 `Complete a row with all the ${PEGS_PER_ROW} colors before submitting the attempt`,
@@ -42,61 +84,27 @@ const GameBoard = () => {
             return;
         }
 
-        let code = new Map(colorSequence);
         let pegs = new Map(currentPegsColor);
-        let foundKey;
-        let exactMatches = 0;
-        let colorMatches = 0;
+        const sequence = Array.from(pegs.values());
 
-        // function used to check whether a given color is present inside the current guess
-        const keyOf = (map, colorToFind) => {
-            for (let [pegID, color] of map) {
-                if (colorToFind === color) {
-                    return pegID;
-                }
-            }
+        try {
+            const username = auth.username;
+            const response = await axiosPrivate.put(
+                BACKEND_DO_GUESS_ENDPOINT,
+                {username, matchId, sequence}
+            );
 
-            return -1;
-        };
-
-        // First pass: Look for both value and position matches
-        // Safely remove items if they match
-        for (let [pegID, color] of pegs) {
-            if (color === code.get(pegID)) {
-                exactMatches++;
-                pegs.delete(pegID);
-                code.delete(pegID);
-            }
+            const {rightC, rightP, status} = response.data;
+            setExactMatches(rightP);
+            setColorMatches(rightC);
+            setCurrentPegsColor(new Map());
+            setCurrentRow((prevRow) => {
+                return prevRow + 1;
+            });
+            console.log(status);
+        } catch (error) {
+            console.log(error);
         }
-
-        // Second pass: Look for color matches anywhere in the current guess
-        for (let [_, color] of pegs) {
-            // attempt to find the peg in the remaining code
-            foundKey = keyOf(code, color);
-            if (foundKey !== -1) {
-                colorMatches++;
-                // remove the matched code peg, since it's been matched
-                code.delete(foundKey);
-            }
-        }
-
-        if (exactMatches === PEGS_PER_ROW) {
-            setEndGame(true);
-            setSuccess(true);
-        } else if (currentRow + 1 === NUMBER_OF_ATTEMPTS) {
-            setEndGame(true);
-        }
-
-        // Updating state
-        setExactMatches(exactMatches);
-        setColorMatches(colorMatches);
-        setCurrentPegsColor(new Map());
-        setCurrentRow((prevRow) => {
-            return prevRow + 1;
-        });
-
-        console.log("Exact matches ->", exactMatches);
-        console.log("Color matches ->", colorMatches + "\n");
     };
 
     return (
@@ -121,7 +129,7 @@ const GameBoard = () => {
                     {Array(NUMBER_OF_ATTEMPTS)
                         .fill()
                         .map((_, index) => (
-                            <DecodeRow key={index} rowID={index} />
+                            <DecodeRow key={index} rowID={"row" + index} />
                         ))}
                 </Stack>
             </Box>

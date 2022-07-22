@@ -12,14 +12,6 @@ async function findUserId(username) {
     else return account._id.toString();
 }
 
-const getMatch = async (req, res) => {
-    const {matchId} = req.body;
-    const match = await MatchModel.findById(matchId);
-    res.status(200).json({
-        match: match
-    });
-}
-
 const getActiveMatchesOfUser = async (req, res) => {
     const {username} = req.body;
     const requesterId = await findUserId(username);
@@ -41,7 +33,6 @@ const getAllMatchesOfUser = async (req, res) => {
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
-    console.log(requesterId);
     const matches = await MatchModel.find({players: { "$in" : [requesterId]}}, ["_id", "status", "players"]) ;
     for(let match of matches) {
         let players_names = [];
@@ -101,5 +92,4 @@ export const statsController = {
     getOngoingMatches,
     getAllMatchesOfUser,
     getUserStats,
-    getMatch
 };

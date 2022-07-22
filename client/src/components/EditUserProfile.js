@@ -19,7 +19,7 @@ import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import {
     BACKEND_UPDATE_USERNAME,
-    BACKEND_UPDATE_PASSWORD,
+    BACKEND_UPDATE_PASSWORD_ENDPOINT,
 } from "../api/backend_endpoints";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -102,7 +102,7 @@ const EditUserProfile = () => {
         if (passwordPresentAndValid) {
             try {
                 const response = await axiosPrivate.post(
-                    BACKEND_UPDATE_PASSWORD,
+                    BACKEND_UPDATE_PASSWORD_ENDPOINT,
                     JSON.stringify({
                         username: newUsername,
                         prevPassword: oldPassword,

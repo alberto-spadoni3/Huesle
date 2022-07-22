@@ -91,7 +91,29 @@ const leaveMatch = async (req, res) => {
     }
 }
 
+const getMatch = async (req, res) => {
+    const {matchId} = req.query;
+    const match = await MatchModel.findById(matchId, ["players", "turn", "status", "attempts"]);
+    let players = [];
+    let players_names = [];
+    for(let index in match.players) {
+        const name = await UserModel.findById(match.players[index], ['username']);
+        players_names.push(name.username);
+        players.push({id: match.players[index], name: name.username});
+    }
+    for(let index in match.attempts) {
+        if(match.attempts[index].playerId == players[0].id) match.attempts[index].playerName = players[0].name;
+        else match.attempts[index].playerName = players[1].name;
+        delete match.attempts[index].playerId;
+    }
+    match.players = players_names;
+    res.status(200).json({
+        match: match
+    });
+}
+
 export const gameController = {
     doGuess,
-    leaveMatch
+    leaveMatch,
+    getMatch
 };

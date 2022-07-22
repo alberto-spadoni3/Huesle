@@ -7,6 +7,6 @@ router.route('/doGuess').put(gameController.doGuess);
 
 router.route('/leaveMatch').put(gameController.leaveMatch);
 
-router.route('/leaveMatch').put(gameController.leaveMatch);
+router.route('/getMatch').get(gameController.getMatch);
 
 export default router;

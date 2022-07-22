@@ -7,12 +7,16 @@ export const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 
 export const BACKEND_UPDATE_USERNAME = "/setting/updateUsername";
 
-export const BACKEND_UPDATE_PASSWORD = "/setting/updatePassword";
+export const BACKEND_UPDATE_PASSWORD_ENDPOINT = "/setting/updatePassword";
 
 //Match Search
 export const BACKEND_SEARCH_MATCH_ENDPOINT = "/search/searchMatch";
 
 export const BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT = "/search/joinPrivateMatch";
+
+//Game Moves
+export const BACKEND_GET_MATCH_ENDPOINT = "/game/getMatch";
+export const BACKEND_DO_GUESS_ENDPOINT = "/game/doGuess"
 
 //Socket
 export const BACKEND_SOCKET_ENDPOINT = "http://localhost:3001";

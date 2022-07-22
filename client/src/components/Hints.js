@@ -12,19 +12,17 @@ const Hints = ({ isInRow }) => {
 
     const generateHint = (id) => {
         let hintType = HintTypes.NoMatch;
-
         // Update current row
         if (isInRow === currentRow - 1) {
             if (exact_matches > 0) {
-                hintType = HintTypes.ExactMatch;
                 exact_matches--;
+                hintType = HintTypes.ExactMatch;
             } else if (color_matches > 0) {
-                hintType = HintTypes.ColorMatch;
                 color_matches--;
+                hintType = HintTypes.ColorMatch;
             }
         }
-
-        return <Peg key={id} isInRow={isInRow} hintPeg hintType={hintType} />;
+        return <Peg key={id} isInRow={isInRow} pegID={"hint" + id} hintPeg hintType={hintType} />;
     };
 
     const GridItem = ({ children }) => {
@@ -49,7 +47,7 @@ const Hints = ({ isInRow }) => {
                 {Array(PEGS_PER_ROW)
                     .fill()
                     .map((_, index) => (
-                        <GridItem key={index}>{generateHint(index)}</GridItem>
+                        <GridItem key={index} >{generateHint(index)}</GridItem>
                     ))}
             </Grid>
         </Box>

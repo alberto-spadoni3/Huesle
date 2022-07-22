@@ -38,6 +38,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
 
     return (
         <label
+            id={isInRow + "." + pegID}
             style={{
                 backgroundColor: pegColor,
                 height: hintPeg ? "16px" : "52px",
