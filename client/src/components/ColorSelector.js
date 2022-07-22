@@ -2,7 +2,7 @@ import Radio from "@mui/material/Radio";
 import Stack from "@mui/material/Stack";
 import useGameData from "../hooks/useGameData";
 
-const ColorSelector = () => {
+const ColorSelector = ({ theme }) => {
     const { selectedColor, setSelectedColor, guessableColors } = useGameData();
 
     const pegColor = (index) => {
@@ -17,7 +17,7 @@ const ColorSelector = () => {
     };
 
     return (
-        <Stack direction="row">
+        <Stack direction="row" justifyContent="center">
             {Array(guessableColors.length)
                 .fill()
                 .map((_, index) => (
@@ -32,9 +32,9 @@ const ColorSelector = () => {
                             borderRadius: "8px",
                             marginX: "2px",
                             marginBottom: 1,
-                            width: "62px",
+                            width: "52px",
                             "& .MuiSvgIcon-root": {
-                                fontSize: 40,
+                                fontSize: 38,
                             },
                             "&:hover": {
                                 ...pegColor(index),
