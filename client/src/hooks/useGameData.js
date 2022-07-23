@@ -6,3 +6,16 @@ const useGameData = () => {
 };
 
 export default useGameData;
+
+function getPegRowID(rowIndex, pegIndex) {
+    return "row" + rowIndex+".peg"+pegIndex;
+}
+
+function getHintRowID(rowIndex, hintIndex) {
+    return "row" + rowIndex+".hint"+hintIndex;
+}
+
+export {
+    getPegRowID,
+    getHintRowID
+}

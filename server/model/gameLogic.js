@@ -52,7 +52,7 @@ function createRandomSolutionWithRepetition() {
 function checkGuess(guess, solution) {
     let rightPositions = 0;
     for(let i = 0; i < guess.length; i++) {
-        if(guess[i] == solution[i]) rightPositions++;
+        if(guess[i] === solution[i]) rightPositions++;
     }
 
     let rightColours = -rightPositions;

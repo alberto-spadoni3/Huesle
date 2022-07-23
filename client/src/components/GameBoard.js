@@ -2,7 +2,7 @@ import { Box, Stack, Button } from "@mui/material";
 import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
-import useGameData from "../hooks/useGameData";
+import useGameData, {getHintRowID, getPegRowID} from "../hooks/useGameData";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import {axiosPrivate} from "../api/axios";
@@ -22,58 +22,31 @@ const GameBoard = () => {
         setCurrentPegsColor,
         currentRow,
         setCurrentRow,
-        setExactMatches,
-        setColorMatches,
+        setMatchHistory,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
 
-    const { auth } = useAuth();
-
-    function getPegRowID(rowIndex, pegIndex) {
-        return "row"+rowIndex+".peg"+pegIndex;
-    }
-
-    function getHintRowID(rowIndex, hintIndex) {
-        return "row"+rowIndex+".hint"+hintIndex;
-    }
-
     let flag = true;
 
     useEffect(() => {
-        if(flag) {
-            const response = axiosPrivate.get(
-                BACKEND_GET_MATCH_ENDPOINT,
-                {params: {matchId: matchId}}
-            );
-            response.then(response => {
-                const match = response.data.match;
-                for (let rowIndex in match.attempts) {
-                    for (let pegIndex in match.attempts[rowIndex].sequence) {
-                        const peg = document.getElementById(getPegRowID(rowIndex, pegIndex));
-                        peg.style.backgroundColor = match.attempts[rowIndex].sequence[pegIndex];
-                    }
-                    let hintIndex = 0;
-                    while( hintIndex < PEGS_PER_ROW) {
-                        const hint = document.getElementById(getHintRowID(rowIndex, hintIndex));
-                        if(match.attempts[rowIndex].rightPositions > 0) {
-                            hint.style.backgroundColor = "white";
-                            match.attempts[rowIndex].rightPositions--;
-                        } else if (match.attempts[rowIndex].rightColours > 0) {
-                            hint.style.backgroundColor = "gray";
-                            match.attempts[rowIndex].rightColours--;
-                        }
-                        hintIndex++;
-                    }
-                }
-                //TO FIX
-                setCurrentRow("row" + (match.attempts.length));
-            })
-            flag = false;
-        }
-    }, [flag]);
+        loadBoard();
+        flag = false;
+    }, [flag])
 
+    function loadBoard() {
+        const response = axiosPrivate.get(
+            BACKEND_GET_MATCH_ENDPOINT,
+            {params: {matchId: matchId}}
+        );
+        response.then(response => {
+            const match = response.data.match;
+            setCurrentRow(match.attempts.length);
+            setMatchHistory(match.attempts);
+        })
+    }
 
+    const { auth } = useAuth();
 
     const handleSubmitRow = async () => {
         if (currentPegsColor.size !== 4) {
@@ -94,14 +67,13 @@ const GameBoard = () => {
                 {username, matchId, sequence}
             );
 
-            const {rightC, rightP, status} = response.data;
-            setExactMatches(rightP);
-            setColorMatches(rightC);
+            const {status} = response.data;
             setCurrentPegsColor(new Map());
             setCurrentRow((prevRow) => {
                 return prevRow + 1;
             });
             console.log(status);
+            loadBoard();
         } catch (error) {
             console.log(error);
         }
@@ -129,7 +101,7 @@ const GameBoard = () => {
                     {Array(NUMBER_OF_ATTEMPTS)
                         .fill()
                         .map((_, index) => (
-                            <DecodeRow key={index} rowID={"row" + index} />
+                            <DecodeRow key={index} rowID={index} />
                         ))}
                 </Stack>
             </Box>

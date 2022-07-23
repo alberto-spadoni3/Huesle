@@ -3,26 +3,25 @@ import useGameData from "../hooks/useGameData";
 import Peg from "./Peg";
 
 const Hints = ({ isInRow }) => {
-    const { exactMatches, colorMatches, currentRow, HintTypes, PEGS_PER_ROW } =
+    const {HintTypes, PEGS_PER_ROW, matchHistory } =
         useGameData();
 
-    const hints = [];
-    let exact_matches = exactMatches;
-    let color_matches = colorMatches;
+    let {rightPositions, rightColours} = 0
+    if (matchHistory.length > isInRow) {
+        rightPositions = matchHistory[isInRow].rightPositions;
+        rightColours = matchHistory[isInRow].rightColours;
+    }
 
     const generateHint = (id) => {
         let hintType = HintTypes.NoMatch;
-        // Update current row
-        if (isInRow === currentRow - 1) {
-            if (exact_matches > 0) {
-                exact_matches--;
-                hintType = HintTypes.ExactMatch;
-            } else if (color_matches > 0) {
-                color_matches--;
-                hintType = HintTypes.ColorMatch;
-            }
+        if (rightPositions > 0) {
+            rightPositions--;
+            hintType = HintTypes.ExactMatch;
+        } else if (rightColours > 0) {
+            rightColours--;
+            hintType = HintTypes.ColorMatch;
         }
-        return <Peg key={id} isInRow={isInRow} pegID={"hint" + id} hintPeg hintType={hintType} />;
+        return <Peg key={id} isInRow={isInRow} pegID={id} hintPeg hintType={hintType} />;
     };
 
     const GridItem = ({ children }) => {

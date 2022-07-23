@@ -41,7 +41,7 @@ const DecodeRow = ({ rowID }) => {
             {Array(PEGS_PER_ROW)
                 .fill()
                 .map((_, index) => (
-                    <Peg key={index} pegID={"peg" + index} isInRow={rowID} />
+                    <Peg key={index} pegID={index} isInRow={rowID} />
                 ))}
             <Hints key={rowID + "hints"} isInRow={rowID} />
         </Stack>

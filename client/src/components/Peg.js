@@ -1,14 +1,13 @@
 import useGameData from "../hooks/useGameData";
 import { useState, useEffect } from "react";
 
-const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
+const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
     const {
         selectedColor,
         setCurrentPegsColor,
         currentRow,
-        HintTypes,
-        exactMatches,
-        colorMatches,
+        matchHistory,
+        HintTypes
     } = useGameData();
 
     const [pegColor, setPegColor] = useState("");
@@ -21,7 +20,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
     };
 
     useEffect(() => {
-        if (hintPeg && isInRow === currentRow - 1) {
+        if(hintPeg) {
             switch (hintType) {
                 case HintTypes.ExactMatch:
                     setPegColor("white");
@@ -33,12 +32,13 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                     setPegColor("");
                     break;
             }
+        } else if (matchHistory.length > isInRow) {
+            setPegColor(matchHistory[isInRow].sequence[pegID]);
         }
-    }, [exactMatches, colorMatches]);
+    });
 
     return (
         <label
-            id={isInRow + "." + pegID}
             style={{
                 backgroundColor: pegColor,
                 height: hintPeg ? "16px" : "52px",

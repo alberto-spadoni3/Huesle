@@ -35,12 +35,11 @@ const doGuess = async (req, res) => {
         });
     }
     const {status, turn, rightC, rightP} = elaborateTurn(sequence, match.solution, match.status, match.turn);
-
     const guessDoc = {
         playerId: userId,
         sequence: sequence,
-        rightPositions: rightC,
-        rightColours: rightP
+        rightPositions: rightP,
+        rightColours: rightC
     }
 
     match.attempts.push(guessDoc);

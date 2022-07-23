@@ -1,4 +1,6 @@
 import {useState, createContext, useEffect} from "react";
+import {axiosPrivate} from "../api/axios";
+import {BACKEND_GET_MATCH_ENDPOINT} from "../api/backend_endpoints";
 
 const GameDataContext = createContext({});
 
@@ -9,13 +11,10 @@ export const GameDataProvider = ({ children }) => {
 
     const [currentRow, setCurrentRow] = useState(0);
 
-    const [exactMatches, setExactMatches] = useState(0);
-    const [colorMatches, setColorMatches] = useState(0);
+    const [matchHistory, setMatchHistory] = useState([]);
 
     const [endGame, setEndGame] = useState(false);
     const [success, setSuccess] = useState(false);
-
-    const [matchHistory, setMatchHistory] = useState([]);
 
     const NUMBER_OF_ATTEMPTS = 10;
     const PEGS_PER_ROW = 4;
@@ -44,10 +43,6 @@ export const GameDataProvider = ({ children }) => {
                 setCurrentPegsColor,
                 currentRow,
                 setCurrentRow,
-                exactMatches,
-                setExactMatches,
-                colorMatches,
-                setColorMatches,
                 endGame,
                 setEndGame,
                 success,
@@ -66,3 +61,4 @@ export const GameDataProvider = ({ children }) => {
 };
 
 export default GameDataContext;
+
