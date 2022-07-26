@@ -2,14 +2,13 @@ import { Box, Stack, Button } from "@mui/material";
 import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
-import useGameData, {getHintRowID, getPegRowID} from "../hooks/useGameData";
-import { useEffect, useState } from "react";
+import useGameData from "../hooks/useGameData";
+import { useEffect} from "react";
 import { useSnackbar } from "notistack";
 import {axiosPrivate} from "../api/axios";
 import {
     BACKEND_DO_GUESS_ENDPOINT,
     BACKEND_GET_MATCH_ENDPOINT,
-    BACKEND_GET_MATCHES_ENDPOINT
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 
@@ -57,8 +56,12 @@ const GameBoard = () => {
             return;
         }
 
-        let pegs = new Map(currentPegsColor);
-        const sequence = Array.from(pegs.values());
+        const sequence = [];
+        let temp = 0;
+        while(temp < PEGS_PER_ROW) {
+            sequence.push(currentPegsColor.get(temp));
+            temp++;
+        }
 
         try {
             const username = auth.username;
