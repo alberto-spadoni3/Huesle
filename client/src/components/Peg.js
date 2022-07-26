@@ -1,5 +1,5 @@
 import useGameData from "../hooks/useGameData";
-import { useState, useEffect } from "react";
+import {useState, useEffect, useLayoutEffect} from "react";
 
 const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
     const {
@@ -19,7 +19,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
         }
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if(hintPeg) {
             switch (hintType) {
                 case HintTypes.ExactMatch:
