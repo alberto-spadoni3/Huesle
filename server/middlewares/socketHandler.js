@@ -75,10 +75,7 @@ async function connectUserToMatchSockets(id) {
     const matches = await MatchModel.find(
         {
             players: id,
-            $or: [
-                { status: GameStates.TURN_P1 },
-                { status: GameStates.TURN_P2 },
-            ],
+            status: {state : GameStates.PLAYING}
         },
         "_id"
     );

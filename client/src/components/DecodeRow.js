@@ -2,9 +2,11 @@ import { Stack } from "@mui/material";
 import Peg from "./Peg";
 import Hints from "./Hints";
 import useGameData from "../hooks/useGameData";
+import useAuth from "../hooks/useAuth";
 
 const DecodeRow = ({ rowID }) => {
-    const { currentRow, PEGS_PER_ROW } = useGameData();
+    const { currentRow, PEGS_PER_ROW, isItActivePlayer} = useGameData();
+    const { auth } = useAuth();
 
     const getRowAspect = () => {
         let cssProps = {
@@ -14,7 +16,7 @@ const DecodeRow = ({ rowID }) => {
             borderRadius: 2,
         };
 
-        if (rowID === currentRow)
+        if (rowID === currentRow && isItActivePlayer(auth.username))
             cssProps = {
                 ...cssProps,
                 borderStyle: "dashed",

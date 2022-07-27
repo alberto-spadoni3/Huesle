@@ -1,4 +1,5 @@
 import {
+    changePlayer,
     elaborateTurn,
     GameStates, isMatchOver, isPlayerTurn
 } from "../model/gameLogic.js";
@@ -34,7 +35,7 @@ const doGuess = async (req, res) => {
             message: "It's not " + username + " turn!"
         });
     }
-    const {status, turn, rightC, rightP} = elaborateTurn(sequence, match.solution, match.status, match.turn);
+    const {status, turn, rightC, rightP} = elaborateTurn(sequence, match.solution, match.status, match.players);
     const guessDoc = {
         playerId: userId,
         sequence: sequence,
@@ -49,10 +50,8 @@ const doGuess = async (req, res) => {
 
     if(isMatchOver(status)) {
         emitMatchOver(matchId, status);
-    } else if (status == GameStates.TURN_P1) {
-        emitNewMove(match.players[0], matchId)
-    } else {
-        emitNewMove(match.players[1], matchId)
+    } else if (status == GameStates.PLAYING) {
+        emitNewMove(match.status.player, matchId)
     }
 
     res.status(200).json({
@@ -76,8 +75,8 @@ const leaveMatch = async (req, res) => {
         });
     }
     if(!isMatchOver(match.status)) {
-        const playerIndex = match.players.indexOf(userId);
-        match.status = playerIndex == 1? GameStates.WIN_P2: GameStates.WIN_P1;
+        match.status.state = GameStates.WINNER;
+        match.status.player = changePlayer(match.players, match.status.players);
         match.save();
         emitMatchOver(matchId, match.status);
         return res.status(200).json({
@@ -99,6 +98,7 @@ const getMatch = async (req, res) => {
         const name = await UserModel.findById(match.players[index], ['username']);
         players_names.push(name.username);
         players.push({id: match.players[index], name: name.username});
+        if(match.status.player == match.players[index]) match.status.player = name.username;
     }
     for(let index in match.attempts) {
         if(match.attempts[index].playerId == players[0].id) match.attempts[index].playerName = players[0].name;

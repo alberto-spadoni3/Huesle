@@ -16,16 +16,18 @@ import {
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import {useEffect, useState} from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
 import {axiosPrivate} from "../api/axios";
 import {BACKEND_GET_MATCHES_ENDPOINT,} from "../api/backend_endpoints";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = (/* { theme } */) => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
+    const {auth} = useAuth();
     const open = Boolean(anchorElement);
 
     const handleMenuOpening = (event) => {
@@ -54,7 +56,7 @@ const Dashboard = (/* { theme } */) => {
     const [rows, setRows] = useState([]);
 
     async function updateMatches() {
-        const username = "pappa";
+        const username = auth.username;
         try {
             const temp_rows = [];
             const response = await axiosPrivate.get(
@@ -63,11 +65,10 @@ const Dashboard = (/* { theme } */) => {
             );
             const {pending, matches} = response.data;
             if(pending) temp_rows.push(createData("wait", "???", "Waiting for new match"));
-
             matches.forEach(match => {
                 if(match.players.includes(username)) {
                     const opponent = match.players.filter(name => name != username);
-                    temp_rows.push(createData(match.id, opponent, match.status));
+                    temp_rows.push(createData(match.id, opponent, match.status.state));
                 }
             });
             setRows(temp_rows);
@@ -163,10 +164,10 @@ const Dashboard = (/* { theme } */) => {
                         <Avatar
                             sx={{ bgcolor: "orange", width: 60, height: 60 }}
                         >
-                            A
+                            {auth.username[0].toUpperCase()}
                         </Avatar>
                         <Typography variant="h6" pl={"6px"}>
-                            Albisyx
+                            {auth.username}
                         </Typography>
                         <IconButton
                             onClick={(e) => handleMenuOpening(e)}

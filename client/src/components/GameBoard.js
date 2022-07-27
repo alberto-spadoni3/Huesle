@@ -14,7 +14,8 @@ import useAuth from "../hooks/useAuth";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const matchId = "62c6e93edd8d24de9a35f47f";
+    const { auth } = useAuth();
+    const matchId = "62e10f29b4902320dced6538";
 
     const {
         currentPegsColor,
@@ -22,6 +23,8 @@ const GameBoard = () => {
         currentRow,
         setCurrentRow,
         setMatchHistory,
+        isItActivePlayer,
+        setStatus,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
@@ -41,11 +44,10 @@ const GameBoard = () => {
         response.then(response => {
             const match = response.data.match;
             setCurrentRow(match.attempts.length);
+            setStatus(match.status);
             setMatchHistory(match.attempts);
         })
     }
-
-    const { auth } = useAuth();
 
     const handleSubmitRow = async () => {
         if (currentPegsColor.size !== 4) {
@@ -71,11 +73,12 @@ const GameBoard = () => {
             );
 
             const {status} = response.data;
+            setStatus(status);
             setCurrentPegsColor(new Map());
             setCurrentRow((prevRow) => {
                 return prevRow + 1;
             });
-            console.log(status);
+
             loadBoard();
         } catch (error) {
             console.log(error);
@@ -126,7 +129,7 @@ const GameBoard = () => {
                         border: "1px solid white",
                         borderRadius: "5px",
                     }}
-                    disabled={currentRow === NUMBER_OF_ATTEMPTS}
+                    disabled={currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer(auth.username)}
                     variant="contained"
                     color="neutral"
                     onClick={handleSubmitRow}

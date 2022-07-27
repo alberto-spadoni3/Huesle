@@ -18,10 +18,9 @@ const getActiveMatchesOfUser = async (req, res) => {
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
-    const matches = await MatchModel.find({$or: [
-            { "players.0": requesterId , status: GameStates.TURN_P1 },
-            { "players.1": requesterId , status: GameStates.TURN_P2 }
-    ]}, "_id");
+    const matches = await MatchModel.find({
+             status: {state: GameStates.PLAYING, player : requesterId }
+    }, "_id");
     res.status(200).json({
         matches: matches
     });
@@ -38,13 +37,14 @@ const getAllMatchesOfUser = async (req, res) => {
         let players_names = [];
         for(let id in match.players) {
             const name = await UserModel.findById(match.players[id], ['username']);
+            if(match.status.player == match.players[id]) match.status.player = name.username;
             players_names.push(name.username);
         }
         match.players = players_names;
     }
     const pending = await PendingRequestModel.findOne({"playerId": requesterId});
     res.status(200).json({
-        pending: (pending.length != 0),
+        pending: (pending != null),
         matches: matches
     });
 }
@@ -55,8 +55,8 @@ const getOngoingMatches = async (req, res) => {
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
-    const matches = await MatchModel.find({player: requesterId,
-        $or: [{ status: GameStates.TURN_P1 }, { status: GameStates.TURN_P2 }]}, "_id")
+    const matches = await MatchModel.find({players: requesterId,
+         status: {state:GameStates.PLAYING }}, "_id")
     res.status(200).json({
         matches: matches
     });
@@ -68,17 +68,13 @@ const getUserStats = async (req, res) => {
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
-    const matches_won = await MatchModel.find({$or: [
-            { "players.0": requesterId , status: GameStates.WIN_P1 },
-            { "players.1": requesterId , status: GameStates.WIN_P2 }
-        ]
+    const matches_won = await MatchModel.find({
+        status: {state : GameStates.WINNER, player : requesterId}
     }).count();
-    const matches_lost = await MatchModel.find({$or: [
-            { "players.0": requesterId, status: GameStates.WIN_P2 },
-            { "players.1": requesterId, status: GameStates.WIN_P1 }
-        ]
+    const matches_lost = await MatchModel.find({
+        status: {state : GameStates.WINNER, player : {$ne:requesterId}}
     }).count();
-    const matches_draw = await MatchModel.find({ players: requesterId, status: GameStates.Draw}).count();
+    const matches_draw = await MatchModel.find({ players: requesterId, status: GameStates.DRAW}).count();
     res.status(200).json({
         matches_won: matches_won,
         matches_lost: matches_lost,

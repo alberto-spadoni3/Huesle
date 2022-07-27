@@ -41,19 +41,23 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
         <label
             style={{
                 backgroundColor: pegColor,
+                justifyContent: 'center',
                 height: hintPeg ? "16px" : "52px",
                 width: hintPeg ? "16px" : "52px",
                 borderColor: "white",
-                border: hintPeg ? "2px solid" : "3px solid",
+                textAlign: "center",
                 borderRadius: "50%",
                 display: "inline-block",
                 cursor:
                     isInRow === currentRow && selectedColor && !hintPeg
                         ? "copy"
                         : "default",
+                //For accessibility
+                fontSize: hintPeg ? "50%" : "100%",
+                border: hintPeg ? "2px solid" : "3px solid",
             }}
             onClick={handleClick}
-        />
+            ></label>
     );
 };
 

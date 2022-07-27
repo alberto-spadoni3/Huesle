@@ -10,12 +10,17 @@ const matchSchema = new Schema({
         validate: [n_players_checker, 'Wrong number of players']
     },
     status: {
-        type: GameStates.prototype,
-        required: true
-    },
-    turn: {
-        type: Number,
-        required: true,
+        state: {
+            type: GameStates.prototype,
+            required: true
+        },
+        player: {
+            type: String,
+        },
+        turn: {
+            type: Number,
+            required: true,
+        },
     },
     attempts: {
         type: [],
@@ -25,8 +30,13 @@ const matchSchema = new Schema({
         type: [],
         required: true
     },
-    date: Date
+    date: Date,
 });
+
+function status_checker(val) {
+    return (val.status.state == GameStates.WINNER || val.status.state == GameStates.PLAYING) ||
+        (val.status.state == GameStates.DRAW);
+}
 
 function n_players_checker(val) {
     return val.length == 2;
