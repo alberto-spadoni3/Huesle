@@ -1,5 +1,5 @@
 import useGameData from "../hooks/useGameData";
-import {useState, useEffect, useLayoutEffect} from "react";
+import {useState, useLayoutEffect} from "react";
 
 const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
     const {
@@ -7,13 +7,14 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
         setCurrentPegsColor,
         currentRow,
         matchHistory,
+        isItActivePlayer,
         HintTypes
     } = useGameData();
 
     const [pegColor, setPegColor] = useState("");
 
     const handleClick = () => {
-        if (selectedColor && isInRow === currentRow && !hintPeg) {
+        if (selectedColor && isInRow === currentRow && !hintPeg && isItActivePlayer()) {
             setPegColor(selectedColor);
             setCurrentPegsColor((map) => map.set(pegID, selectedColor));
         }

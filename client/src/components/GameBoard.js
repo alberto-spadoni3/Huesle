@@ -3,7 +3,7 @@ import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
 import useGameData from "../hooks/useGameData";
-import { useEffect} from "react";
+import {useEffect} from "react";
 import { useSnackbar } from "notistack";
 import {axiosPrivate} from "../api/axios";
 import {
@@ -11,10 +11,11 @@ import {
     BACKEND_GET_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
+import {socket} from "../App";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const { auth } = useAuth();
+    const { auth, MessageTypes } = useAuth();
     const matchId = "62e10f29b4902320dced6538";
 
     const {
@@ -36,7 +37,12 @@ const GameBoard = () => {
         flag = false;
     }, [flag])
 
+    socket.on(MessageTypes.NOTIFICATION, data => {
+        loadBoard();
+    });
+
     function loadBoard() {
+
         const response = axiosPrivate.get(
             BACKEND_GET_MATCH_ENDPOINT,
             {params: {matchId: matchId}}
@@ -78,7 +84,6 @@ const GameBoard = () => {
             setCurrentRow((prevRow) => {
                 return prevRow + 1;
             });
-
             loadBoard();
         } catch (error) {
             console.log(error);
@@ -129,7 +134,7 @@ const GameBoard = () => {
                         border: "1px solid white",
                         borderRadius: "5px",
                     }}
-                    disabled={currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer(auth.username)}
+                    disabled={currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer()}
                     variant="contained"
                     color="neutral"
                     onClick={handleSubmitRow}

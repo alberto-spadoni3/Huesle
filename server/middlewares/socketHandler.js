@@ -26,33 +26,16 @@ export class MessageTypes {
 }
 
 io.use((socket, next) => {
-    const sessionID = null; //socket.handshake.auth.sessionID;
-    if (sessionID) {
-        // find existing session
-        const session = null; //sessionStore.findSession(sessionID);
-        if (session) {
-            socket.sessionID = sessionID;
-            socket.userID = session.userID;
-            socket.username = session.username;
-            return next();
-        }
-    }
-
-    let username;
     if (!socket.handshake.auth.username) {
-        //console.log("Error");
-        username = "pappa";
+        socket.disconnect();
     } else {
-        username = socket.handshake.auth.username;
+        const username = socket.handshake.auth.username;
+        fetchUsernameId(username).then((id) => {
+            socket.userID = id;
+            socket.username = username;
+            next();
+        });
     }
-
-    // create new session
-    fetchUsernameId(username).then((id) => {
-        socket.userID = id;
-        socket.sessionID = 0; //randomId() ????????;
-        socket.username = username;
-        next();
-    });
 });
 
 io.on(MessageTypes.CONNECTION, (socket) => {
@@ -60,8 +43,7 @@ io.on(MessageTypes.CONNECTION, (socket) => {
         sessionID: socket.sessionID,
         userID: socket.userID,
     });
-    socket.join(socket.userID);
-
+    io.in(socket.id).socketsJoin(socket.userID);
     connectUserToMatchSockets(socket.userID);
 });
 
@@ -75,7 +57,7 @@ async function connectUserToMatchSockets(id) {
     const matches = await MatchModel.find(
         {
             players: id,
-            status: {state : GameStates.PLAYING}
+            "status.state" : GameStates.PLAYING
         },
         "_id"
     );

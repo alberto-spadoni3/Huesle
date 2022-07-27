@@ -68,7 +68,7 @@ const Dashboard = (/* { theme } */) => {
             matches.forEach(match => {
                 if(match.players.includes(username)) {
                     const opponent = match.players.filter(name => name != username);
-                    temp_rows.push(createData(match.id, opponent, match.status.state));
+                    temp_rows.push(createData(match._id, opponent, match.status.state));
                 }
             });
             setRows(temp_rows);

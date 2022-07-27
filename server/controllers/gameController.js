@@ -35,7 +35,7 @@ const doGuess = async (req, res) => {
             message: "It's not " + username + " turn!"
         });
     }
-    const {status, turn, rightC, rightP} = elaborateTurn(sequence, match.solution, match.status, match.players);
+    const {status, rightC, rightP} = elaborateTurn(sequence, match.solution, match.status, match.players);
     const guessDoc = {
         playerId: userId,
         sequence: sequence,
@@ -44,13 +44,12 @@ const doGuess = async (req, res) => {
     }
 
     match.attempts.push(guessDoc);
-    match.turn = turn;
     match.status = status;
     match.save();
 
     if(isMatchOver(status)) {
         emitMatchOver(matchId, status);
-    } else if (status == GameStates.PLAYING) {
+    } else {
         emitNewMove(match.status.player, matchId)
     }
 

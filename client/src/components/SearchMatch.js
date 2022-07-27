@@ -23,7 +23,7 @@ const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
-    const { auth} = useAuth();
+    const {auth} = useAuth();
     const open = Boolean(anchorElement);
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);

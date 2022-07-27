@@ -1,6 +1,7 @@
 import {useState, createContext, useEffect} from "react";
 import {axiosPrivate} from "../api/axios";
 import {BACKEND_GET_MATCH_ENDPOINT} from "../api/backend_endpoints";
+import useAuth from "../hooks/useAuth";
 
 const GameDataContext = createContext({});
 
@@ -16,12 +17,13 @@ export const GameDataProvider = ({ children }) => {
     const [status, setStatus] = useState([]);
     const [endGame, setEndGame] = useState(false);
 
+    const {auth} = useAuth();
+
     const NUMBER_OF_ATTEMPTS = 10;
     const PEGS_PER_ROW = 4;
 
-    function isItActivePlayer (player) {
-        console.log(status.player);
-        return (status.state == GameStates.PLAYING && status.player == player);
+    function isItActivePlayer() {
+        return (status.state == GameStates.PLAYING && status.player == auth.username);
     }
 
     const HintTypes = {
@@ -64,7 +66,7 @@ export const GameDataProvider = ({ children }) => {
                 NUMBER_OF_ATTEMPTS,
                 PEGS_PER_ROW,
                 guessableColors,
-                HintTypes,
+                HintTypes
             }}
         >
             {children}

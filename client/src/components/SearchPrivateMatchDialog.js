@@ -8,14 +8,14 @@ import {
     DialogContentText,
     DialogTitle,
     Slide } from "@mui/material";
-import socketIOClient from "socket.io-client";
 import {axiosPrivate} from "../api/axios";
 import {
     BACKEND_SEARCH_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
-import socket, {MessageTypes} from "../api/socket_instance";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import {socket} from "../App";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -29,12 +29,13 @@ export default function SearchPrivateMatchDialog({
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const {auth, MessageTypes} = useAuth();
     const navigate = useNavigate();
 
     const generateMatch = async () => {
         setConnectOpen(true);
         try {
-            const username = "pappa";
+            const username = auth.username;
             const secret = true;
             const response = await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
@@ -66,7 +67,7 @@ export default function SearchPrivateMatchDialog({
         event.preventDefault();
 
         try {
-            const username = "pappa";
+            const username = auth.username;
             socket.disconnect();
             await axiosPrivate.delete(
                 BACKEND_SEARCH_MATCH_ENDPOINT,

@@ -59,7 +59,7 @@ function elaborateTurn(guess, solution, currentState, players) {
     const values = checkGuess(guess, solution);
     currentState.turn++;
     if(currentState.turn < max_turns) {
-        if (values.positions == code_length) currentState = GameStates.WINNER;
+        if (values.positions == code_length) currentState.state = GameStates.WINNER;
         else {
             currentState.player = changePlayer(players, currentState.player);
         }
