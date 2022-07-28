@@ -15,18 +15,24 @@ import {
     Paper,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
-import {axiosPrivate} from "../api/axios";
-import {BACKEND_GET_MATCHES_ENDPOINT,} from "../api/backend_endpoints";
+import useGameData from "../hooks/useGameData";
+import { axiosPrivate } from "../api/axios";
+import {
+    BACKEND_GET_MATCHES_ENDPOINT,
+    BACKEND_GET_MATCH_ENDPOINT,
+} from "../api/backend_endpoints";
 
 const Dashboard = (/* { theme } */) => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const open = Boolean(anchorElement);
+
+    const { setCurrentRow, setMatchHistory } = useGameData();
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -49,9 +55,10 @@ const Dashboard = (/* { theme } */) => {
         margin: "1rem 0 0.4rem 0",
     }));
 
-
-
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState([
+        { id: "5099803df3f4948bd2f98391", name: "azzu", status: "pending" },
+        { id: "5099803df3f4948bd2f98392", name: "pappa", status: "won" },
+    ]);
 
     async function updateMatches() {
         const username = "pappa";
@@ -59,15 +66,22 @@ const Dashboard = (/* { theme } */) => {
             const temp_rows = [];
             const response = await axiosPrivate.get(
                 BACKEND_GET_MATCHES_ENDPOINT,
-                { params: { username: username}}
+                { params: { username: username } }
             );
-            const {pending, matches} = response.data;
-            if(pending) temp_rows.push(createData("wait", "???", "Waiting for new match"));
+            const { pending, matches } = response.data;
+            if (pending)
+                temp_rows.push(
+                    createData("wait", "???", "Waiting for new match")
+                );
 
-            matches.forEach(match => {
-                if(match.players.includes(username)) {
-                    const opponent = match.players.filter(name => name != username);
-                    temp_rows.push(createData(match.id, opponent, match.status));
+            matches.forEach((match) => {
+                if (match.players.includes(username)) {
+                    const opponent = match.players.filter(
+                        (name) => name != username
+                    );
+                    temp_rows.push(
+                        createData(match.id, opponent, match.status)
+                    );
                 }
             });
             setRows(temp_rows);
@@ -80,9 +94,29 @@ const Dashboard = (/* { theme } */) => {
         return { id, name, status };
     }
 
+    async function openSelectedMatch(matchId) {
+        if (!matchId) {
+            console.log("Invalid match ID");
+            return;
+        }
+
+        try {
+            const response = await axiosPrivate.get(
+                BACKEND_GET_MATCH_ENDPOINT,
+                { params: { matchId } }
+            );
+
+            const match = response?.data?.match;
+            setCurrentRow(match.attempts.length);
+            setMatchHistory(match.attempts);
+        } catch (error) {
+            console.log(error?.response.data.message);
+        }
+    }
+
     useEffect(() => {
         updateMatches();
-    },[])
+    }, []);
 
     return (
         <>
@@ -126,13 +160,10 @@ const Dashboard = (/* { theme } */) => {
                             <TableBody>
                                 {rows.map((row) => (
                                     <TableRow
-                                        key={row.id + row.name}
-                                        /* sx={{
-                                            "&:last-child td, &:last-child th":
-                                                {
-                                                    border: 0,
-                                                },
-                                        }} */
+                                        key={row.id}
+                                        onClick={(e) =>
+                                            openSelectedMatch(row.id)
+                                        }
                                     >
                                         <TableCell component="th" scope="row">
                                             {row.name}

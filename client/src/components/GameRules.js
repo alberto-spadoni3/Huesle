@@ -15,6 +15,7 @@ const GameRules = () => {
     const RulesBox = styled(Box)(({ theme }) => ({
         width: "100%",
         backgroundColor: theme.palette.background.paper,
+        border: "2px solid white",
         borderRadius: 5,
         display: "flex",
         flexDirection: "column",
