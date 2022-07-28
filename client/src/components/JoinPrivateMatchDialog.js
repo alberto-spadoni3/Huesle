@@ -13,6 +13,7 @@ import { BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -23,6 +24,7 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
 
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const {auth} = useAuth();
     const navigate = useNavigate();
 
     const handleSearch = async (event) => {
@@ -39,7 +41,7 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
         handleCodeClose();
         setSearchingOpen(true);
         try {
-            const username = "pippa";
+            const username = auth.username;
             const response = await axiosPrivate.post(
                 BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT,
                 JSON.stringify({ username, secretCode })

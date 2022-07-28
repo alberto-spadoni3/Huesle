@@ -1,7 +1,7 @@
 import Missing from "./components/Missing";
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
@@ -20,10 +20,26 @@ import GameBoard from "./components/GameBoard";
 import { GameDataProvider } from "./context/GameDataProvider";
 import GameRules from "./components/GameRules";
 import Match from "./components/Match";
+import socketIOClient from "socket.io-client";
+import {BACKEND_SOCKET_ENDPOINT} from "./api/backend_endpoints";
+import useAuth from "./hooks/useAuth";
+
+let socket = null;
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
     const [colorblindMode, setColorblindMode] = useState(false);
+    const {auth} = useAuth();
+
+    useEffect(() => {
+        socket = socketIOClient(BACKEND_SOCKET_ENDPOINT, {
+            withCredentials: true,
+            transports: ["websocket"],
+            auth: {
+                username: auth.username,
+            }
+        });
+    });
 
     const anchorOrigin = {
         vertical: "bottom",
@@ -126,3 +142,4 @@ const App = () => {
 };
 
 export default App;
+export {socket};

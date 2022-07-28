@@ -2,20 +2,21 @@ import { Box, Stack, Button } from "@mui/material";
 import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
-import useGameData, {getHintRowID, getPegRowID} from "../hooks/useGameData";
-import { useEffect, useState } from "react";
+import useGameData from "../hooks/useGameData";
+import {useEffect} from "react";
 import { useSnackbar } from "notistack";
 import {axiosPrivate} from "../api/axios";
 import {
     BACKEND_DO_GUESS_ENDPOINT,
     BACKEND_GET_MATCH_ENDPOINT,
-    BACKEND_GET_MATCHES_ENDPOINT
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
+import {socket} from "../App";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const matchId = "62c6e93edd8d24de9a35f47f";
+    const { auth, MessageTypes } = useAuth();
+    const matchId = "62e10f29b4902320dced6538";
 
     const {
         currentPegsColor,
@@ -23,6 +24,8 @@ const GameBoard = () => {
         currentRow,
         setCurrentRow,
         setMatchHistory,
+        isItActivePlayer,
+        setStatus,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
@@ -34,7 +37,12 @@ const GameBoard = () => {
         flag = false;
     }, [flag])
 
+    socket.on(MessageTypes.NOTIFICATION, data => {
+        loadBoard();
+    });
+
     function loadBoard() {
+
         const response = axiosPrivate.get(
             BACKEND_GET_MATCH_ENDPOINT,
             {params: {matchId: matchId}}
@@ -42,11 +50,10 @@ const GameBoard = () => {
         response.then(response => {
             const match = response.data.match;
             setCurrentRow(match.attempts.length);
+            setStatus(match.status);
             setMatchHistory(match.attempts);
         })
     }
-
-    const { auth } = useAuth();
 
     const handleSubmitRow = async () => {
         if (currentPegsColor.size !== 4) {
@@ -57,8 +64,12 @@ const GameBoard = () => {
             return;
         }
 
-        let pegs = new Map(currentPegsColor);
-        const sequence = Array.from(pegs.values());
+        const sequence = [];
+        let temp = 0;
+        while(temp < PEGS_PER_ROW) {
+            sequence.push(currentPegsColor.get(temp));
+            temp++;
+        }
 
         try {
             const username = auth.username;
@@ -68,11 +79,11 @@ const GameBoard = () => {
             );
 
             const {status} = response.data;
+            setStatus(status);
             setCurrentPegsColor(new Map());
             setCurrentRow((prevRow) => {
                 return prevRow + 1;
             });
-            console.log(status);
             loadBoard();
         } catch (error) {
             console.log(error);
@@ -123,7 +134,7 @@ const GameBoard = () => {
                         border: "1px solid white",
                         borderRadius: "5px",
                     }}
-                    disabled={currentRow === NUMBER_OF_ATTEMPTS}
+                    disabled={currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer()}
                     variant="contained"
                     color="neutral"
                     onClick={handleSubmitRow}

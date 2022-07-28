@@ -35,7 +35,7 @@ const searchMatch = async (req, res) => {
             .where("playerId").equals(requesterId)
             .where("secretCode").equals(null).findOne();
     }
-
+    console.log(pendingRequest);
     if(pendingRequest) {
         return res.status(400).json({
             message: "User already pending for match with those specifics"
@@ -124,8 +124,11 @@ const leaveSearchPrivateMatch = async (req, res) => {
 function createMatch(p1, p2, repetitions) {
     const matchDoc = {
         players: [p1, p2],
-        status: GameStates.TURN_P1,
-        turn: 0,
+        status: {
+            state: GameStates.PLAYING,
+            turn: 0,
+            player: p1
+        },
         date: mongoose.now()
     }
 

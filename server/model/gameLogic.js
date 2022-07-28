@@ -1,22 +1,13 @@
-/*List of useful functions
--   Generate secret code
--   Check secret code
--   Check win condition
--   Check number of turns ended
- */
-
 const max_turns = 10;
 const code_length = 4;
 
 export class Colours {
-    static Red = new Colours("red")
-    static Green = new Colours("green")
-    static Blue = new Colours("blue")
-    static Yellow = new Colours("yellow")
-    static Black = new Colours("black")
-    static White = new Colours("white")
-    static Orange = new Colours("orange")
-    static Brown = new Colours("brown")
+    static crimson = new Colours("crimson")
+    static coral = new Colours("coral")
+    static gold = new Colours("gold")
+    static forestgreen = new Colours("forestgreen")
+    static mediumblue = new Colours("mediumblue")
+    static rebeccapurple = new Colours("rebeccapurple")
 
     constructor(name) {
         this.name = name
@@ -25,11 +16,9 @@ export class Colours {
 const colours = Object.keys(Colours);
 
 export class GameStates {
-    static Draw = "Draw"
-    static TURN_P1 = "TURN_P1"
-    static TURN_P2 = "TURN_P2"
-    static WIN_P1 = "WIN_P1"
-    static WIN_P2 = "WIN_P2"
+    static DRAW = "DRAW"
+    static PLAYING = "PLAYING"
+    static WINNER = "WINNER"
 }
 
 function createSolutionWithoutRepetition() {
@@ -63,41 +52,33 @@ function checkGuess(guess, solution) {
             rightColours++;
         }
     });
-    return {colours: rightColours, position: rightPositions};
+    return {colours: rightColours, positions: rightPositions};
 }
 
-function elaborateTurn(guess, solution, currentState, turn_n) {
+function elaborateTurn(guess, solution, currentState, players) {
     const values = checkGuess(guess, solution);
-    turn_n++;
-    if(turn_n < max_turns) {
-        switch (currentState) {
-            case GameStates.TURN_P1: {
-                if (values.position == code_length) currentState = GameStates.WIN_P1;
-                else currentState = GameStates.TURN_P2;
-                break;
-            }
-            case GameStates.TURN_P2: {
-                if (values.position == code_length) currentState = GameStates.WIN_P2;
-                else currentState = GameStates.TURN_P1;
-                break;
-            }
+    currentState.turn++;
+    if(currentState.turn < max_turns) {
+        if (values.positions == code_length) currentState.state = GameStates.WINNER;
+        else {
+            currentState.player = changePlayer(players, currentState.player);
         }
-    } else currentState = GameStates.Draw;
-    return {status: currentState, turn: turn_n, rightC: values.colours, rightP: values.position};
+    } else currentState = GameStates.DRAW;
+    return {status: currentState, rightC: values.colours, rightP: values.positions};
 }
 
 function isMatchOver(status) {
-    const terminatingStates = [GameStates.Draw, GameStates.WIN_P1, GameStates.WIN_P2];
+    const terminatingStates = [GameStates.DRAW, GameStates.WINNER];
     return terminatingStates.includes(status);
 }
 
-function isPlayerTurn(playerIndex, status) {
-    switch (status) {
-        case GameStates.TURN_P1: return playerIndex == 1;
-        case GameStates.TURN_P2: return playerIndex == 2;
-    }
-    return false;
+function isPlayerTurn(player, status) {
+    return status.state == GameStates.PLAYING && status.player == player;
+}
+
+function changePlayer(players, prevActivePlayer) {
+    return players.filter(p => p != prevActivePlayer)[0]
 }
 
 export {createSolutionWithoutRepetition, createRandomSolutionWithRepetition, checkGuess,
-    elaborateTurn, isMatchOver, isPlayerTurn};
+    elaborateTurn, isMatchOver, isPlayerTurn, changePlayer};

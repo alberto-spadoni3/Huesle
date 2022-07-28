@@ -17,11 +17,13 @@ import BackButton from "./BackButton";
 import {axiosPrivate} from "../api/axios";
 import {BACKEND_SEARCH_MATCH_ENDPOINT} from "../api/backend_endpoints";
 import {useSnackbar} from "notistack";
+import useAuth from "../hooks/useAuth";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
+    const {auth} = useAuth();
     const open = Boolean(anchorElement);
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
@@ -33,7 +35,7 @@ const SearchMatch = () => {
 
     const generatePublicMatch = async () => {
         try {
-            const username = "pappa";
+            const username = auth.username;
             const secret = false;
             await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,

@@ -1,4 +1,5 @@
 import {
+    changePlayer,
     elaborateTurn,
     GameStates,
     isMatchOver,
@@ -39,11 +40,11 @@ const doGuess = async (req, res) => {
             message: "It's not " + username + " turn!",
         });
     }
-    const { status, turn, rightC, rightP } = elaborateTurn(
+    const { status, rightC, rightP } = elaborateTurn(
         sequence,
         match.solution,
         match.status,
-        match.turn
+        match.players
     );
     const guessDoc = {
         playerId: userId,
@@ -53,16 +54,13 @@ const doGuess = async (req, res) => {
     };
 
     match.attempts.push(guessDoc);
-    match.turn = turn;
     match.status = status;
     match.save();
 
     if (isMatchOver(status)) {
         emitMatchOver(matchId, status);
-    } else if (status == GameStates.TURN_P1) {
-        emitNewMove(match.players[0], matchId);
     } else {
-        emitNewMove(match.players[1], matchId);
+        emitNewMove(match.status.player, matchId);
     }
 
     res.status(200).json({
@@ -89,8 +87,8 @@ const leaveMatch = async (req, res) => {
         });
     }
     if (!isMatchOver(match.status)) {
-        const playerIndex = match.players.indexOf(userId);
-        match.status = playerIndex == 1 ? GameStates.WIN_P2 : GameStates.WIN_P1;
+        match.status.state = GameStates.WINNER;
+        match.status.player = changePlayer(match.players, match.status.players);
         match.save();
         emitMatchOver(matchId, match.status);
         return res.status(200).json({
@@ -125,6 +123,8 @@ const getMatch = async (req, res) => {
         ]);
         players_names.push(name.username);
         players.push({ id: match.players[index], name: name.username });
+        if (match.status.player == match.players[index])
+            match.status.player = name.username;
     }
     for (let index in match.attempts) {
         if (match.attempts[index].playerId == players[0].id)

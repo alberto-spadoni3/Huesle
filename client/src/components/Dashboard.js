@@ -16,23 +16,19 @@ import {
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { useEffect, useState } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
-import useGameData from "../hooks/useGameData";
 import { axiosPrivate } from "../api/axios";
-import {
-    BACKEND_GET_MATCHES_ENDPOINT,
-    BACKEND_GET_MATCH_ENDPOINT,
-} from "../api/backend_endpoints";
+import { BACKEND_GET_MATCHES_ENDPOINT } from "../api/backend_endpoints";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = (/* { theme } */) => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
+    const { auth } = useAuth();
     const open = Boolean(anchorElement);
-
-    const { setCurrentRow, setMatchHistory } = useGameData();
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -55,13 +51,10 @@ const Dashboard = (/* { theme } */) => {
         margin: "1rem 0 0.4rem 0",
     }));
 
-    const [rows, setRows] = useState([
-        { id: "5099803df3f4948bd2f98391", name: "azzu", status: "pending" },
-        { id: "5099803df3f4948bd2f98392", name: "pappa", status: "won" },
-    ]);
+    const [rows, setRows] = useState([]);
 
     async function updateMatches() {
-        const username = "pappa";
+        const username = auth.username;
         try {
             const temp_rows = [];
             const response = await axiosPrivate.get(
@@ -73,14 +66,13 @@ const Dashboard = (/* { theme } */) => {
                 temp_rows.push(
                     createData("wait", "???", "Waiting for new match")
                 );
-
             matches.forEach((match) => {
                 if (match.players.includes(username)) {
                     const opponent = match.players.filter(
                         (name) => name != username
                     );
                     temp_rows.push(
-                        createData(match.id, opponent, match.status)
+                        createData(match._id, opponent, match.status.state)
                     );
                 }
             });
@@ -109,6 +101,8 @@ const Dashboard = (/* { theme } */) => {
             const match = response?.data?.match;
             setCurrentRow(match.attempts.length);
             setMatchHistory(match.attempts);
+
+            navigate("/match-details");
         } catch (error) {
             console.log(error?.response.data.message);
         }
@@ -160,8 +154,8 @@ const Dashboard = (/* { theme } */) => {
                             <TableBody>
                                 {rows.map((row) => (
                                     <TableRow
-                                        key={row.id}
-                                        onClick={(e) =>
+                                        key={row.id + row.name}
+                                        onClick={() =>
                                             openSelectedMatch(row.id)
                                         }
                                     >
@@ -194,10 +188,10 @@ const Dashboard = (/* { theme } */) => {
                         <Avatar
                             sx={{ bgcolor: "orange", width: 60, height: 60 }}
                         >
-                            A
+                            {auth.username[0].toUpperCase()}
                         </Avatar>
                         <Typography variant="h6" pl={"6px"}>
-                            Albisyx
+                            {auth.username}
                         </Typography>
                         <IconButton
                             onClick={(e) => handleMenuOpening(e)}
