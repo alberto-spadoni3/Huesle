@@ -25,22 +25,20 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", rootRoute);
 app.use("/user", userRoutes);
+app.use(verifyJWT);
 app.use("/game", gameRoutes);
 app.use("/search", searchRoutes);
 app.use("/stats", statsRoutes);
-app.use(verifyJWT);
 app.use("/setting", settingRoutes);
 
 const DB_URL = "mongodb://localhost:27017";
 
 try {
-    mongoose
-        .connect(DB_URL, {dbName: "huesle"}, () => {
-            console.log("DB ready");
-            // the server start listening only after the DB is up and running
-            app.listen(port, () => console.log(`Server listening on port ${port}`));
-        })
-} catch(error) {
-    console.log(error.message)
-};
-
+    mongoose.connect(DB_URL, { dbName: "huesle" }, () => {
+        console.log("DB ready");
+        // the server start listening only after the DB is up and running
+        app.listen(port, () => console.log(`Server listening on port ${port}`));
+    });
+} catch (error) {
+    console.log(error.message);
+}
