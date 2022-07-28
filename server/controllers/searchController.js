@@ -35,7 +35,7 @@ const searchMatch = async (req, res) => {
             .where("playerId").equals(requesterId)
             .where("secretCode").equals(null).findOne();
     }
-    console.log(pendingRequest);
+
     if(pendingRequest) {
         return res.status(400).json({
             message: "User already pending for match with those specifics"
@@ -98,7 +98,6 @@ const joinPrivateMatch = async (req, res) => {
 
 const leaveSearchPrivateMatch = async (req, res) => {
     const {username} = req.body;
-
     const requesterId = await findUserId(username);
     if(!requesterId) return res.status(400).json({
             error: "Username not valid"
@@ -106,9 +105,9 @@ const leaveSearchPrivateMatch = async (req, res) => {
 
     const pendingRequest = await PendingRequestModel
         .where("playerId").equals(requesterId)
-        //.where("secretCode").ne(null)
+        .where("secretCode").ne(null)
         .findOne();
-
+    console.log(pendingRequest);
     if(pendingRequest) {
         pendingRequest.deleteOne();
         return res.status(200).json({

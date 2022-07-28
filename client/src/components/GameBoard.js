@@ -35,6 +35,7 @@ const GameBoard = () => {
     useEffect(() => {
         loadBoard();
         flag = false;
+
     }, [flag])
 
     socket.on(MessageTypes.NOTIFICATION, data => {
@@ -42,7 +43,6 @@ const GameBoard = () => {
     });
 
     function loadBoard() {
-
         const response = axiosPrivate.get(
             BACKEND_GET_MATCH_ENDPOINT,
             {params: {matchId: matchId}}
