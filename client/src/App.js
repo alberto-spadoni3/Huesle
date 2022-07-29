@@ -1,7 +1,7 @@
 import Missing from "./components/Missing";
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
@@ -17,11 +17,11 @@ import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import SearchMatch from "./components/SearchMatch";
 import GameBoard from "./components/GameBoard";
-import { GameDataProvider } from "./context/GameDataProvider";
+import GameContext from "./context/GameContext";
 import GameRules from "./components/GameRules";
 import Match from "./components/Match";
 import socketIOClient from "socket.io-client";
-import {BACKEND_SOCKET_ENDPOINT} from "./api/backend_endpoints";
+import { BACKEND_SOCKET_ENDPOINT } from "./api/backend_endpoints";
 import useAuth from "./hooks/useAuth";
 
 let socket = null;
@@ -29,7 +29,7 @@ let socket = null;
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
     const [colorblindMode, setColorblindMode] = useState(false);
-    const {auth} = useAuth();
+    const { auth } = useAuth();
 
     useEffect(() => {
         socket = socketIOClient(BACKEND_SOCKET_ENDPOINT, {
@@ -37,7 +37,7 @@ const App = () => {
             transports: ["websocket"],
             auth: {
                 username: auth.username,
-            }
+            },
         });
     });
 
@@ -98,37 +98,33 @@ const App = () => {
                                 />
                             </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="dashboard"
-                                    element={<Dashboard />}
-                                />
-                            </Route>
+                            <Route element={<GameContext />}>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="dashboard"
+                                        element={<Dashboard />}
+                                    />
+                                </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="match-details"
-                                    element={<Match />}
-                                />
-                            </Route>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="match-details"
+                                        element={<Match />}
+                                    />
+                                </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="/searchMatch"
-                                    element={<SearchMatch />}
-                                />
-                            </Route>
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="gameboard"
-                                    element={
-                                        <>
-                                            <GameDataProvider>
-                                                <GameBoard />
-                                            </GameDataProvider>
-                                        </>
-                                    }
-                                />
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="/searchMatch"
+                                        element={<SearchMatch />}
+                                    />
+                                </Route>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="gameboard"
+                                        element={<GameBoard />}
+                                    />
+                                </Route>
                             </Route>
                         </Route>
                     </Route>
@@ -142,4 +138,4 @@ const App = () => {
 };
 
 export default App;
-export {socket};
+export { socket };
