@@ -65,14 +65,12 @@ export default function SearchPrivateMatchDialog({
 
     const handleClose = async (event) => {
         event.preventDefault();
-
         try {
             const username = auth.username;
-            socket.disconnect();
             await axiosPrivate.delete(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
                 {
-                    data: JSON.stringify({ username }),
+                    data: {username},
                 }
             );
             enqueueSnackbar("Stopped hosting the private match", {

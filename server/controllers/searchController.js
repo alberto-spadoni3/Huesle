@@ -129,9 +129,10 @@ const leaveSearchPrivateMatch = async (req, res) => {
 
     const pendingRequest = await PendingRequestModel.where("playerId")
         .equals(requesterId)
-        //.where("secretCode").ne(null)
+        .where("secretCode")
+        .ne(null)
         .findOne();
-
+    console.log(pendingRequest);
     if (pendingRequest) {
         pendingRequest.deleteOne();
         return res.status(200).json({
