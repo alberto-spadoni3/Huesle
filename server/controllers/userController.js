@@ -109,7 +109,7 @@ const refreshAccessToken = async (req, res) => {
     // checking if there is a user with that refresh token associated
     const userInDB = await UserModel.findOne({ refreshToken });
     if (!userInDB) {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
 
     const username = userInDB.username;
