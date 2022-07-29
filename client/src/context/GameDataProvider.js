@@ -1,5 +1,8 @@
 import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
+import {axiosPrivate} from "../api/axios";
+import {BACKEND_GET_MATCH_ENDPOINT} from "../api/backend_endpoints";
+import {socket} from "../App";
 
 const GameDataContext = createContext({});
 
@@ -8,24 +11,54 @@ export const GameDataProvider = ({ children }) => {
 
     const [currentPegsColor, setCurrentPegsColor] = useState(new Map());
 
-    const [currentRow, setCurrentRow] = useState(0);
+    const [id, setId] = useState({});
 
-    const [selectedMatch, setSelectedMatch] = useState({});
+    const [attempts, setAttempts] = useState([]);
 
-    const [status, setStatus] = useState([]);
+    const [status, setStatus] = useState({});
+
+    const [players, setPlayers] = useState([]);
+
     const [endGame, setEndGame] = useState(false);
 
-    const { auth } = useAuth();
+    const { auth, MessageTypes } = useAuth();
 
     const NUMBER_OF_ATTEMPTS = 10;
     const PEGS_PER_ROW = 4;
 
     function isItActivePlayer() {
         return (
-            selectedMatch.status.state === GameStates.PLAYING &&
-            selectedMatch.status.player === auth.username
+            status.state === GameStates.PLAYING &&
+            status.player === auth.username
         );
     }
+
+    function updateMatch(newStatus, newAttempts) {
+        setStatus(newStatus);
+        const newArray = attempts.slice();
+        newArray.push(newAttempts);
+        setAttempts(newArray);
+    }
+
+    function loadBoard(matchId = localStorage.getItem("matchId")) {
+        if(matchId) {
+            const response = axiosPrivate.get(BACKEND_GET_MATCH_ENDPOINT, {
+                params: {matchId: matchId},
+            });
+            response.then(response => {
+                const {status, players, attempts} = response?.data?.match;
+                setId(matchId);
+                setPlayers(players);
+                setStatus(status);
+                setAttempts(attempts);
+            })
+            localStorage.setItem("matchId", matchId)
+        }
+    }
+
+    socket.on(MessageTypes.NOTIFICATION, (data) => {
+        loadBoard();
+    });
 
     const HintTypes = {
         NoMatch: "no-match",
@@ -55,15 +88,15 @@ export const GameDataProvider = ({ children }) => {
                 setSelectedColor,
                 currentPegsColor,
                 setCurrentPegsColor,
-                currentRow,
-                setCurrentRow,
                 endGame,
                 setEndGame,
-                selectedMatch,
-                setSelectedMatch,
+                id,
                 status,
-                setStatus,
+                players,
+                attempts,
                 isItActivePlayer,
+                updateMatch,
+                loadBoard,
                 NUMBER_OF_ATTEMPTS,
                 PEGS_PER_ROW,
                 guessableColors,

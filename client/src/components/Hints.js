@@ -3,12 +3,12 @@ import useGameData from "../hooks/useGameData";
 import Peg from "./Peg";
 
 const Hints = ({ isInRow }) => {
-    const { HintTypes, PEGS_PER_ROW, selectedMatch } = useGameData();
+    const { HintTypes, PEGS_PER_ROW, attempts } = useGameData();
 
     let { rightPositions, rightColours } = 0;
-    if (selectedMatch && selectedMatch.attempts.length > isInRow) {
-        rightPositions = selectedMatch.attempts[isInRow].rightPositions;
-        rightColours = selectedMatch.attempts[isInRow].rightColours;
+    if (attempts.length > isInRow) {
+        rightPositions = attempts[isInRow].rightPositions;
+        rightColours = attempts[isInRow].rightColours;
     }
 
     const generateHint = (id) => {

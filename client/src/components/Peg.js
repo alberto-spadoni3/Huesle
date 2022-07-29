@@ -5,22 +5,17 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
     const {
         selectedColor,
         setCurrentPegsColor,
-        currentRow,
-        selectedMatch,
+        attempts,
         isItActivePlayer,
         HintTypes,
     } = useGameData();
 
     const [pegColor, setPegColor] = useState("");
-    const debug = () => {
-        console.log(isInRow);
-        console.log(isItActivePlayer());
-    };
+
     const handleClick = () => {
-        debug();
         if (
             selectedColor &&
-            isInRow === currentRow &&
+            isInRow === attempts.length &&
             !hintPeg &&
             isItActivePlayer()
         ) {
@@ -42,8 +37,8 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                     setPegColor("");
                     break;
             }
-        } else if (selectedMatch && selectedMatch.attempts.length > isInRow) {
-            setPegColor(selectedMatch.attempts[isInRow].sequence[pegID]);
+        } else if (attempts.length > isInRow) {
+            setPegColor(attempts[isInRow].sequence[pegID]);
         }
     });
 
@@ -59,7 +54,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                 borderRadius: "50%",
                 display: "inline-block",
                 cursor:
-                    isInRow === currentRow && selectedColor && !hintPeg
+                    isInRow === attempts.length && selectedColor && !hintPeg
                         ? "copy"
                         : "default",
                 //For accessibility

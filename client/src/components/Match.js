@@ -16,9 +16,13 @@ import useAuth from "../hooks/useAuth";
 const Match = () => {
     const navigate = useNavigate();
     const { auth } = useAuth();
-    const { selectedMatch } = useGameData();
+    const { loadBoard, players, attempts } = useGameData();
 
-    const Player = ({ name, reverse, hideLabel }) => {
+    useEffect(() => {
+        loadBoard();
+    }, []);
+
+    const Player = ({ name = "", reverse, hideLabel }) => {
         return (
             <Stack
                 sx={{ width: "fit-content" }}
@@ -80,11 +84,11 @@ const Match = () => {
                     Match details
                 </Typography>
 
-                {selectedMatch && (
+                {players.length > 0 && (
                     <>
                         <Stack alignItems="center" marginY={4}>
                             <Player
-                                name={selectedMatch.players.find(
+                                name={players.find(
                                     (player) => player === auth.username
                                 )}
                             />
@@ -92,7 +96,7 @@ const Match = () => {
                                 VS
                             </Typography>
                             <Player
-                                name={selectedMatch.players.find(
+                                name={players.find(
                                     (player) => player !== auth.username
                                 )}
                                 reverse
@@ -100,8 +104,8 @@ const Match = () => {
                         </Stack>
 
                         <Typography variant="h4">Attempts</Typography>
-                        {selectedMatch.attempts.length > 0 ? (
-                            selectedMatch.attempts.map((item, index) => (
+                        {attempts.length > 0 ? (
+                            attempts.map((item, index) => (
                                 <Stack
                                     direction="row"
                                     spacing={1}

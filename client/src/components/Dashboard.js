@@ -33,7 +33,7 @@ const Dashboard = () => {
     const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
     const open = Boolean(anchorElement);
-    const { selectedMatch, setSelectedMatch } = useGameData();
+    const { loadBoard } = useGameData();
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -96,13 +96,7 @@ const Dashboard = () => {
         }
 
         try {
-            const response = await axiosPrivate.get(
-                BACKEND_GET_MATCH_ENDPOINT,
-                { params: { matchId } }
-            );
-            const { players, attempts, status } = response.data.match;
-            setSelectedMatch({ id: matchId, status, players, attempts });
-
+            loadBoard(matchId);
             navigate("/match-details");
         } catch (error) {
             console.log(error);

@@ -5,7 +5,7 @@ import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
 
 const DecodeRow = ({ rowID }) => {
-    const { currentRow, PEGS_PER_ROW, isItActivePlayer} = useGameData();
+    const { PEGS_PER_ROW, isItActivePlayer, attempts} = useGameData();
     const { auth } = useAuth();
 
     const getRowAspect = () => {
@@ -16,13 +16,13 @@ const DecodeRow = ({ rowID }) => {
             borderRadius: 2,
         };
 
-        if (rowID === currentRow && isItActivePlayer(auth.username))
+        if (rowID === attempts.length && isItActivePlayer(auth.username))
             cssProps = {
                 ...cssProps,
                 borderStyle: "dashed",
                 borderColor: "springgreen",
             };
-        else if (rowID < currentRow)
+        else if (rowID < attempts.length)
             cssProps = { ...cssProps, borderColor: "rgb(239,226,219)" };
         else cssProps = { opacity: 0.5 };
 
