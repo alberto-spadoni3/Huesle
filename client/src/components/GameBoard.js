@@ -50,9 +50,7 @@ const GameBoard = () => {
         }
 
         try {
-            const username = auth.username;
             const response = await axiosPrivate.put(BACKEND_DO_GUESS_ENDPOINT, {
-                username,
                 matchId: id,
                 sequence,
             });

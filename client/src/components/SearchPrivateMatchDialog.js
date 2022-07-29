@@ -35,11 +35,10 @@ export default function SearchPrivateMatchDialog({
     const generateMatch = async () => {
         setConnectOpen(true);
         try {
-            const username = auth.username;
             const secret = true;
             const response = await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
-                JSON.stringify({ username, secret }),
+                JSON.stringify({ secret }),
             );
             return response;
         } catch (error) {
@@ -66,12 +65,8 @@ export default function SearchPrivateMatchDialog({
     const handleClose = async (event) => {
         event.preventDefault();
         try {
-            const username = auth.username;
             await axiosPrivate.delete(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
-                {
-                    data: {username},
-                }
             );
             enqueueSnackbar("Stopped hosting the private match", {
                 variant: "success",

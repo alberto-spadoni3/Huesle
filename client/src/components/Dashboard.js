@@ -63,8 +63,7 @@ const Dashboard = () => {
         try {
             const temp_rows = [];
             const response = await axiosPrivate.get(
-                BACKEND_GET_MATCHES_ENDPOINT,
-                { params: { username } }
+                BACKEND_GET_MATCHES_ENDPOINT
             );
             const { pending, matches } = response.data;
             if (pending)

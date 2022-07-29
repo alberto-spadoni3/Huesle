@@ -13,8 +13,7 @@ async function findUserId(username) {
 }
 
 const getActiveMatchesOfUser = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
+    const requesterId = await findUserId(req.username);
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
@@ -27,8 +26,7 @@ const getActiveMatchesOfUser = async (req, res) => {
 }
 
 const getAllMatchesOfUser = async (req, res) => {
-    const {username} = req.query;
-    const requesterId = await findUserId(username);
+    const requesterId = await findUserId(req.username);
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
@@ -50,8 +48,7 @@ const getAllMatchesOfUser = async (req, res) => {
 }
 
 const getOngoingMatches = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
+    const requesterId = await findUserId(req.username);
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });
@@ -63,8 +60,7 @@ const getOngoingMatches = async (req, res) => {
 }
 
 const getUserStats = async (req, res) => {
-    const {username} = req.body;
-    const requesterId = await findUserId(username);
+    const requesterId = await findUserId(req.username);
     if(!requesterId) return res.status(400).json({
         message: "Username not valid"
     });

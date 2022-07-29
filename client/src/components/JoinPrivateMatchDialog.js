@@ -41,10 +41,9 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
         handleCodeClose();
         setSearchingOpen(true);
         try {
-            const username = auth.username;
             const response = await axiosPrivate.post(
                 BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT,
-                JSON.stringify({ username, secretCode })
+                JSON.stringify({ secretCode })
             );
             if (response) {
                 enqueueSnackbar("Match found: " + response.data.matchId, {

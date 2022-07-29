@@ -37,7 +37,6 @@ const SearchMatch = () => {
 
     const generatePublicMatch = async () => {
         try {
-            const username = auth.username;
             const secret = false;
             const response = await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
