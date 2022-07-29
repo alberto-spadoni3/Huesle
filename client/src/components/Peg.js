@@ -1,27 +1,36 @@
 import useGameData from "../hooks/useGameData";
-import {useState, useLayoutEffect} from "react";
+import { useState, useLayoutEffect } from "react";
 
-const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
+const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
     const {
         selectedColor,
         setCurrentPegsColor,
         currentRow,
-        matchHistory,
+        selectedMatch,
         isItActivePlayer,
-        HintTypes
+        HintTypes,
     } = useGameData();
 
     const [pegColor, setPegColor] = useState("");
-
+    const debug = () => {
+        console.log(isInRow);
+        console.log(isItActivePlayer());
+    };
     const handleClick = () => {
-        if (selectedColor && isInRow === currentRow && !hintPeg && isItActivePlayer()) {
+        debug();
+        if (
+            selectedColor &&
+            isInRow === currentRow &&
+            !hintPeg &&
+            isItActivePlayer()
+        ) {
             setPegColor(selectedColor);
             setCurrentPegsColor((map) => map.set(pegID, selectedColor));
         }
     };
 
     useLayoutEffect(() => {
-        if(hintPeg) {
+        if (hintPeg) {
             switch (hintType) {
                 case HintTypes.ExactMatch:
                     setPegColor("white");
@@ -33,8 +42,8 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
                     setPegColor("");
                     break;
             }
-        } else if (matchHistory.length > isInRow) {
-            setPegColor(matchHistory[isInRow].sequence[pegID]);
+        } else if (selectedMatch && selectedMatch.attempts.length > isInRow) {
+            setPegColor(selectedMatch.attempts[isInRow].sequence[pegID]);
         }
     });
 
@@ -42,7 +51,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
         <label
             style={{
                 backgroundColor: pegColor,
-                justifyContent: 'center',
+                justifyContent: "center",
                 height: hintPeg ? "16px" : "52px",
                 width: hintPeg ? "16px" : "52px",
                 borderColor: "white",
@@ -58,7 +67,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
                 border: hintPeg ? "2px solid" : "3px solid",
             }}
             onClick={handleClick}
-            ></label>
+        ></label>
     );
 };
 

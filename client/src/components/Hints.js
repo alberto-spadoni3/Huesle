@@ -3,13 +3,12 @@ import useGameData from "../hooks/useGameData";
 import Peg from "./Peg";
 
 const Hints = ({ isInRow }) => {
-    const {HintTypes, PEGS_PER_ROW, matchHistory } =
-        useGameData();
+    const { HintTypes, PEGS_PER_ROW, selectedMatch } = useGameData();
 
-    let {rightPositions, rightColours} = 0
-    if (matchHistory.length > isInRow) {
-        rightPositions = matchHistory[isInRow].rightPositions;
-        rightColours = matchHistory[isInRow].rightColours;
+    let { rightPositions, rightColours } = 0;
+    if (selectedMatch && selectedMatch.attempts.length > isInRow) {
+        rightPositions = selectedMatch.attempts[isInRow].rightPositions;
+        rightColours = selectedMatch.attempts[isInRow].rightColours;
     }
 
     const generateHint = (id) => {
@@ -21,7 +20,15 @@ const Hints = ({ isInRow }) => {
             rightColours--;
             hintType = HintTypes.ColorMatch;
         }
-        return <Peg key={id} isInRow={isInRow} pegID={id} hintPeg hintType={hintType} />;
+        return (
+            <Peg
+                key={id}
+                isInRow={isInRow}
+                pegID={id}
+                hintPeg
+                hintType={hintType}
+            />
+        );
     };
 
     const GridItem = ({ children }) => {
@@ -46,7 +53,7 @@ const Hints = ({ isInRow }) => {
                 {Array(PEGS_PER_ROW)
                     .fill()
                     .map((_, index) => (
-                        <GridItem key={index} >{generateHint(index)}</GridItem>
+                        <GridItem key={index}>{generateHint(index)}</GridItem>
                     ))}
             </Grid>
         </Box>

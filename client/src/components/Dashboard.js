@@ -21,14 +21,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
 import { axiosPrivate } from "../api/axios";
-import { BACKEND_GET_MATCHES_ENDPOINT } from "../api/backend_endpoints";
+import {
+    BACKEND_GET_MATCHES_ENDPOINT,
+    BACKEND_GET_MATCH_ENDPOINT,
+} from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
+import useGameData from "../hooks/useGameData";
 
-const Dashboard = (/* { theme } */) => {
+const Dashboard = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
     const open = Boolean(anchorElement);
+    const { selectedMatch, setSelectedMatch } = useGameData();
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -59,13 +64,11 @@ const Dashboard = (/* { theme } */) => {
             const temp_rows = [];
             const response = await axiosPrivate.get(
                 BACKEND_GET_MATCHES_ENDPOINT,
-                { params: { username: username } }
+                { params: { username } }
             );
             const { pending, matches } = response.data;
             if (pending)
-                temp_rows.push(
-                    createData("wait", "???", "Waiting for new match")
-                );
+                temp_rows.push(createData(null, "Searching...", "Waiting"));
             matches.forEach((match) => {
                 if (match.players.includes(username)) {
                     const opponent = match.players.filter(
@@ -97,14 +100,12 @@ const Dashboard = (/* { theme } */) => {
                 BACKEND_GET_MATCH_ENDPOINT,
                 { params: { matchId } }
             );
-
-            const match = response?.data?.match;
-            setCurrentRow(match.attempts.length);
-            setMatchHistory(match.attempts);
+            const { players, attempts, status } = response.data.match;
+            setSelectedMatch({ id: matchId, status, players, attempts });
 
             navigate("/match-details");
         } catch (error) {
-            console.log(error?.response.data.message);
+            console.log(error);
         }
     }
 
@@ -152,9 +153,9 @@ const Dashboard = (/* { theme } */) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row) => (
+                                {rows.map((row, index) => (
                                     <TableRow
-                                        key={row.id + row.name}
+                                        key={index}
                                         onClick={() =>
                                             openSelectedMatch(row.id)
                                         }

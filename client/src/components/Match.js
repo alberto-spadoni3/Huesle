@@ -6,24 +6,17 @@ import {
     Button,
     AvatarGroup,
 } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import useGameData from "../hooks/useGameData";
+import useAuth from "../hooks/useAuth";
 
 const Match = () => {
     const navigate = useNavigate();
-    // temporary variables that are going to be replaced by an HTTP call to the backend
-    const player1 = "albisyx";
-    const player2 = "azzu";
-
-    const attemptsSoFar = [
-        { player: player1, attempt: "C" },
-        { player: player2, attempt: "" },
-        { player: player1, attempt: "P P C" },
-        { player: player2, attempt: "P P C C" },
-        { player: player1, attempt: "P P P C" },
-    ];
+    const { auth } = useAuth();
+    const { selectedMatch } = useGameData();
 
     const Player = ({ name, reverse, hideLabel }) => {
         return (
@@ -42,7 +35,13 @@ const Match = () => {
         );
     };
 
-    const Attempt = ({ player, attempt }) => {
+    const Hint = ({ hintType }) => {
+        const hintColor =
+            hintType === "C" ? "khaki" : hintType === "P" ? "lightgreen" : "";
+        return <Avatar sx={{ bgcolor: hintColor }}>{hintType}</Avatar>;
+    };
+
+    const Attempt = ({ attempt }) => {
         return (
             <Stack
                 direction="row"
@@ -50,23 +49,19 @@ const Match = () => {
                 alignItems="center"
                 marginBottom={2}
             >
-                <Player name={player} hideLabel />
+                <Player name={attempt.playerName} hideLabel />
                 <AvatarGroup max={4}>
-                    {attempt.split(" ").map((hint, index) => {
-                        const hintColor =
-                            hint === "C"
-                                ? "khaki"
-                                : hint === "P"
-                                ? "lightgreen"
-                                : "";
-                        return (
-                            hint && (
-                                <Avatar key={index} sx={{ bgcolor: hintColor }}>
-                                    {hint}
-                                </Avatar>
-                            )
-                        );
-                    })}
+                    {Array(attempt.rightPositions)
+                        .fill()
+                        .map((_, index) => (
+                            <Hint key={index} hintType="P" />
+                        ))}
+
+                    {Array(attempt.rightColours)
+                        .fill()
+                        .map((_, index) => (
+                            <Hint key={index} hintType="C" />
+                        ))}
                 </AvatarGroup>
             </Stack>
         );
@@ -84,27 +79,49 @@ const Match = () => {
                 <Typography variant="h4" align="center">
                     Match details
                 </Typography>
-                <Stack alignItems="center" marginY={4}>
-                    <Player name={player1} />
-                    <Typography variant="h2" margin="5px 0">
-                        VS
-                    </Typography>
-                    <Player name={player2} reverse />
-                </Stack>
 
-                <Typography variant="h4">Attempts</Typography>
-                {attemptsSoFar.map((item, index) => (
-                    <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        marginY={1}
-                        key={index}
-                    >
-                        <Typography variant="h6">{index + 1 + ")"}</Typography>
-                        <Attempt player={item.player} attempt={item.attempt} />
-                    </Stack>
-                ))}
+                {selectedMatch && (
+                    <>
+                        <Stack alignItems="center" marginY={4}>
+                            <Player
+                                name={selectedMatch.players.find(
+                                    (player) => player === auth.username
+                                )}
+                            />
+                            <Typography variant="h2" margin="5px 0">
+                                VS
+                            </Typography>
+                            <Player
+                                name={selectedMatch.players.find(
+                                    (player) => player !== auth.username
+                                )}
+                                reverse
+                            />
+                        </Stack>
+
+                        <Typography variant="h4">Attempts</Typography>
+                        {selectedMatch.attempts.length > 0 ? (
+                            selectedMatch.attempts.map((item, index) => (
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    alignItems="center"
+                                    marginY={1}
+                                    key={index}
+                                >
+                                    <Typography variant="h6">
+                                        {index + 1 + ")"}
+                                    </Typography>
+                                    <Attempt attempt={item} />
+                                </Stack>
+                            ))
+                        ) : (
+                            <Typography variant="h6">
+                                No attempts has been made so far.
+                            </Typography>
+                        )}
+                    </>
+                )}
 
                 <Button
                     sx={{

@@ -3,56 +3,53 @@ import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
 import useGameData from "../hooks/useGameData";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import { useSnackbar } from "notistack";
-import {axiosPrivate} from "../api/axios";
+import { axiosPrivate } from "../api/axios";
 import {
     BACKEND_DO_GUESS_ENDPOINT,
     BACKEND_GET_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
-import {socket} from "../App";
+import { socket } from "../App";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
     const { auth, MessageTypes } = useAuth();
-    const matchId = "62e10f29b4902320dced6538";
 
     const {
         currentPegsColor,
         setCurrentPegsColor,
         currentRow,
+        selectedMatch,
         setCurrentRow,
-        setMatchHistory,
-        isItActivePlayer,
+        setSelectedMatch,
         setStatus,
+        isItActivePlayer,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
 
     let flag = true;
 
-    useEffect(() => {
+    /* useEffect(() => {
         loadBoard();
         flag = false;
-    }, [flag])
+    }, [flag]); */
 
-    socket.on(MessageTypes.NOTIFICATION, data => {
+    socket.on(MessageTypes.NOTIFICATION, (data) => {
         loadBoard();
     });
 
-    function loadBoard() {
+    async function loadBoard() {
+        const response = await axiosPrivate.get(BACKEND_GET_MATCH_ENDPOINT, {
+            params: { matchId: selectedMatch?.id },
+        });
 
-        const response = axiosPrivate.get(
-            BACKEND_GET_MATCH_ENDPOINT,
-            {params: {matchId: matchId}}
-        );
-        response.then(response => {
-            const match = response.data.match;
-            setCurrentRow(match.attempts.length);
-            setStatus(match.status);
-            setMatchHistory(match.attempts);
-        })
+        const { status, players, attempts } = response?.data?.match;
+        setStatus(status);
+        setCurrentRow(attempts.length + 1);
+        setSelectedMatch({ status, players, attempts });
     }
 
     const handleSubmitRow = async () => {
@@ -66,19 +63,20 @@ const GameBoard = () => {
 
         const sequence = [];
         let temp = 0;
-        while(temp < PEGS_PER_ROW) {
+        while (temp < PEGS_PER_ROW) {
             sequence.push(currentPegsColor.get(temp));
             temp++;
         }
 
         try {
             const username = auth.username;
-            const response = await axiosPrivate.put(
-                BACKEND_DO_GUESS_ENDPOINT,
-                {username, matchId, sequence}
-            );
+            const response = await axiosPrivate.put(BACKEND_DO_GUESS_ENDPOINT, {
+                username,
+                matchId: selectedMatch.id,
+                sequence,
+            });
 
-            const {status} = response.data;
+            const { status } = response.data;
             setStatus(status);
             setCurrentPegsColor(new Map());
             setCurrentRow((prevRow) => {
@@ -134,7 +132,9 @@ const GameBoard = () => {
                         border: "1px solid white",
                         borderRadius: "5px",
                     }}
-                    disabled={currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer()}
+                    disabled={
+                        currentRow === NUMBER_OF_ATTEMPTS || !isItActivePlayer()
+                    }
                     variant="contained"
                     color="neutral"
                     onClick={handleSubmitRow}

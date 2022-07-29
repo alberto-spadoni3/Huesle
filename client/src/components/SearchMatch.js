@@ -14,17 +14,19 @@ import DashboardMenu from "./DashboardMenu";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
-import {axiosPrivate} from "../api/axios";
-import {BACKEND_SEARCH_MATCH_ENDPOINT} from "../api/backend_endpoints";
-import {useSnackbar} from "notistack";
+import { axiosPrivate } from "../api/axios";
+import { BACKEND_SEARCH_MATCH_ENDPOINT } from "../api/backend_endpoints";
+import { useSnackbar } from "notistack";
 import useAuth from "../hooks/useAuth";
+import useGameData from "../hooks/useGameData";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
-    const {auth} = useAuth();
+    const { auth } = useAuth();
     const open = Boolean(anchorElement);
+    const { setMatchesId } = useGameData();
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [joinPrivateOpen, setJoinPrivateOpen] = useState(false);
@@ -37,14 +39,19 @@ const SearchMatch = () => {
         try {
             const username = auth.username;
             const secret = false;
-            await axiosPrivate.post(
+            const response = await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
-                JSON.stringify({ username, secret }),
+                JSON.stringify({ secret })
             );
-            enqueueSnackbar("Searching for new Match...", {
+
+            const matchId = response?.data?.matchId;
+            const message = matchId ? "Match found" : response?.data?.message;
+
+            enqueueSnackbar(message, {
                 variant: "success",
                 autoHideDuration: 2500,
             });
+
             navigate("/dashboard", { replace: true });
             return;
         } catch (error) {
