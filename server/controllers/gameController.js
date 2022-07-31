@@ -60,7 +60,7 @@ const doGuess = async (req, res) => {
     if (isMatchOver(status)) {
         emitMatchOver(matchId, status);
     } else {
-        emitNewMove(match.status.player, matchId);
+        emitNewMove(match.status.player, req.username, matchId);
     }
 
     res.status(200).json({

@@ -24,9 +24,7 @@ const SearchMatch = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
-    const { auth } = useAuth();
     const open = Boolean(anchorElement);
-    const { setMatchesId } = useGameData();
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [joinPrivateOpen, setJoinPrivateOpen] = useState(false);
@@ -43,18 +41,17 @@ const SearchMatch = () => {
                 JSON.stringify({ secret })
             );
 
-            const matchId = response?.data?.matchId;
-            const message = matchId ? "Match found" : response?.data?.message;
+            const message = "Searching public match...";
 
             enqueueSnackbar(message, {
-                variant: "success",
+                variant: "info",
                 autoHideDuration: 2500,
             });
 
             navigate("/dashboard", { replace: true });
             return;
         } catch (error) {
-            enqueueSnackbar("Error in comunicating with Server", {
+            enqueueSnackbar(error.response.data.message, {
                 variant: "error",
                 autoHideDuration: 2500,
             });

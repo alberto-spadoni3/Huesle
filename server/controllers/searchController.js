@@ -130,7 +130,6 @@ const leaveSearchPrivateMatch = async (req, res) => {
         .where("secretCode")
         .ne(null)
         .findOne();
-    console.log(pendingRequest);
     if (pendingRequest) {
         pendingRequest.deleteOne();
         return res.status(200).json({

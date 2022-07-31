@@ -7,8 +7,7 @@ import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { axiosPrivate } from "../api/axios";
 import {
-    BACKEND_DO_GUESS_ENDPOINT,
-    BACKEND_GET_MATCH_ENDPOINT,
+    BACKEND_DO_GUESS_ENDPOINT
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 

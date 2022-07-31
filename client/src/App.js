@@ -20,26 +20,11 @@ import GameBoard from "./components/GameBoard";
 import GameContext from "./context/GameContext";
 import GameRules from "./components/GameRules";
 import Match from "./components/Match";
-import socketIOClient from "socket.io-client";
-import { BACKEND_SOCKET_ENDPOINT } from "./api/backend_endpoints";
-import useAuth from "./hooks/useAuth";
-
-let socket = null;
+import {SocketProvider} from "./context/SocketProvider";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
     const [colorblindMode, setColorblindMode] = useState(false);
-    const { auth } = useAuth();
-
-    useEffect(() => {
-        socket = socketIOClient(BACKEND_SOCKET_ENDPOINT, {
-            withCredentials: true,
-            transports: ["websocket"],
-            auth: {
-                username: auth.username,
-            },
-        });
-    });
 
     const anchorOrigin = {
         vertical: "bottom",
@@ -54,88 +39,89 @@ const App = () => {
                 anchorOrigin={anchorOrigin}
                 autoHideDuration={3000}
             >
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<Layout setThemeMode={setThemeMode} />}
-                    >
-                        {/* Public routes */}
-                        <Route index element={<Home />} />
-                        <Route path="login" element={<Login />} />
-                        <Route path="register" element={<Register />} />
+                <SocketProvider>
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={<Layout setThemeMode={setThemeMode} />}
+                        >
+                            {/* Public routes */}
+                            <Route index element={<Home />} />
+                            <Route path="login" element={<Login />} />
+                            <Route path="register" element={<Register />} />
 
-                        <Route path="rules" element={<GameRules />} />
+                            <Route path="rules" element={<GameRules />} />
 
-                        {/* Routes that require authentication */}
-                        <Route element={<PersistLogin />}>
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="user/profile"
-                                    element={<UserProfile />}
-                                />
-                            </Route>
+                            {/* Routes that require authentication */}
+                            <Route element={<PersistLogin />}>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="user/profile"
+                                        element={<UserProfile />}
+                                    />
+                                </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="user/editProfile"
-                                    element={<EditUserProfile />}
-                                />
-                            </Route>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="user/editProfile"
+                                        element={<EditUserProfile />}
+                                    />
+                                </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="settings"
-                                    element={
-                                        <Settings
-                                            themeMode={themeMode}
-                                            setThemeMode={setThemeMode}
-                                            colorblindMode={colorblindMode}
-                                            setColorblindMode={
-                                                setColorblindMode
-                                            }
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="settings"
+                                        element={
+                                            <Settings
+                                                themeMode={themeMode}
+                                                setThemeMode={setThemeMode}
+                                                colorblindMode={colorblindMode}
+                                                setColorblindMode={
+                                                    setColorblindMode
+                                                }
+                                            />
+                                        }
+                                    />
+                                </Route>
+
+                                <Route element={<GameContext />}>
+                                    <Route element={<RequireAuth />}>
+                                        <Route
+                                            path="dashboard"
+                                            element={<Dashboard />}
                                         />
-                                    }
-                                />
-                            </Route>
+                                    </Route>
 
-                            <Route element={<GameContext />}>
-                                <Route element={<RequireAuth />}>
-                                    <Route
-                                        path="dashboard"
-                                        element={<Dashboard />}
-                                    />
-                                </Route>
+                                    <Route element={<RequireAuth />}>
+                                        <Route
+                                            path="match-details"
+                                            element={<Match />}
+                                        />
+                                    </Route>
 
-                                <Route element={<RequireAuth />}>
-                                    <Route
-                                        path="match-details"
-                                        element={<Match />}
-                                    />
-                                </Route>
-
-                                <Route element={<RequireAuth />}>
-                                    <Route
-                                        path="/searchMatch"
-                                        element={<SearchMatch />}
-                                    />
-                                </Route>
-                                <Route element={<RequireAuth />}>
-                                    <Route
-                                        path="gameboard"
-                                        element={<GameBoard />}
-                                    />
+                                    <Route element={<RequireAuth />}>
+                                        <Route
+                                            path="/searchMatch"
+                                            element={<SearchMatch />}
+                                        />
+                                    </Route>
+                                    <Route element={<RequireAuth />}>
+                                        <Route
+                                            path="gameboard"
+                                            element={<GameBoard />}
+                                        />
+                                    </Route>
                                 </Route>
                             </Route>
                         </Route>
-                    </Route>
 
-                    {/* No matching route */}
-                    <Route path="*" element={<Missing />} />
-                </Routes>
+                        {/* No matching route */}
+                        <Route path="*" element={<Missing />} />
+                    </Routes>
+                </SocketProvider>
             </SnackbarProvider>
         </ThemeProvider>
     );
 };
 
 export default App;
-export { socket };

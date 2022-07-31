@@ -14,8 +14,7 @@ import {
 } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import {socket} from "../App";
+import useSocket from "../hooks/useSocket";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -29,7 +28,7 @@ export default function SearchPrivateMatchDialog({
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
-    const {auth, MessageTypes} = useAuth();
+    const {socket, MessageTypes} = useSocket();
     const navigate = useNavigate();
 
     const generateMatch = async () => {
@@ -51,14 +50,6 @@ export default function SearchPrivateMatchDialog({
     };
 
     const listenOnSocket = async () => {
-        socket.on(MessageTypes.NOTIFICATION, data => {
-            enqueueSnackbar(data.content, {
-                variant: "success",
-                autoHideDuration: 2500,
-            });
-            setSearchPrivateOpen(false);
-            navigate("/dashboard", { replace: true });
-        });
 
     }
 
@@ -69,7 +60,7 @@ export default function SearchPrivateMatchDialog({
                 BACKEND_SEARCH_MATCH_ENDPOINT,
             );
             enqueueSnackbar("Stopped hosting the private match", {
-                variant: "success",
+                variant: "info",
                 autoHideDuration: 2500,
             });
         } catch (error) {
@@ -87,11 +78,16 @@ export default function SearchPrivateMatchDialog({
                     setSecretCode(response.data.secretCode);
                     setConnectOpen(false);
                     setSearchPrivateOpen(true);
-                    enqueueSnackbar("Match created successfully", {
-                        variant: "success",
-                        autoHideDuration: 2500,
+
+                    socket.off(MessageTypes.NEW_MATCH).on(MessageTypes.NEW_MATCH, data => {
+                        socket.off(MessageTypes.NEW_MATCH);
+                        setSearchPrivateOpen(false);
+                        navigate("/dashboard", { replace: true });
+                        enqueueSnackbar("Private match created!", {
+                            variant: "success",
+                            autoHideDuration: 2500,
+                        });
                     });
-                    listenOnSocket();
                 }
             });
         }

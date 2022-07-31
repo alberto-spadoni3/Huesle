@@ -15,25 +15,28 @@ import {
     Paper,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { useEffect, useState } from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
 import { axiosPrivate } from "../api/axios";
 import {
-    BACKEND_GET_MATCHES_ENDPOINT,
-    BACKEND_GET_MATCH_ENDPOINT,
+    BACKEND_GET_MATCHES_ENDPOINT
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 import useGameData from "../hooks/useGameData";
+import {useSnackbar} from "notistack";
+import useSocket from "../hooks/useSocket";
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
+    const { socket, MessageTypes} = useSocket();
     const open = Boolean(anchorElement);
-    const { loadBoard } = useGameData();
+    const { loadBoard, GameStates } = useGameData();
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -59,7 +62,6 @@ const Dashboard = () => {
     const [rows, setRows] = useState([]);
 
     async function updateMatches() {
-        const username = auth.username;
         try {
             const temp_rows = [];
             const response = await axiosPrivate.get(
@@ -68,21 +70,33 @@ const Dashboard = () => {
             const { pending, matches } = response.data;
             if (pending)
                 temp_rows.push(createData(null, "Searching...", "Waiting"));
+            matches.sort((a, _) => a.status.state == GameStates.PLAYING ? -1 : 1)
             matches.forEach((match) => {
-                if (match.players.includes(username)) {
-                    const opponent = match.players.filter(
-                        (name) => name != username
-                    );
-                    temp_rows.push(
-                        createData(match._id, opponent, match.status.state)
-                    );
-                }
+                const opponent = match.players.find(
+                    (name) => name != auth.username
+                );
+                temp_rows.push(
+                    createData(match._id, opponent, match.status.state)
+                );
             });
             setRows(temp_rows);
         } catch (error) {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        updateMatches();
+        socket.on(MessageTypes.NEW_MATCH, () => {
+            updateMatches();
+        });
+    }, [socket]);
+
+    useLayoutEffect(() => {
+
+        //return () => socket.off(MessageTypes.NEW_MATCH);
+    }, [])
+
 
     function createData(id, name, status) {
         return { id, name, status };
@@ -101,10 +115,6 @@ const Dashboard = () => {
             console.log(error);
         }
     }
-
-    useEffect(() => {
-        updateMatches();
-    }, []);
 
     return (
         <>

@@ -21,8 +21,9 @@ io.attach(httpServer);
 export class MessageTypes {
     static CONNECTION = "connection";
     static SESSION = "session";
-    static NOTIFICATION = "notification";
-    static SEARCHING = "searching";
+    static NEW_MATCH = "new_match";
+    static NEW_MOVE = "new_move";
+    static END_MATCH = "end_match";
 }
 
 io.use((socket, next) => {
@@ -36,14 +37,17 @@ io.use((socket, next) => {
             next();
         });
     }
+
+    socket.emit(MessageTypes.SESSION, {
+        userID: socket.userID
+    });
 });
 
 io.on(MessageTypes.CONNECTION, (socket) => {
+    socket.join(socket.userID);
     socket.emit(MessageTypes.SESSION, {
-        sessionID: socket.sessionID,
-        userID: socket.userID,
+        userID: socket.userID
     });
-    io.in(socket.id).socketsJoin(socket.userID);
     connectUserToMatchSockets(socket.userID);
 });
 
@@ -68,20 +72,21 @@ async function connectUserToMatchSockets(id) {
 
 export function emitNewMatch(players, matchId) {
     io.in(players).socketsJoin(matchId);
-    io.to(matchId).emit(MessageTypes.NOTIFICATION, {
-        content: "New Match Found!",
+    io.to(matchId).emit(MessageTypes.NEW_MATCH, {
+        content: matchId
     });
 }
 
-export function emitNewMove(playerNotified, matchId) {
-    io.to(playerNotified).emit(MessageTypes.NOTIFICATION, {
-        content: "New move made on match" + matchId,
+export function emitNewMove(playerNotified, originPlayer, matchId) {
+    io.to(playerNotified).emit(MessageTypes.NEW_MOVE, {
+        content: matchId,
+        opponent: originPlayer
     });
 }
 
 export function emitMatchOver(matchId, status) {
-    io.to(matchId).emit(MessageTypes.NOTIFICATION, {
-        content: "Match is over, " + status,
+    io.to(matchId).emit(MessageTypes.END_MATCH, {
+        content: JSON.stringify({matchId, status})
     });
     io.socketsLeave(matchId);
 }

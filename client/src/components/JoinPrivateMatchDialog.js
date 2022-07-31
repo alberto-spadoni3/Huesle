@@ -46,10 +46,6 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                 JSON.stringify({ secretCode })
             );
             if (response) {
-                enqueueSnackbar("Match found: " + response.data.matchId, {
-                    variant: "success",
-                    autoHideDuration: 2500,
-                });
                 navigate("/dashboard", { replace: true });
             }
         } catch (error) {
