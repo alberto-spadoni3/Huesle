@@ -2,7 +2,6 @@ import { Box, Typography, Avatar, Stack, Switch } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect } from "react";
 import BackButton from "./BackButton";
-import useAuth from "../hooks/useAuth";
 import { BACKEND_SETTINGS_ENDPOINT } from "../api/backend_endpoints";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
@@ -12,7 +11,6 @@ const Settings = ({
     colorblindMode,
     setColorblindMode,
 }) => {
-    const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const dmSwitch = { "aria-label": "Switch for dark mode" };
     const cbSwitch = { "aria-label": "Switch for colorblind mode" };
@@ -48,14 +46,13 @@ const Settings = ({
 
     const saveSettings = async (darkMode, colorblindMode) => {
         try {
-            const username = auth.username;
             const response = await axiosPrivate.put(
                 BACKEND_SETTINGS_ENDPOINT,
-                JSON.stringify({ username, darkMode, colorblindMode })
+                JSON.stringify({ darkMode, colorblindMode })
             );
 
             if (response.status === 200) {
-                console.log(`Settings for ${username} updated succesfully`);
+                console.log(`Settings updated succesfully`);
             }
         } catch (error) {
             if (!error?.response) {
