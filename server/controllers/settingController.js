@@ -63,13 +63,16 @@ const updateSettings = async (req, res) => {
     const username = req.username;
     const { darkMode, colorblindMode } = req.body;
 
-    const userDB = await UserModel.findOne({ username });
+    const userDB = await UserModel.findOneAndUpdate(
+        { username },
+        { darkMode, colorblindMode },
+        { new: true } // tells the function to return the updated object
+    );
+
     if (!userDB) {
         return res.sendStatus(401);
     }
-    userDB.darkMode = darkMode;
-    userDB.colorblindMode = colorblindMode;
-    await userDB.save();
+
     res.sendStatus(200);
 };
 
