@@ -5,7 +5,7 @@ import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
 
 const DecodeRow = ({ rowID }) => {
-    const { PEGS_PER_ROW, isItActivePlayer, attempts} = useGameData();
+    const { PEGS_PER_ROW, isItActivePlayer, attempts } = useGameData();
     const { auth } = useAuth();
 
     const getRowAspect = () => {
@@ -38,7 +38,6 @@ const DecodeRow = ({ rowID }) => {
             alignItems="center"
             height="72px"
             sx={getRowAspect}
-
         >
             {Array(PEGS_PER_ROW)
                 .fill()
