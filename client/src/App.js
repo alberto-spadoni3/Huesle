@@ -28,7 +28,6 @@ let socket = null;
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
-    const [colorblindMode, setColorblindMode] = useState(false);
     const { auth } = useAuth();
 
     useEffect(() => {
@@ -82,23 +81,19 @@ const App = () => {
                                 />
                             </Route>
 
-                            <Route element={<RequireAuth />}>
-                                <Route
-                                    path="settings"
-                                    element={
-                                        <Settings
-                                            themeMode={themeMode}
-                                            setThemeMode={setThemeMode}
-                                            colorblindMode={colorblindMode}
-                                            setColorblindMode={
-                                                setColorblindMode
-                                            }
-                                        />
-                                    }
-                                />
-                            </Route>
-
                             <Route element={<GameContext />}>
+                                <Route element={<RequireAuth />}>
+                                    <Route
+                                        path="settings"
+                                        element={
+                                            <Settings
+                                                themeMode={themeMode}
+                                                setThemeMode={setThemeMode}
+                                            />
+                                        }
+                                    />
+                                </Route>
+
                                 <Route element={<RequireAuth />}>
                                     <Route
                                         path="dashboard"

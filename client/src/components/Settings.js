@@ -4,14 +4,11 @@ import { useEffect } from "react";
 import BackButton from "./BackButton";
 import { BACKEND_SETTINGS_ENDPOINT } from "../api/backend_endpoints";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useGameData from "../hooks/useGameData";
 
-const Settings = ({
-    themeMode,
-    setThemeMode,
-    colorblindMode,
-    setColorblindMode,
-}) => {
+const Settings = ({ themeMode, setThemeMode }) => {
     const axiosPrivate = useAxiosPrivate();
+    const { colorblindMode, setColorblindMode } = useGameData();
     const dmSwitch = { "aria-label": "Switch for dark mode" };
     const cbSwitch = { "aria-label": "Switch for colorblind mode" };
 
