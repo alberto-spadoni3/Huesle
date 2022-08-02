@@ -8,7 +8,7 @@ import { useSnackbar } from "notistack";
 import { axiosPrivate } from "../api/axios";
 import {
     BACKEND_DO_GUESS_ENDPOINT,
-    BACKEND_GET_MATCH_ENDPOINT,
+    BACKEND_SETTINGS_ENDPOINT,
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 
@@ -20,18 +20,32 @@ const GameBoard = () => {
         currentPegsColor,
         setCurrentPegsColor,
         id,
+        colorblindMode,
+        setColorblindMode,
         attempts,
         loadBoard,
+        swapColors,
         updateMatch,
         isItActivePlayer,
         NUMBER_OF_ATTEMPTS,
         PEGS_PER_ROW,
     } = useGameData();
 
+    const loadUserSettings = async () => {
+        try {
+            const response = await axiosPrivate.get(BACKEND_SETTINGS_ENDPOINT);
+            if (response.status === 200) {
+                setColorblindMode(response?.data?.colorblindMode);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         loadBoard();
+        loadUserSettings();
     }, []);
-
 
     const handleSubmitRow = async () => {
         if (currentPegsColor.size !== 4) {
@@ -42,15 +56,18 @@ const GameBoard = () => {
             return;
         }
 
-        const sequence = [];
-        let temp = 0;
-        while (temp < PEGS_PER_ROW) {
-            sequence.push(currentPegsColor.get(temp));
-            temp++;
-        }
-
         try {
             const username = auth.username;
+
+            const colorSequence = [];
+            for (let i = 0; i < PEGS_PER_ROW; i++) {
+                colorSequence.push(currentPegsColor.get(i));
+            }
+
+            const sequence = colorblindMode
+                ? swapColors(colorSequence)
+                : colorSequence;
+
             const response = await axiosPrivate.put(BACKEND_DO_GUESS_ENDPOINT, {
                 username,
                 matchId: id,
@@ -58,9 +75,13 @@ const GameBoard = () => {
             });
 
             const { status, rightC, rightP } = response.data;
-            const newAttempt = {sequence: sequence, player: auth.username,
-                rightColours: rightC, rightPositions: rightP}
-            updateMatch(status,newAttempt);
+            const newAttempt = {
+                sequence: sequence,
+                player: auth.username,
+                rightColours: rightC,
+                rightPositions: rightP,
+            };
+            updateMatch(status, newAttempt);
             setCurrentPegsColor(new Map());
             //loadBoard();
         } catch (error) {
@@ -113,7 +134,8 @@ const GameBoard = () => {
                         borderRadius: "5px",
                     }}
                     disabled={
-                        attempts.length === NUMBER_OF_ATTEMPTS || !isItActivePlayer()
+                        attempts.length === NUMBER_OF_ATTEMPTS ||
+                        !isItActivePlayer()
                     }
                     variant="contained"
                     color="neutral"

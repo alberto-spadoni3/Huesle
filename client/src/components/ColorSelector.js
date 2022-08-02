@@ -3,12 +3,16 @@ import Stack from "@mui/material/Stack";
 import useGameData from "../hooks/useGameData";
 
 const ColorSelector = ({ theme }) => {
-    const { selectedColor, setSelectedColor, guessableColors } = useGameData();
+    const { selectedColor, setSelectedColor, guessableColors, colorblindMode } =
+        useGameData();
 
     const pegColor = (index) => {
+        const pegColor = colorblindMode
+            ? Array.from(guessableColors.values())[index]
+            : Array.from(guessableColors.keys())[index];
         return {
-            backgroundColor: guessableColors[index],
-            color: guessableColors[index],
+            backgroundColor: pegColor,
+            color: pegColor,
         };
     };
 
@@ -18,14 +22,14 @@ const ColorSelector = ({ theme }) => {
 
     return (
         <Stack direction="row" justifyContent="center">
-            {Array(guessableColors.length)
+            {Array(guessableColors.size)
                 .fill()
                 .map((_, index) => (
                     <Radio
                         key={index}
-                        checked={selectedColor === guessableColors[index]}
+                        checked={selectedColor === pegColor(index).color}
                         onChange={handleChange}
-                        value={guessableColors[index]}
+                        value={pegColor(index).color}
                         name="color-selector-radio"
                         sx={{
                             ...pegColor(index),
@@ -45,7 +49,9 @@ const ColorSelector = ({ theme }) => {
                             },
                         }}
                         inputProps={{
-                            "aria-label": `Click to select color ${guessableColors[index]}`,
+                            "aria-label": `Click to select color ${
+                                pegColor(index).color
+                            }`,
                         }}
                     />
                 ))}

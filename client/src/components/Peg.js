@@ -6,6 +6,8 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
         selectedColor,
         setCurrentPegsColor,
         attempts,
+        colorblindMode,
+        swapColors,
         isItActivePlayer,
         HintTypes,
     } = useGameData();
@@ -38,7 +40,12 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                     break;
             }
         } else if (attempts.length > isInRow) {
-            setPegColor(attempts[isInRow].sequence[pegID]);
+            const pegsColor = attempts[isInRow].sequence;
+            setPegColor(
+                colorblindMode
+                    ? swapColors(pegsColor, true)[pegID]
+                    : pegsColor[pegID]
+            );
         }
     });
 
