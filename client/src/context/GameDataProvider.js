@@ -2,7 +2,7 @@ import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import { axiosPrivate } from "../api/axios";
 import { BACKEND_GET_MATCH_ENDPOINT } from "../api/backend_endpoints";
-import { socket } from "../App";
+import useSocket from "../hooks/useSocket";
 
 const GameDataContext = createContext({});
 
@@ -22,7 +22,9 @@ export const GameDataProvider = ({ children }) => {
 
     const [endGame, setEndGame] = useState(false);
 
-    const { auth, MessageTypes } = useAuth();
+    const { auth } = useAuth();
+
+    const { socket, MessageTypes } = useSocket();
 
     const NUMBER_OF_ATTEMPTS = 10;
     const PEGS_PER_ROW = 4;
@@ -110,9 +112,11 @@ export const GameDataProvider = ({ children }) => {
         }
     }
 
-    socket.on(MessageTypes.NOTIFICATION, (data) => {
-        loadBoard();
-    });
+    useEffect(() => {
+        socket.on(MessageTypes.NEW_MOVE, () => {
+            loadBoard();
+        });
+    }, [socket]);
 
     return (
         <GameDataContext.Provider
@@ -137,6 +141,7 @@ export const GameDataProvider = ({ children }) => {
                 PEGS_PER_ROW,
                 guessableColors,
                 HintTypes,
+                GameStates,
             }}
         >
             {children}

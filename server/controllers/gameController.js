@@ -17,8 +17,8 @@ async function findUserId(username) {
 }
 
 const doGuess = async (req, res) => {
-    const { username, matchId, sequence } = req.body;
-    const userId = await findUserId(username);
+    const { matchId, sequence } = req.body;
+    const userId = await findUserId(req.username);
     if (!userId)
         return res.status(400).json({
             message: "Username not valid",
@@ -60,7 +60,7 @@ const doGuess = async (req, res) => {
     if (isMatchOver(status)) {
         emitMatchOver(matchId, status);
     } else {
-        emitNewMove(match.status.player, matchId);
+        emitNewMove(match.status.player, req.username, matchId);
     }
 
     res.status(200).json({
@@ -71,8 +71,8 @@ const doGuess = async (req, res) => {
 };
 
 const leaveMatch = async (req, res) => {
-    const { username, matchId } = req.body;
-    const userId = await findUserId(username, res);
+    const { matchId } = req.body;
+    const userId = await findUserId(req.username);
     if (!userId)
         return res.status(400).json({
             message: "Username not valid",

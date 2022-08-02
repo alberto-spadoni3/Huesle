@@ -2,9 +2,9 @@ import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 
 const updatePassword = async (req, res) => {
-    const { username, prevPassword, newPassword } = req.body;
+    const { prevPassword, newPassword } = req.body;
 
-    const userInDB = await UserModel.findOne({ username });
+    const userInDB = await UserModel.findOne({ username: req.username});
     if (!userInDB) {
         return res.sendStatus(401);
     }
