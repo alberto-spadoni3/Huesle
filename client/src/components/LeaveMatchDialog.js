@@ -47,14 +47,8 @@ export default function LeaveMatchDialog({
                     matchId: id
                 }
             );
-            enqueueSnackbar("Match against " + opponent + " abandoned", {
-                variant: "info",
-                autoHideDuration: 2500,
-            });
         } catch (error) {
-            if (!error?.response) {
-                console.log(error);
-            }
+            console.log(error);
         }
         handleClose(event);
     };

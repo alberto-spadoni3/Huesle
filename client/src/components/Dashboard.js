@@ -71,7 +71,13 @@ const Dashboard = () => {
 
     useEffect(() => {
         updateMatches();
-        socket.on([MessageTypes.NEW_MATCH, MessageTypes.NEW_MOVE, MessageTypes.END_MATCH], () => {
+        socket.on(MessageTypes.NEW_MATCH, () => {
+            updateMatches();
+        });
+        socket.on(MessageTypes.NEW_MOVE, () => {
+            updateMatches();
+        });
+        socket.on(MessageTypes.MATCH_OVER, () => {
             updateMatches();
         });
     }, [socket]);
@@ -81,28 +87,26 @@ const Dashboard = () => {
     }
 
     function generateRow(index, row_id, row_name, row_status) {
-        let button_label, button_type, button_state;
+        let button_label;
+        let button_type = "outlined";
+        let button_state = true;
         switch(row_status.state) {
             case GameStates.PLAYING:
                 if(row_status.player == auth.username) {
                     button_label = "It's your turn!";
                     button_type = "contained"
-                }
-                else {
+                } else {
                     button_label = "Opponent's turn...";
-                    button_type = "outlined";
                 };
                 button_state = false;
                 break;
-            case GameStates.WINNER || GameStates.DRAW:
-                button_label = "Match Over!";
-                button_type = "outlined"
-                button_state = true;
+            case GameStates.WINNER:
+                button_label = row_status.player == auth.username? "You won!": "You Lost...";
                 break;
+            case GameStates.DRAW:
+                button_label = "Draw";
             default:
                 button_label = "Waiting";
-                button_type = "outlined"
-                button_state = true;
                 break;
         }
         return (<TableRow

@@ -17,7 +17,7 @@ import BottomBar from "./BottomBar";
 import LeaveMatchDialog from "./LeaveMatchDialog";
 
 const Match = () => {
-    const { loadBoard, players, attempts } = useGameData();
+    const { loadBoard, players, attempts, status, isMatchOver, GameStates } = useGameData();
     const navigate = useNavigate();
     const { auth } = useAuth();
     const [leaveMatchDialogStatus, setLeaveMatchDialogStatus] = useState(false);
@@ -131,7 +131,19 @@ const Match = () => {
                         )}
                     </>
                 )}
-
+                {isMatchOver() && (
+                    <Typography variant="h5" align="center" sx={{
+                        marginTop: 2,
+                    }}>
+                        {status.state == GameStates.WINNER?
+                            (status.abandoned?
+                                ((status.player == auth.username? players.find(p => p != auth.username): "You") + " left the game and admitted defeat")
+                                :
+                                (status.player == auth.username? "You won!": "You lost..."))
+                            : "The match ended in a draw"
+                        }
+                    </Typography>
+                )}
                 <Button
                     sx={{
                         width: "100%",
@@ -141,25 +153,27 @@ const Match = () => {
                     variant="contained"
                     color="button"
                     startIcon={<SportsEsportsIcon />}
-                    aria-label="Play"
+                    aria-label= "Play"
                     onClick={() => navigate("/gameboard")}
                 >
-                    Play
+                    {!isMatchOver()? "Play": "Show game board"}
                 </Button>
-                <Button
-                    sx={{
-                        width: "100%",
-                        height: "40px",
-                        marginTop: 2,
-                    }}
-                    variant="outlined"
-                    color="button"
-                    startIcon={<OutlinedFlagIcon />}
-                    aria-label="Leave"
-                    onClick={() => setLeaveMatchDialogStatus(true)}
-                >
-                    Leave Match
-                </Button>
+                {!isMatchOver() && (
+                    <Button
+                        sx={{
+                            width: "100%",
+                            height: "40px",
+                            marginTop: 2,
+                        }}
+                        variant="outlined"
+                        color="button"
+                        startIcon={<OutlinedFlagIcon />}
+                        aria-label="Leave"
+                        onClick={() => setLeaveMatchDialogStatus(true)}
+                    >
+                        Leave Match
+                    </Button>
+                )}
                 <LeaveMatchDialog
                     leaveMatchDialogStatus={leaveMatchDialogStatus}
                     setLeaveMatchDialogStatus={setLeaveMatchDialogStatus}

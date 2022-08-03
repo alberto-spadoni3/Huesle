@@ -30,17 +30,26 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         socket.on(MessageTypes.NEW_MATCH, () => {
             enqueueSnackbar("New match found!", {
-                variant: "success",
+                variant: "info",
                 autoHideDuration: 2500,
             });
         });
 
         socket.on(MessageTypes.NEW_MOVE, (data) => {
             enqueueSnackbar("New move made on match against " + data.opponent, {
-                variant: "success",
+                variant: "info",
                 autoHideDuration: 2500,
             });
         });
+
+        socket.on(MessageTypes.MATCH_OVER, (data) => {
+            const players = JSON.parse(data)
+            enqueueSnackbar("The match against " + players.find(p => p != auth.username) + " is over!", {
+                variant: "info",
+                autoHideDuration: 2500,
+            });
+        });
+
     }, [socket])
 
     const MessageTypes = {
@@ -48,7 +57,7 @@ export const SocketProvider = ({ children }) => {
         SESSION: "session",
         NEW_MATCH: "new_match",
         NEW_MOVE: "new_move",
-        END_MATCH: "end_match"
+        MATCH_OVER: "match_over"
     }
 
     return (

@@ -58,7 +58,7 @@ const doGuess = async (req, res) => {
     match.save();
 
     if (isMatchOver(status)) {
-        emitMatchOver(matchId, status);
+        emitMatchOver(matchId, match.players);
     } else {
         emitNewMove(match.status.player, req.username, matchId);
     }
@@ -88,9 +88,10 @@ const leaveMatch = async (req, res) => {
     }
     if (!isMatchOver(match.status)) {
         match.status.state = GameStates.WINNER;
-        match.status.player = changePlayer(match.players, match.status.players);
+        match.status.player = changePlayer(match.players, userId);
+        match.status.abandoned = true;
         match.save();
-        emitMatchOver(matchId, match.status);
+        emitMatchOver(matchId,  match.players);
         return res.status(200).json({
             message: "Conceded victory to adversary from " + req.username,
         });

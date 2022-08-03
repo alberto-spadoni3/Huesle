@@ -162,7 +162,7 @@ function createMatch(p1, p2, repetitions) {
     }
 
     const newMatch = new MatchModel(matchDoc);
-    emitNewMatch(newMatch.players, newMatch._id);
+    emitNewMatch(newMatch.players, newMatch._id.toString());
     return newMatch.save();
 }
 

@@ -63,13 +63,13 @@ function elaborateTurn(guess, solution, currentState, players) {
         else {
             currentState.player = changePlayer(players, currentState.player);
         }
-    } else currentState = GameStates.DRAW;
+    } else currentState.state = GameStates.DRAW;
     return {status: currentState, rightC: values.colours, rightP: values.positions};
 }
 
 function isMatchOver(status) {
     const terminatingStates = [GameStates.DRAW, GameStates.WINNER];
-    return terminatingStates.includes(status);
+    return terminatingStates.includes(status.state);
 }
 
 function isPlayerTurn(player, status) {
@@ -77,7 +77,7 @@ function isPlayerTurn(player, status) {
 }
 
 function changePlayer(players, prevActivePlayer) {
-    return players.filter(p => p != prevActivePlayer)[0]
+    return players.find(p => p != prevActivePlayer)
 }
 
 export {createSolutionWithoutRepetition, createRandomSolutionWithRepetition, checkGuess,
