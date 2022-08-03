@@ -92,7 +92,7 @@ const leaveMatch = async (req, res) => {
         match.save();
         emitMatchOver(matchId, match.status);
         return res.status(200).json({
-            message: "Conceded victory to adversary from " + username,
+            message: "Conceded victory to adversary from " + req.username,
         });
     } else {
         return res.status(400).json({

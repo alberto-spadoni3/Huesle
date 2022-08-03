@@ -10,14 +10,17 @@ import React, { useState, useEffect } from "react";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
 import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
 import BottomBar from "./BottomBar";
+import LeaveMatchDialog from "./LeaveMatchDialog";
 
 const Match = () => {
     const { loadBoard, players, attempts } = useGameData();
     const navigate = useNavigate();
     const { auth } = useAuth();
+    const [leaveMatchDialogStatus, setLeaveMatchDialogStatus] = useState(false);
 
     useEffect(() => {
         loadBoard();
@@ -134,7 +137,6 @@ const Match = () => {
                         width: "100%",
                         height: "50px",
                         marginTop: 2,
-                        //marginBottom: 2,
                     }}
                     variant="contained"
                     color="button"
@@ -144,6 +146,24 @@ const Match = () => {
                 >
                     Play
                 </Button>
+                <Button
+                    sx={{
+                        width: "100%",
+                        height: "40px",
+                        marginTop: 2,
+                    }}
+                    variant="outlined"
+                    color="button"
+                    startIcon={<OutlinedFlagIcon />}
+                    aria-label="Leave"
+                    onClick={() => setLeaveMatchDialogStatus(true)}
+                >
+                    Leave Match
+                </Button>
+                <LeaveMatchDialog
+                    leaveMatchDialogStatus={leaveMatchDialogStatus}
+                    setLeaveMatchDialogStatus={setLeaveMatchDialogStatus}
+                />
                 {/* FOOTER */}
                 <BottomBar></BottomBar>
             </Box>

@@ -49,10 +49,6 @@ export default function SearchPrivateMatchDialog({
         }
     };
 
-    const listenOnSocket = async () => {
-
-    }
-
     const handleClose = async (event) => {
         event.preventDefault();
         try {

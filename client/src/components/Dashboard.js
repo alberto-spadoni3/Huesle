@@ -71,7 +71,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         updateMatches();
-        socket.on(MessageTypes.NEW_MATCH, () => {
+        socket.on([MessageTypes.NEW_MATCH, MessageTypes.NEW_MOVE, MessageTypes.END_MATCH], () => {
             updateMatches();
         });
     }, [socket]);
