@@ -4,7 +4,7 @@ import {
     Stack,
     Typography,
     Button,
-    AvatarGroup,
+    AvatarGroup, Fade,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import BackButton from "./BackButton";
@@ -12,11 +12,12 @@ import { useNavigate } from "react-router-dom";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
+import BottomBar from "./BottomBar";
 
 const Match = () => {
+    const { loadBoard, players, attempts } = useGameData();
     const navigate = useNavigate();
     const { auth } = useAuth();
-    const { loadBoard, players, attempts } = useGameData();
 
     useEffect(() => {
         loadBoard();
@@ -74,10 +75,11 @@ const Match = () => {
     return (
         <>
             <BackButton />
+        <Fade in={true}>
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "column"
                 }}
             >
                 <Typography variant="h4" align="center">
@@ -103,7 +105,7 @@ const Match = () => {
                             />
                         </Stack>
 
-                        <Typography variant="h4">Attempts</Typography>
+                        <Typography variant="h4" >Attempts</Typography>
                         {attempts.length > 0 ? (
                             attempts.map((item, index) => (
                                 <Stack
@@ -132,7 +134,7 @@ const Match = () => {
                         width: "100%",
                         height: "50px",
                         marginTop: 2,
-                        marginBottom: 2,
+                        //marginBottom: 2,
                     }}
                     variant="contained"
                     color="button"
@@ -142,7 +144,10 @@ const Match = () => {
                 >
                     Play
                 </Button>
+                {/* FOOTER */}
+                <BottomBar></BottomBar>
             </Box>
+        </Fade>
         </>
     );
 };

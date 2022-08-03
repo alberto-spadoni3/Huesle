@@ -1,33 +1,27 @@
 import {
     Box,
     Button,
+    Fade,
     styled,
-    Stack,
-    Avatar,
-    Typography,
-    IconButton,
     TableCell,
     TableContainer,
     TableRow,
     TableHead,
     Table,
-    TableBody,
-    Paper,
+    TableBody
 } from "@mui/material";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import {useEffect, useLayoutEffect, useState} from "react";
+import { TransitionGroup } from 'react-transition-group';
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import DashboardMenu from "./DashboardMenu";
 import { axiosPrivate } from "../api/axios";
 import {
     BACKEND_GET_MATCHES_ENDPOINT
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 import useGameData from "../hooks/useGameData";
-import {useSnackbar} from "notistack";
 import useSocket from "../hooks/useSocket";
+import BottomBar from "./BottomBar";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -36,21 +30,6 @@ const Dashboard = () => {
     const { socket, MessageTypes} = useSocket();
     const open = Boolean(anchorElement);
     const { loadBoard, GameStates } = useGameData();
-    const { enqueueSnackbar } = useSnackbar();
-
-    const handleMenuOpening = (event) => {
-        setAnchorElement(event.currentTarget);
-    };
-
-    const MenuTooltip = styled(({ className, ...props }) => (
-        <Tooltip {...props} classes={{ popper: className }} />
-    ))(({ theme }) => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: theme.palette.tooltip.main,
-            color: theme.palette.text.secondary,
-            fontSize: 16,
-        },
-    }));
 
     const ActiveMatchesCard = styled(Box)(({ theme }) => ({
         width: "100%",
@@ -70,13 +49,18 @@ const Dashboard = () => {
             const { pending, matches } = response.data;
             if (pending)
                 temp_rows.push(createData(null, "Searching...", "Waiting"));
-            matches.sort((a, _) => a.status.state == GameStates.PLAYING ? -1 : 1)
+            matches.sort((a, b) => {
+                if(a.status.state == GameStates.PLAYING && b.status.state == GameStates.PLAYING) {
+                    return a.status.player == auth.username ? -1 : 1;
+                } else return a.status.state == GameStates.PLAYING ? -1 : 1;
+
+            })
             matches.forEach((match) => {
                 const opponent = match.players.find(
                     (name) => name != auth.username
                 );
                 temp_rows.push(
-                    createData(match._id, opponent, match.status.state)
+                    createData(match._id, opponent, match.status)
                 );
             });
             setRows(temp_rows);
@@ -92,14 +76,56 @@ const Dashboard = () => {
         });
     }, [socket]);
 
-    useLayoutEffect(() => {
-
-        //return () => socket.off(MessageTypes.NEW_MATCH);
-    }, [])
-
-
     function createData(id, name, status) {
         return { id, name, status };
+    }
+
+    function generateRow(index, row_id, row_name, row_status) {
+        let button_label, button_type, button_state;
+        switch(row_status.state) {
+            case GameStates.PLAYING:
+                if(row_status.player == auth.username) {
+                    button_label = "It's your turn!";
+                    button_type = "contained"
+                }
+                else {
+                    button_label = "Opponent's turn...";
+                    button_type = "outlined";
+                };
+                button_state = false;
+                break;
+            case GameStates.WINNER || GameStates.DRAW:
+                button_label = "Match Over!";
+                button_type = "outlined"
+                button_state = true;
+                break;
+            default:
+                button_label = "Waiting";
+                button_type = "outlined"
+                button_state = true;
+                break;
+        }
+        return (<TableRow
+            key={index}
+            onClick={() =>
+                openSelectedMatch(row_id)
+            }
+        >
+            <TableCell component="th" scope="row">
+                {row_name}
+            </TableCell>
+            <TableCell component="th" scope="row" align="center">
+                <Button
+                    sx={{ width: "70%", height: "50%", fontSize: "70%"}}
+                    variant={button_type}
+                    aria-label={row_id + "status"}
+                    onClick={() => openSelectedMatch(row_id)}
+                    disabled={button_state}
+                >
+                    {button_label}
+                </Button>
+            </TableCell>
+        </TableRow>);
     }
 
     async function openSelectedMatch(matchId) {
@@ -109,8 +135,8 @@ const Dashboard = () => {
         }
 
         try {
-            loadBoard(matchId);
-            navigate("/match-details");
+            loadBoard(matchId).then(() =>
+                navigate("/match-details"));
         } catch (error) {
             console.log(error);
         }
@@ -118,6 +144,7 @@ const Dashboard = () => {
 
     return (
         <>
+        <Fade in={true}>
             <Box
                 sx={{
                     display: "flex",
@@ -143,82 +170,29 @@ const Dashboard = () => {
                     }}
                 >
                     <TableContainer>
-                        <Table
-                            sx={{
-                                minWidth: 250,
-                            }}
-                            aria-label="simple table"
-                        >
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Match with</TableCell>
-                                    <TableCell align="center">Status</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {rows.map((row, index) => (
-                                    <TableRow
-                                        key={index}
-                                        onClick={() =>
-                                            openSelectedMatch(row.id)
-                                        }
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            {row.status}
-                                        </TableCell>
+                            <Table
+                                sx={{
+                                    minWidth: 250,
+                                }}
+                                aria-label="simple table"
+                            >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Match with</TableCell>
+                                        <TableCell align="center">Status</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.map((row, index) => (
+                                        generateRow(index, row.id, row.name, row.status)
+                                    ))}
+                                </TableBody>
+                            </Table>
                     </TableContainer>
                 </ActiveMatchesCard>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "80%",
-                    }}
-                >
-                    <Stack
-                        direction="row"
-                        justifyContent="space-evenly"
-                        alignItems="center"
-                        width="inherit"
-                        spacing={4}
-                    >
-                        <Avatar
-                            sx={{ bgcolor: "orange", width: 60, height: 60 }}
-                        >
-                            {auth.username[0].toUpperCase()}
-                        </Avatar>
-                        <Typography variant="h6" pl={"6px"}>
-                            {auth.username}
-                        </Typography>
-                        <IconButton
-                            onClick={(e) => handleMenuOpening(e)}
-                            aria-label="Open menu"
-                        >
-                            <MenuRoundedIcon
-                                fontSize="large"
-                                sx={{
-                                    border: "3px solid",
-                                    borderColor: "palette.text.secondary",
-                                    borderRadius: "50%",
-                                    padding: "5px",
-                                }}
-                            />
-                        </IconButton>
-                    </Stack>
-                </Box>
+                <BottomBar></BottomBar>
             </Box>
-            <DashboardMenu
-                anchorEl={anchorElement}
-                setAnchorEl={setAnchorElement}
-                open={open}
-            />
+        </Fade>
         </>
     );
 };

@@ -1,37 +1,25 @@
 import {
     Box,
-    Button,
-    Stack,
-    Avatar,
-    Typography,
-    IconButton,
+    Button, Fade,
+    Typography
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import DashboardMenu from "./DashboardMenu";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
 import { axiosPrivate } from "../api/axios";
 import { BACKEND_SEARCH_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
-import useAuth from "../hooks/useAuth";
-import useGameData from "../hooks/useGameData";
+import BottomBar from "./BottomBar";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
-    const [anchorElement, setAnchorElement] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
-    const open = Boolean(anchorElement);
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [joinPrivateOpen, setJoinPrivateOpen] = useState(false);
-
-    const handleMenuOpening = (event) => {
-        setAnchorElement(event.currentTarget);
-    };
 
     const generatePublicMatch = async () => {
         try {
@@ -61,6 +49,7 @@ const SearchMatch = () => {
     return (
         <>
             <BackButton />
+            <Fade in={true}>
             <Box
                 sx={{
                     display: "flex",
@@ -139,53 +128,10 @@ const SearchMatch = () => {
                     open={joinPrivateOpen}
                     setOpen={setJoinPrivateOpen}
                 />
-
                 {/* FOOTER */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "80%",
-                        margin: "1rem 0 0.4rem 0",
-                    }}
-                >
-                    <Stack
-                        direction="row"
-                        justifyContent="space-evenly"
-                        alignItems="center"
-                        width="inherit"
-                        spacing={4}
-                    >
-                        <Avatar
-                            sx={{ bgcolor: "orange", width: 60, height: 60 }}
-                        >
-                            A
-                        </Avatar>
-                        <Typography variant="h6" pl={"6px"}>
-                            Albisyx
-                        </Typography>
-                        <IconButton
-                            onClick={(e) => handleMenuOpening(e)}
-                            aria-label="Open menu"
-                        >
-                            <MenuRoundedIcon
-                                fontSize="large"
-                                sx={{
-                                    border: "3px solid",
-                                    borderColor: "palette.text.secondary",
-                                    borderRadius: "50%",
-                                    padding: "5px",
-                                }}
-                            />
-                        </IconButton>
-                    </Stack>
-                </Box>
+                <BottomBar></BottomBar>
             </Box>
-            <DashboardMenu
-                anchorEl={anchorElement}
-                setAnchorEl={setAnchorElement}
-                open={open}
-            />
+            </Fade>
         </>
     );
 };

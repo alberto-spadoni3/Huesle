@@ -1,4 +1,4 @@
-import { Box, Typography, styled } from "@mui/material";
+import {Box, Typography, styled, Fade} from "@mui/material";
 import React from "react";
 import BackButton from "./BackButton";
 
@@ -27,6 +27,7 @@ const GameRules = () => {
     return (
         <>
             <BackButton />
+            <Fade in={true}>
             <Box
                 sx={{
                     width: "inherit",
@@ -44,6 +45,7 @@ const GameRules = () => {
                     ))}
                 </RulesBox>
             </Box>
+            </Fade>
         </>
     );
 };

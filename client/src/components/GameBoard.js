@@ -1,4 +1,4 @@
-import { Box, Stack, Button } from "@mui/material";
+import {Box, Stack, Button, Fade} from "@mui/material";
 import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
@@ -91,7 +91,8 @@ const GameBoard = () => {
     return (
         <>
             <BackButton />
-
+            <Fade in={true}>
+            <Box>
             <Box
                 sx={{
                     border: "3px ridge",
@@ -144,6 +145,8 @@ const GameBoard = () => {
                 </Button>
             </Box>
             <div style={{ height: "8px" }}></div>
+            </Box>
+            </Fade>
         </>
     );
 };

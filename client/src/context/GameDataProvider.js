@@ -109,6 +109,7 @@ export const GameDataProvider = ({ children }) => {
                 setAttempts(attempts);
             });
             localStorage.setItem("matchId", matchId);
+            return Promise.resolve();
         }
     }
 

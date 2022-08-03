@@ -22,6 +22,8 @@ import GameRules from "./components/GameRules";
 import Match from "./components/Match";
 import { SocketProvider } from "./context/SocketProvider";
 
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
 

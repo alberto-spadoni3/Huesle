@@ -1,4 +1,4 @@
-import { Box, Typography, Avatar, Stack, Switch } from "@mui/material";
+import {Box, Typography, Avatar, Stack, Switch, Fade} from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect } from "react";
 import BackButton from "./BackButton";
@@ -65,6 +65,7 @@ const Settings = ({ themeMode, setThemeMode }) => {
     return (
         <>
             <BackButton />
+            <Fade in={true}>
             <Box
                 sx={{
                     width: "inherit",
@@ -121,6 +122,7 @@ const Settings = ({ themeMode, setThemeMode }) => {
                     </SettingContainer>
                 </Stack>
             </Box>
+            </Fade>
         </>
     );
 };
