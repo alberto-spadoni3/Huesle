@@ -80,14 +80,15 @@ export default function SearchPrivateMatchDialog({
                         socket.off(MessageTypes.NEW_MATCH);
                         setSearchPrivateOpen(false);
                         navigate("/dashboard", { replace: true });
-                        enqueueSnackbar("Private match created!", {
-                            variant: "success",
-                            autoHideDuration: 2500,
-                        });
                     });
                 }
             });
         }
+
+        window.addEventListener('unload', handleClose);
+        return () => {
+            window.removeEventListener('unload', handleClose);
+        };
     }, [connectOpen]);
 
     return (

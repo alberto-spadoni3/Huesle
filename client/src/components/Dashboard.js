@@ -8,9 +8,8 @@ import {
     TableRow,
     TableHead,
     Table,
-    TableBody
+    TableBody, Typography
 } from "@mui/material";
-import { TransitionGroup } from 'react-transition-group';
 import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -30,7 +29,7 @@ const Dashboard = () => {
     const { auth } = useAuth();
     const { socket, MessageTypes} = useSocket();
     const open = Boolean(anchorElement);
-    const { loadBoard, GameStates } = useGameData();
+    const { loadBoard, GameStates, isMatchOver } = useGameData();
 
     const ActiveMatchesCard = styled(Box)(({ theme }) => ({
         width: "100%",
@@ -40,10 +39,12 @@ const Dashboard = () => {
     }));
 
     const [rows, setRows] = useState([]);
+    const [endedRows, setEndedRows] = useState([]);
 
     async function updateMatches() {
         try {
             const temp_rows = [];
+            const temp_endedrows = [];
             const response = await axiosPrivate.get(
                 BACKEND_GET_MATCHES_ENDPOINT
             );
@@ -60,11 +61,12 @@ const Dashboard = () => {
                 const opponent = match.players.find(
                     (name) => name != auth.username
                 );
-                temp_rows.push(
-                    createData(match._id, opponent, match.status)
-                );
+                (match.status.state == GameStates.PLAYING)?
+                    temp_rows.push(createData(match._id, opponent, match.status)):
+                    temp_endedrows.push(createData(match._id, opponent, match.status));
             });
             setRows(temp_rows);
+            setEndedRows(temp_endedrows);
         } catch (error) {
             console.log(error);
         }
@@ -106,6 +108,7 @@ const Dashboard = () => {
                 break;
             case GameStates.DRAW:
                 button_label = "Draw";
+                break;
             default:
                 button_label = "Waiting";
                 break;
@@ -158,7 +161,7 @@ const Dashboard = () => {
                 }}
             >
                 <Button
-                    sx={{ width: "100%", height: "50px", marginTop: 3 }}
+                    sx={{ width: "100%", height: "50px", marginTop: 3, marginBottom: 2 }}
                     variant="contained"
                     startIcon={<SearchIcon />}
                     aria-label="Search Match"
@@ -167,11 +170,15 @@ const Dashboard = () => {
                     Search Match
                 </Button>
 
+                <Typography variant="h6" align="center">
+                    Active Matches
+                </Typography>
                 <ActiveMatchesCard
                     sx={{
                         border: "2px solid",
                         borderColor: "palette.text.secondary",
                         background: "palette.background.paper",
+                        marginBottom: 2
                     }}
                 >
                     <TableContainer>
@@ -183,7 +190,7 @@ const Dashboard = () => {
                             >
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Match with</TableCell>
+                                        <TableCell>Match against</TableCell>
                                         <TableCell align="center">Status</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -193,6 +200,40 @@ const Dashboard = () => {
                                     ))}
                                 </TableBody>
                             </Table>
+                    </TableContainer>
+                </ActiveMatchesCard>
+
+                <Typography variant="h6" align="center">
+                    Completed Matches
+                </Typography>
+                <ActiveMatchesCard
+                    sx={{
+                        border: "2px solid",
+                        borderColor: "palette.text.secondary",
+                        background: "palette.background.paper",
+                    }}
+                >
+                    <TableContainer>
+                        <Table
+                            sx={{
+                                minWidth: 250,
+                            }}
+                            aria-label="simple table"
+                        >
+                            <TableHead>
+                                <TableRow>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>Match against</TableCell>
+                                    <TableCell align="center">Result</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {endedRows.map((row, index) => (
+                                    generateRow(index, row.id, row.name, row.status)
+                                ))}
+                            </TableBody>
+                        </Table>
                     </TableContainer>
                 </ActiveMatchesCard>
                 <BottomBar></BottomBar>
