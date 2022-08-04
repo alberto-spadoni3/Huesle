@@ -9,13 +9,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
-import { axiosPrivate } from "../api/axios";
 import { BACKEND_SEARCH_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
 import BottomBar from "./BottomBar";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
+    const axiosPrivate = useAxiosPrivate()
     const { enqueueSnackbar } = useSnackbar();
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);

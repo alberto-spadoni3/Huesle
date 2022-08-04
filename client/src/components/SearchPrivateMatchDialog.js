@@ -8,13 +8,13 @@ import {
     DialogContentText,
     DialogTitle,
     Slide } from "@mui/material";
-import {axiosPrivate} from "../api/axios";
 import {
     BACKEND_SEARCH_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
 import useSocket from "../hooks/useSocket";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -28,6 +28,7 @@ export default function SearchPrivateMatchDialog({
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const axiosPrivate = useAxiosPrivate()
     const {socket, MessageTypes} = useSocket();
     const navigate = useNavigate();
 

@@ -14,7 +14,6 @@ import { TransitionGroup } from 'react-transition-group';
 import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { axiosPrivate } from "../api/axios";
 import {
     BACKEND_GET_MATCHES_ENDPOINT
 } from "../api/backend_endpoints";
@@ -22,9 +21,11 @@ import useAuth from "../hooks/useAuth";
 import useGameData from "../hooks/useGameData";
 import useSocket from "../hooks/useSocket";
 import BottomBar from "./BottomBar";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const axiosPrivate = useAxiosPrivate()
     const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
     const { socket, MessageTypes} = useSocket();

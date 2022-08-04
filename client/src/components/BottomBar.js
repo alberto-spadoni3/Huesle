@@ -1,33 +1,16 @@
 import {
     Box,
-    Button,
     styled,
     Stack,
     Avatar,
     Typography,
     IconButton,
-    TableCell,
-    TableContainer,
-    TableRow,
-    TableHead,
-    Table,
-    TableBody,
-    Paper,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import {useEffect, useLayoutEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
+import {useState} from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
-import { axiosPrivate } from "../api/axios";
-import {
-    BACKEND_GET_MATCHES_ENDPOINT
-} from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
-import useGameData from "../hooks/useGameData";
-import {useSnackbar} from "notistack";
-import useSocket from "../hooks/useSocket";
 
 const BottomBar = () => {
     const [anchorElement, setAnchorElement] = useState(null);

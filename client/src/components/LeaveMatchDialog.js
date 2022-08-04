@@ -8,16 +8,14 @@ import {
     DialogContentText,
     DialogTitle,
     Slide } from "@mui/material";
-import {axiosPrivate} from "../api/axios";
 import {
-    BACKEND_LEAVE_MATCH_ENDPOINT,
-    BACKEND_SEARCH_MATCH_ENDPOINT,
+    BACKEND_LEAVE_MATCH_ENDPOINT
 } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
-import useSocket from "../hooks/useSocket";
 import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -27,10 +25,8 @@ export default function LeaveMatchDialog({
     leaveMatchDialogStatus,
     setLeaveMatchDialogStatus,
 }) {
-
-    const { enqueueSnackbar } = useSnackbar();
-    const navigate = useNavigate();
     const {auth} = useAuth();
+    const axiosPrivate = useAxiosPrivate()
     const {id, players} = useGameData();
     const opponent = players.find(p => p != auth.username);
 

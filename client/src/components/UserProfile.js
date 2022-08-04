@@ -7,12 +7,13 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import LogoutIcon from "@mui/icons-material/Logout";
-import {axiosPrivate} from "../api/axios";
-import {BACKEND_GET_USER_STATS_ENDPOINT, BACKEND_SETTINGS_ENDPOINT} from "../api/backend_endpoints";
+import {BACKEND_GET_USER_STATS_ENDPOINT} from "../api/backend_endpoints";
 import {useEffect, useState} from "react";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const UserProfile = () => {
     const navigate = useNavigate();
+    const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth();
     const logout = useLogout();
 
@@ -30,7 +31,7 @@ const UserProfile = () => {
     useEffect(() => {
         try {
             const response = axiosPrivate.get(BACKEND_GET_USER_STATS_ENDPOINT);
-            response.then(() => {
+            response.then(response => {
                 console.log(response.data);
                 if (response.status === 200) {
                     setStats(response.data)

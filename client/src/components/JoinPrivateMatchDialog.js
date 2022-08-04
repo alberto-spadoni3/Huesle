@@ -8,12 +8,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import {axiosPrivate} from "../api/axios";
 import { BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT } from "../api/backend_endpoints";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -24,7 +23,7 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
 
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
-    const {auth} = useAuth();
+    const axiosPrivate = useAxiosPrivate()
     const navigate = useNavigate();
 
     const handleSearch = async (event) => {
