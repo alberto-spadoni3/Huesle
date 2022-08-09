@@ -12,28 +12,25 @@ import {
     TableHead,
     Table,
     TableBody,
-    Paper,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import {useEffect, useLayoutEffect, useState} from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
 import { axiosPrivate } from "../api/axios";
-import {
-    BACKEND_GET_MATCHES_ENDPOINT
-} from "../api/backend_endpoints";
+import { BACKEND_GET_MATCHES_ENDPOINT } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
 import useGameData from "../hooks/useGameData";
-import {useSnackbar} from "notistack";
+import { useSnackbar } from "notistack";
 import useSocket from "../hooks/useSocket";
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
-    const { socket, MessageTypes} = useSocket();
+    const { socket, MessageTypes } = useSocket();
     const open = Boolean(anchorElement);
     const { loadBoard, GameStates } = useGameData();
     const { enqueueSnackbar } = useSnackbar();
@@ -70,7 +67,9 @@ const Dashboard = () => {
             const { pending, matches } = response.data;
             if (pending)
                 temp_rows.push(createData(null, "Searching...", "Waiting"));
-            matches.sort((a, _) => a.status.state == GameStates.PLAYING ? -1 : 1)
+            matches.sort((a, _) =>
+                a.status.state == GameStates.PLAYING ? -1 : 1
+            );
             matches.forEach((match) => {
                 const opponent = match.players.find(
                     (name) => name != auth.username
@@ -93,10 +92,8 @@ const Dashboard = () => {
     }, [socket]);
 
     useLayoutEffect(() => {
-
         //return () => socket.off(MessageTypes.NEW_MATCH);
-    }, [])
-
+    }, []);
 
     function createData(id, name, status) {
         return { id, name, status };

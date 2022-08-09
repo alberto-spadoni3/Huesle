@@ -3,14 +3,9 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const imageSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
+    id: {
+        type: Number,
     },
-    img: {
-            data: Buffer,
-            contentType: String,
-        }
 });
 
-export const ImageModel = mongoose.model("Image", imageSchema, 'images');
+export const ImageModel = mongoose.model("Image", imageSchema, "images");
