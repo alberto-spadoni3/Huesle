@@ -125,14 +125,16 @@ const UserPicture = ({ size, edit }) => {
                     </>
                 )}
             </Stack>
-            <Button
-                variant="outlined"
-                disabled={currentUserPic === picSelector}
-                sx={{ mt: 1.5, mb: 1.5 }}
-                onClick={updateUseerPicture}
-            >
-                Update picture
-            </Button>
+            {edit && (
+                <Button
+                    variant="outlined"
+                    disabled={currentUserPic === picSelector}
+                    sx={{ mt: 1.5, mb: 1.5 }}
+                    onClick={updateUseerPicture}
+                >
+                    Update picture
+                </Button>
+            )}
         </>
     );
 };
