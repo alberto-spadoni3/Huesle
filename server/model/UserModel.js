@@ -19,7 +19,7 @@ const userSchema = new Schema({
         unique: true,
     },
     refreshToken: String,
-    profilePicName: String,
+    profilePicID: Number,
     darkMode: {
         type: Boolean,
         default: true,

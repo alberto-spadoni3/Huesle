@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const updatePassword = async (req, res) => {
     const { prevPassword, newPassword } = req.body;
 
-    const userInDB = await UserModel.findOne({ username: req.username});
+    const userInDB = await UserModel.findOne({ username: req.username });
     if (!userInDB) {
         return res.sendStatus(401);
     }
@@ -76,24 +76,30 @@ const updateSettings = async (req, res) => {
     res.sendStatus(200);
 };
 
-const updateProfilePic = async (req, res) => {
+const getUserPic = async (req, res) => {
     const username = req.username;
-    const { picName } = req.body;
-    const image = await ImageModel.find({ name: picName });
-    const userInDB = await UserModel.findOne({ username });
-    if (!userInDB || image) {
-        return res.sendStatus(401);
-    }
-    userInDB.profilePicName = picName;
-    await userDB.save();
-    res.sendStatus(200);
+
+    const userPicID = await UserModel.findOne({ username }, "profilePicID");
+    if (!userPicID) return res.sendStatus(402);
+
+    res.status(200).json({ userPicID: userPicID.profilePicID });
 };
 
-const getAvailableProfilePics = async (req, res) => {
-    const images = await ImageModel.find();
-    res.status(200).json({
-        images: images,
-    });
+const updateProfilePic = async (req, res) => {
+    const username = req.username;
+    const { profilePicID } = req.body;
+
+    const userInDB = await UserModel.findOneAndUpdate(
+        { username },
+        { profilePicID },
+        { new: true } // tells the function to return the updated object
+    );
+
+    if (!userInDB) {
+        return res.sendStatus(401);
+    }
+
+    res.status(200).json({ message: "User picture updated" });
 };
 
 export const settingController = {
@@ -101,6 +107,6 @@ export const settingController = {
     updateUsername,
     getSettings,
     updateSettings,
-    getAvailableProfilePics,
+    getUserPic,
     updateProfilePic,
 };

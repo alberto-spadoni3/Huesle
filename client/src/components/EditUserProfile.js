@@ -1,26 +1,15 @@
 import SaveIcon from "@mui/icons-material/Save";
-import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import {
-    Stack,
-    TextField,
-    Typography,
-    Box,
-    Button,
-    IconButton,
-    Avatar,
-    Divider,
-} from "@mui/material";
+import { TextField, Typography, Box, Button, Divider } from "@mui/material";
 import BackButton from "./BackButton";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useAuth from "../hooks/useAuth";
-import useRefreshToken from "../hooks/useRefreshToken";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import {
     BACKEND_UPDATE_USERNAME,
     BACKEND_UPDATE_PASSWORD_ENDPOINT,
 } from "../api/backend_endpoints";
+import UserPicture from "./UserPicture";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -28,9 +17,8 @@ const PASSWORD_REGEX =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const EditUserProfile = () => {
-    const { auth, setAuth } = useAuth();
+    const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
-    const refresh = useRefreshToken();
     const { enqueueSnackbar } = useSnackbar();
 
     const [email, setEmail] = useState("");
@@ -77,7 +65,7 @@ const EditUserProfile = () => {
                 if (response.status === 200) {
                     console.log("username updated");
                     // refresh the username and the accessToken wich reflects the updated username
-                    await refresh();
+                    // await refresh();
                     setUsername("");
                     enqueueSnackbar("Username updated", { variant: "success" });
                 }
@@ -163,24 +151,7 @@ const EditUserProfile = () => {
                     alignItems: "center",
                 }}
             >
-                <Stack direction="row" justifyContent="space-evenly">
-                    <IconButton aria-label="select left image">
-                        <ArrowLeftRoundedIcon fontSize="large" />
-                    </IconButton>
-                    <Avatar
-                        sx={{
-                            m: 1,
-                            bgcolor: "primary.main",
-                            width: 100,
-                            height: 100,
-                        }}
-                    >
-                        LB
-                    </Avatar>
-                    <IconButton aria-label="select right image">
-                        <ArrowRightRoundedIcon fontSize="large" />
-                    </IconButton>
-                </Stack>
+                <UserPicture size={200} edit />
 
                 <Box
                     sx={{
