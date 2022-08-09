@@ -143,12 +143,14 @@ const leaveSearchPrivateMatch = async (req, res) => {
 };
 
 function createMatch(p1, p2, repetitions) {
+    const players = [p1, p2];
+    const first_player = players[Math.floor((Math.random()*players.length))];
     const matchDoc = {
-        players: [p1, p2],
+        players: players,
         status: {
             state: GameStates.PLAYING,
             turn: 0,
-            player: p1,
+            player: first_player,
         },
         date: mongoose.now(),
     };
@@ -160,7 +162,7 @@ function createMatch(p1, p2, repetitions) {
     }
 
     const newMatch = new MatchModel(matchDoc);
-    emitNewMatch(newMatch.players, newMatch._id);
+    emitNewMatch(newMatch.players, newMatch._id.toString());
     return newMatch.save();
 }
 

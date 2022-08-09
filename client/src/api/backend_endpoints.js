@@ -18,6 +18,8 @@ export const BACKEND_JOIN_PRIVATE_MATCH_ENDPOINT = "/search/joinPrivateMatch";
 export const BACKEND_GET_MATCH_ENDPOINT = "/game/getMatch";
 export const BACKEND_DO_GUESS_ENDPOINT = "/game/doGuess";
 
+export const BACKEND_LEAVE_MATCH_ENDPOINT = "/game/leaveMatch";
+
 //Socket
 export const BACKEND_SOCKET_ENDPOINT = "http://localhost:3001";
 
@@ -25,3 +27,5 @@ export const BACKEND_SOCKET_ENDPOINT = "http://localhost:3001";
 export const BACKEND_GET_MATCHES_ENDPOINT = "/stats/allMatches";
 
 export const BACKEND_UPDATE_USERPIC_ENDPOIND = "/setting/profilePics";
+
+export const BACKEND_GET_USER_STATS_ENDPOINT = "/stats/userStats";

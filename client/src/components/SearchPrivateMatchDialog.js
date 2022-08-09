@@ -8,13 +8,13 @@ import {
     DialogContentText,
     DialogTitle,
     Slide } from "@mui/material";
-import {axiosPrivate} from "../api/axios";
 import {
     BACKEND_SEARCH_MATCH_ENDPOINT,
 } from "../api/backend_endpoints";
 import { useSnackbar } from "notistack";
 import {useNavigate} from "react-router-dom";
 import useSocket from "../hooks/useSocket";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -28,6 +28,7 @@ export default function SearchPrivateMatchDialog({
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
     const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const axiosPrivate = useAxiosPrivate()
     const {socket, MessageTypes} = useSocket();
     const navigate = useNavigate();
 
@@ -48,10 +49,6 @@ export default function SearchPrivateMatchDialog({
             setConnectOpen(false);
         }
     };
-
-    const listenOnSocket = async () => {
-
-    }
 
     const handleClose = async (event) => {
         event.preventDefault();
@@ -83,14 +80,15 @@ export default function SearchPrivateMatchDialog({
                         socket.off(MessageTypes.NEW_MATCH);
                         setSearchPrivateOpen(false);
                         navigate("/dashboard", { replace: true });
-                        enqueueSnackbar("Private match created!", {
-                            variant: "success",
-                            autoHideDuration: 2500,
-                        });
                     });
                 }
             });
         }
+
+        window.addEventListener('unload', handleClose);
+        return () => {
+            window.removeEventListener('unload', handleClose);
+        };
     }, [connectOpen]);
 
     return (

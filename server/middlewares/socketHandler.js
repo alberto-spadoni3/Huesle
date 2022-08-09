@@ -23,7 +23,7 @@ export class MessageTypes {
     static SESSION = "session";
     static NEW_MATCH = "new_match";
     static NEW_MOVE = "new_move";
-    static END_MATCH = "end_match";
+    static MATCH_OVER = "match_over";
 }
 
 io.use((socket, next) => {
@@ -84,9 +84,14 @@ export function emitNewMove(playerNotified, originPlayer, matchId) {
     });
 }
 
-export function emitMatchOver(matchId, status) {
-    io.to(matchId).emit(MessageTypes.END_MATCH, {
-        content: JSON.stringify({matchId, status})
-    });
+export async function emitMatchOver(matchId, players_id) {
+    const players = [];
+    for (let index in players_id) {
+        const name = await UserModel.findById(players_id[index], [
+            "username",
+        ]);
+        players.push(name.username);
+    }
+    io.to(matchId).emit(MessageTypes.MATCH_OVER, JSON.stringify(players));
     io.socketsLeave(matchId);
 }

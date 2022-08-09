@@ -1,19 +1,20 @@
-import { Box, Stack, Button } from "@mui/material";
+import {Box, Stack, Button, Fade} from "@mui/material";
 import BackButton from "./BackButton";
 import DecodeRow from "./DecodeRow";
 import ColorSelector from "./ColorSelector";
 import useGameData from "../hooks/useGameData";
 import { useEffect } from "react";
 import { useSnackbar } from "notistack";
-import { axiosPrivate } from "../api/axios";
 import {
     BACKEND_DO_GUESS_ENDPOINT,
     BACKEND_SETTINGS_ENDPOINT,
 } from "../api/backend_endpoints";
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const GameBoard = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth();
 
     const {
@@ -91,7 +92,8 @@ const GameBoard = () => {
     return (
         <>
             <BackButton />
-
+            <Fade in={true}>
+            <Box>
             <Box
                 sx={{
                     border: "3px ridge",
@@ -144,6 +146,8 @@ const GameBoard = () => {
                 </Button>
             </Box>
             <div style={{ height: "8px" }}></div>
+            </Box>
+            </Fade>
         </>
     );
 };

@@ -21,6 +21,9 @@ const matchSchema = new Schema({
             type: Number,
             required: true,
         },
+        abandoned: {
+            type: Boolean
+        }
     },
     attempts: {
         type: [],

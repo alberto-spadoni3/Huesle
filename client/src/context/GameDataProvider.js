@@ -68,6 +68,10 @@ export const GameDataProvider = ({ children }) => {
         );
     }
 
+    function isMatchOver() {
+        return status.state == GameStates.WINNER || status.state == GameStates.DRAW;
+    }
+
     function updateMatch(newStatus, newAttempts) {
         setStatus(newStatus);
         const newArray = attempts.slice();
@@ -109,11 +113,15 @@ export const GameDataProvider = ({ children }) => {
                 setAttempts(attempts);
             });
             localStorage.setItem("matchId", matchId);
+            return Promise.resolve();
         }
     }
 
     useEffect(() => {
         socket.on(MessageTypes.NEW_MOVE, () => {
+            loadBoard();
+        });
+        socket.on(MessageTypes.MATCH_OVER, () => {
             loadBoard();
         });
     }, [socket]);
@@ -134,6 +142,7 @@ export const GameDataProvider = ({ children }) => {
                 players,
                 attempts,
                 isItActivePlayer,
+                isMatchOver,
                 updateMatch,
                 loadBoard,
                 swapColors,

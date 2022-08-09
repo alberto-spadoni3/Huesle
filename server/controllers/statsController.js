@@ -81,19 +81,22 @@ const getUserStats = async (req, res) => {
             message: "Username not valid",
         });
     const matches_won = await MatchModel.find({
-        status: { state: GameStates.WINNER, player: requesterId },
+        "status.state": GameStates.WINNER,
+        "status.player": requesterId,
     }).count();
     const matches_lost = await MatchModel.find({
-        status: { state: GameStates.WINNER, player: { $ne: requesterId } },
+        "status.state": GameStates.WINNER,
+        "status.player": { $ne: requesterId },
     }).count();
-    const matches_draw = await MatchModel.find({
+    const matches_drawn = await MatchModel.find({
         players: requesterId,
-        status: GameStates.DRAW,
+        "status.state": GameStates.DRAW,
     }).count();
+    console.log(matches_won, matches_lost, matches_drawn);
     res.status(200).json({
         matches_won: matches_won,
         matches_lost: matches_lost,
-        matches_draw: matches_draw,
+        matches_drawn: matches_drawn,
     });
 };
 
