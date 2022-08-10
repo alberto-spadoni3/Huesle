@@ -18,14 +18,14 @@ const handleUserRegistration = async (req, res) => {
     if (possibleDuplicateEmail.length > 0)
         return res
             .status(409)
-            .json({ message: "The email address already exists" });
+            .json({ message: "The email address is already in use" });
 
     // check for duplicate username
     const possibleDuplicateUser = await UserModel.where("username").equals(
         username
     );
     if (possibleDuplicateUser.length > 0)
-        return res.status(409).json({ message: "The username already exists" });
+        return res.status(409).json({ message: "The username is already in use" });
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);

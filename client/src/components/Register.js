@@ -51,6 +51,17 @@ export default function Register() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if(!validEmail || !validUsername || !validPassword || !validMatchPassword) {
+            let message = "";
+            if(!validUsername) message = "The username selected is not valid."
+            else if(!validEmail) message = "The email selected is not valid."
+            else if(!validPassword) message = "The password selected is not valid. It must contain at least a number, a lower and a higher case letter and a special character."
+            else if(!validMatchPassword) message = "The two password inserted don't match"
+            enqueueSnackbar(message, { variant: "warning"});
+            return
+        }
+
+
         try {
             const response = await axios.post(
                 BACKEND_REGISTRATION_ENDPOINT,
@@ -195,12 +206,6 @@ export default function Register() {
                     <Button
                         type="submit"
                         fullWidth
-                        disabled={
-                            !validEmail ||
-                            !validUsername ||
-                            !validPassword ||
-                            !validMatchPassword
-                        }
                         variant="contained"
                         sx={{ mt: 3, mb: 1 }}
                     >

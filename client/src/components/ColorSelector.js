@@ -36,7 +36,7 @@ const ColorSelector = ({ theme }) => {
                             borderRadius: "8px",
                             marginX: "2px",
                             marginBottom: 1,
-                            width: "52px",
+                            width: "15%",
                             "& .MuiSvgIcon-root": {
                                 fontSize: 38,
                             },

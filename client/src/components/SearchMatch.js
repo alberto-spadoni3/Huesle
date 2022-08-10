@@ -6,6 +6,8 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
+import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
@@ -59,7 +61,7 @@ const SearchMatch = () => {
                 }}
             >
                 <Typography
-                    variant="h5"
+                    variant="h6"
                     color="text.primary"
                     sx={{
                         textAlign: "center",
@@ -77,7 +79,6 @@ const SearchMatch = () => {
                         marginBottom: 2,
                     }}
                     variant="contained"
-                    color="button"
                     startIcon={<SearchIcon />}
                     aria-label="Search Match"
                     onClick={(e) => generatePublicMatch()}
@@ -86,7 +87,7 @@ const SearchMatch = () => {
                 </Button>
 
                 <Typography
-                    variant="h5"
+                    variant="h6"
                     color="text.primary"
                     sx={{
                         textAlign: "center",
@@ -99,8 +100,7 @@ const SearchMatch = () => {
                 <Button
                     sx={{ width: "100%", height: "50px", marginTop: 2 }}
                     variant="contained"
-                    startIcon={<SearchIcon />}
-                    color="button"
+                    startIcon={<EmojiPeopleRoundedIcon />}
                     aria-label="Create Match"
                     onClick={() => setSearchPrivateOpen(true)}
                 >
@@ -118,8 +118,7 @@ const SearchMatch = () => {
                         marginTop: 2,
                     }}
                     variant="contained"
-                    startIcon={<SearchIcon />}
-                    color="button"
+                    startIcon={<PeopleOutlineRoundedIcon />}
                     aria-label="Join Match"
                     onClick={(e) => setJoinPrivateOpen(true)}
                 >

@@ -71,7 +71,6 @@ const getUserStats = async (req, res) => {
         "status.state" : GameStates.WINNER, "status.player" : {$ne:requesterId}
     }).count();
     const matches_drawn = await MatchModel.find({ players: requesterId, "status.state": GameStates.DRAW}).count();
-    console.log(matches_won, matches_lost, matches_drawn);
     res.status(200).json({
         matches_won: matches_won,
         matches_lost: matches_lost,

@@ -64,8 +64,6 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                     isInRow === attempts.length && selectedColor && !hintPeg
                         ? "copy"
                         : "default",
-                //For accessibility
-                fontSize: hintPeg ? "50%" : "100%",
                 border: hintPeg ? "2px solid" : "3px solid",
             }}
             onClick={handleClick}

@@ -13,7 +13,6 @@ import dotenv from "dotenv";
 import { verifyJWT } from "./middlewares/verifyJWT.js";
 
 //TRIAL
-import "./middlewares/fileUploader.js";
 import "./middlewares/socketHandler.js";
 
 const port = 8080;

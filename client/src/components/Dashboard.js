@@ -170,7 +170,7 @@ const Dashboard = () => {
                     Search Match
                 </Button>
 
-                <Typography variant="h6" align="center">
+                <Typography color="text.primary" variant="h6" align="center">
                     Active Matches
                 </Typography>
                 <ActiveMatchesCard
@@ -203,7 +203,7 @@ const Dashboard = () => {
                     </TableContainer>
                 </ActiveMatchesCard>
 
-                <Typography variant="h6" align="center">
+                <Typography color="text.primary" variant="h6" align="center">
                     Completed Matches
                 </Typography>
                 <ActiveMatchesCard

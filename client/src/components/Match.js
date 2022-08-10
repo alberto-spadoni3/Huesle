@@ -38,7 +38,7 @@ const Match = () => {
                     {/* // TODO - here we should put the user's picture */}
                     {name.substring(0, 2).toUpperCase()}
                 </Avatar>
-                {!hideLabel && <Typography variant="h5">{name}</Typography>}
+                {!hideLabel && <Typography variant="h6">{name}</Typography>}
             </Stack>
         );
     };
@@ -97,7 +97,7 @@ const Match = () => {
                                     (player) => player === auth.username
                                 )}
                             />
-                            <Typography variant="h2" margin="5px 0">
+                            <Typography variant="h3" margin="5px 0">
                                 VS
                             </Typography>
                             <Player
@@ -108,7 +108,7 @@ const Match = () => {
                             />
                         </Stack>
 
-                        <Typography variant="h4" >Attempts</Typography>
+                        <Typography variant="h6" >Attempts</Typography>
                         {attempts.length > 0 ? (
                             attempts.map((item, index) => (
                                 <Stack
@@ -118,7 +118,7 @@ const Match = () => {
                                     marginY={1}
                                     key={index}
                                 >
-                                    <Typography variant="h6">
+                                    <Typography variant="h7">
                                         {index + 1 + ")"}
                                     </Typography>
                                     <Attempt attempt={item} />
@@ -151,7 +151,6 @@ const Match = () => {
                         marginTop: 2,
                     }}
                     variant="contained"
-                    color="button"
                     startIcon={<SportsEsportsIcon />}
                     aria-label= "Play"
                     onClick={() => navigate("/gameboard")}
@@ -166,7 +165,6 @@ const Match = () => {
                             marginTop: 2,
                         }}
                         variant="outlined"
-                        color="button"
                         startIcon={<OutlinedFlagIcon />}
                         aria-label="Leave"
                         onClick={() => setLeaveMatchDialogStatus(true)}
