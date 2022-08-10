@@ -14,7 +14,7 @@ router
 
 router
     .route("/profilePics")
-    .get(settingController.getAvailableProfilePics)
+    .get(settingController.getUserPic)
     .put(settingController.updateProfilePic);
 
 export default router;
