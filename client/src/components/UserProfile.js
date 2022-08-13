@@ -37,7 +37,6 @@ const UserProfile = () => {
         try {
             const response = axiosPrivate.get(BACKEND_GET_USER_STATS_ENDPOINT);
             response.then((response) => {
-                console.log(response.data);
                 if (response.status === 200) {
                     setStats(response.data);
                 }
@@ -58,7 +57,7 @@ const UserProfile = () => {
                         alignItems: "center",
                     }}
                 >
-                    <UserPicture size={128} />
+                    <UserPicture size={128} userPic={auth.userPicID} />
                     <Typography variant="h5" mt={1}>
                         {auth.username}
                     </Typography>

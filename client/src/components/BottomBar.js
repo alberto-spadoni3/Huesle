@@ -50,7 +50,7 @@ const BottomBar = () => {
                     width="inherit"
                     spacing={4}
                 >
-                    <UserPicture />
+                    <UserPicture userPic={auth.userPicID}/>
                     <Typography variant="h6" pl={"6px"}>
                         {auth.username}
                     </Typography>

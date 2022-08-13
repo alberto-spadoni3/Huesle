@@ -9,7 +9,7 @@ import {
     BACKEND_UPDATE_USERNAME,
     BACKEND_UPDATE_PASSWORD_ENDPOINT,
 } from "../api/backend_endpoints";
-import UserPicture from "./UserPicture";
+import UserPictureSelector from "./UserPictureSelector";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -151,7 +151,7 @@ const EditUserProfile = () => {
                     alignItems: "center",
                 }}
             >
-                <UserPicture size={200} edit />
+                <UserPictureSelector/>
 
                 <Box
                     sx={{

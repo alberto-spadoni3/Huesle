@@ -20,7 +20,6 @@ import useGameData from "../hooks/useGameData";
 import useSocket from "../hooks/useSocket";
 import BottomBar from "./BottomBar";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useSnackbar } from "notistack";
 
 const Dashboard = () => {
     const navigate = useNavigate();

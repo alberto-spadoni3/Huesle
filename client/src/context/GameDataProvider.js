@@ -20,6 +20,8 @@ export const GameDataProvider = ({ children }) => {
 
     const [players, setPlayers] = useState([]);
 
+    const [profilePics, setProfilePics] = useState([]);
+
     const [endGame, setEndGame] = useState(false);
 
     const { auth } = useAuth();
@@ -111,6 +113,7 @@ export const GameDataProvider = ({ children }) => {
                 setPlayers(players);
                 setStatus(status);
                 setAttempts(attempts);
+                setProfilePics(response?.data?.profile_pics);
             });
             localStorage.setItem("matchId", matchId);
             return Promise.resolve();
@@ -140,6 +143,7 @@ export const GameDataProvider = ({ children }) => {
                 id,
                 status,
                 players,
+                profilePics,
                 attempts,
                 isItActivePlayer,
                 isMatchOver,

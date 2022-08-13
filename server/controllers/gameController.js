@@ -118,14 +118,17 @@ const getMatch = async (req, res) => {
 
     let players = [];
     let players_names = [];
+    let profile_pics = [];
     for (let index in match.players) {
-        const name = await UserModel.findById(match.players[index], [
+        const {username, profilePicID} = await UserModel.findById(match.players[index], [
             "username",
+            "profilePicID"
         ]);
-        players_names.push(name.username);
-        players.push({ id: match.players[index], name: name.username });
+        players_names.push(username);
+        profile_pics.push({username, picId: profilePicID});
+        players.push({ id: match.players[index], name: username });
         if (match.status.player == match.players[index])
-            match.status.player = name.username;
+            match.status.player = username;
     }
     for (let index in match.attempts) {
         if (match.attempts[index].playerId == players[0].id)
@@ -136,6 +139,7 @@ const getMatch = async (req, res) => {
     match.players = players_names;
     res.status(200).json({
         match: match,
+        profile_pics: profile_pics
     });
 };
 

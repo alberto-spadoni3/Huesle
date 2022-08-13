@@ -15,9 +15,10 @@ import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
 import BottomBar from "./BottomBar";
 import LeaveMatchDialog from "./LeaveMatchDialog";
+import UserPicture from "./UserPicture";
 
 const Match = () => {
-    const { loadBoard, players, attempts, status, isMatchOver, GameStates } = useGameData();
+    const { loadBoard, players, profilePics, attempts, status, isMatchOver, GameStates } = useGameData();
     const navigate = useNavigate();
     const { auth } = useAuth();
     const [leaveMatchDialogStatus, setLeaveMatchDialogStatus] = useState(false);
@@ -34,10 +35,7 @@ const Match = () => {
                 alignItems="center"
                 spacing={2}
             >
-                <Avatar sx={{ width: 64, height: 64 }}>
-                    {/* // TODO - here we should put the user's picture */}
-                    {name.substring(0, 2).toUpperCase()}
-                </Avatar>
+                <UserPicture size={64} userPic={profilePics.find(p => p.username == name)?.picId}/>
                 {!hideLabel && <Typography variant="h6">{name}</Typography>}
             </Stack>
         );
@@ -93,17 +91,13 @@ const Match = () => {
                     <>
                         <Stack alignItems="center" marginY={4}>
                             <Player
-                                name={players.find(
-                                    (player) => player === auth.username
-                                )}
+                                name={players[0]}
                             />
                             <Typography variant="h3" margin="5px 0">
                                 VS
                             </Typography>
                             <Player
-                                name={players.find(
-                                    (player) => player !== auth.username
-                                )}
+                                name={players[1]}
                                 reverse
                             />
                         </Stack>
