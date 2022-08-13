@@ -57,7 +57,7 @@ const UserProfile = () => {
                         alignItems: "center",
                     }}
                 >
-                    <UserPicture size={128} userPic={auth.userPicID} />
+                    <UserPicture size={128} userPic={auth.profilePicID} />
                     <Typography variant="h5" mt={1}>
                         {auth.username}
                     </Typography>

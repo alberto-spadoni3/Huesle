@@ -17,7 +17,7 @@ const PASSWORD_REGEX =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const EditUserProfile = () => {
-    const { auth } = useAuth();
+    const { auth, setAuth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -68,6 +68,7 @@ const EditUserProfile = () => {
                     // await refresh();
                     setUsername("");
                     enqueueSnackbar("Username updated", { variant: "success" });
+                    setAuth({...auth, username: newUsername});
                 }
             } catch (error) {
                 if (!error?.response) {

@@ -94,7 +94,7 @@ const handleUserLogin = async (req, res) => {
         });
 
         // send the access token as a JSON object
-        res.status(200).json({ accessToken });
+        res.status(200).json({ accessToken,  profilePicID: userInDB.profilePicID});
     } else {
         res.sendStatus(401);
     }
@@ -112,7 +112,7 @@ const refreshAccessToken = async (req, res) => {
         return res.sendStatus(403);
     }
 
-    const username = userInDB.username;
+    const {username, profilePicID} = userInDB;
 
     jwt.verify(
         refreshToken,
@@ -130,7 +130,7 @@ const refreshAccessToken = async (req, res) => {
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
             );
-            res.json({ username, newAccessToken });
+            res.json({ username, newAccessToken, profilePicID });
         }
     );
 };

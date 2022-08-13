@@ -13,8 +13,8 @@ const useRefreshToken = () => {
         await setAuth({
             username: response.data?.username,
             accessToken: response.data.newAccessToken,
+            profilePicID: response.data?.profilePicID
         });
-
         return response.data.newAccessToken;
     };
 

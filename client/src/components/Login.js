@@ -43,8 +43,8 @@ export default function Login() {
             );
 
             // let's take and store the accessToken given by the backend
-            const accessToken = response?.data?.accessToken;
-            setAuth({ username, accessToken });
+            const {accessToken, profilePicID} = response?.data;
+            setAuth({ username, accessToken, profilePicID });
 
             // cleaning the form
             setUsername("");
