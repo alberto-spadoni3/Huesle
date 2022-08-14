@@ -4,12 +4,17 @@ import {
     CardActions,
     CardContent,
     Typography,
-    Link,
+    Divider,
+    Button,
 } from "@mui/material";
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Home = () => {
+    const { auth } = useAuth();
+    const navigate = useNavigate();
+
     return (
         <Box
             sx={{
@@ -19,41 +24,48 @@ const Home = () => {
                 alignItems: "center",
             }}
         >
-            <Card variant="outlined" sx={{ marginBottom: "200px" }}>
-                <CardContent>
-                    <Typography variant="h5">Homepage</Typography>
-                </CardContent>
-                <CardActions>
-                    <Link
-                        component={RouterLink}
-                        to="/dashboard"
-                        color="link.main"
-                    >
-                        Dashboard
-                    </Link>
-                    <Link
-                        component={RouterLink}
-                        to="/searchMatch"
-                        color="link.main"
-                    >
-                        SearchMatch
-                    </Link>
-                    <Link
-                        component={RouterLink}
-                        to="/gameboard"
-                        color="link.main"
-                    >
-                        Game Board
-                    </Link>
-                    <Link
-                        component={RouterLink}
-                        to="/match-details"
-                        color="link.main"
-                    >
-                        Match
-                    </Link>
-                </CardActions>
-            </Card>
+            {auth.username ? (
+                <Navigate to="/dashboard" />
+            ) : (
+                <>
+                    <Card variant="outlined" sx={{ marginBottom: "200px" }}>
+                        <CardContent>
+                            <Typography variant="h4" align="center">
+                                You are not logged in
+                            </Typography>
+                            <Divider
+                                sx={{ marginY: 1, borderBottomWidth: "thick" }}
+                            />
+                            <Typography variant="body1" align="center">
+                                If you want to start playing the game, you first
+                                need to create an account and login.
+                            </Typography>
+                        </CardContent>
+                        <Divider />
+                        <CardActions
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => navigate("/login")}
+                            >
+                                Log in
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => navigate("/register")}
+                            >
+                                Create an account
+                            </Button>
+                        </CardActions>
+                    </Card>
+                </>
+            )}
         </Box>
     );
 };
