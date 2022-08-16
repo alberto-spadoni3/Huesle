@@ -3,7 +3,6 @@ import useGameData from "../hooks/useGameData";
 import Peg from "./Peg";
 
 const AppSymbol = () => {
-
     const generateCircle = (pegColor) => {
         return (
             <label
@@ -11,12 +10,12 @@ const AppSymbol = () => {
                     backgroundColor: pegColor,
                     justifyContent: "center",
                     height: "12px",
-                    width:"12px",
+                    width: "12px",
                     borderColor: "white",
                     textAlign: "center",
                     borderRadius: "50%",
                     display: "inline-block",
-                    border:"2px solid",
+                    border: "2px solid",
                 }}
             ></label>
         );
@@ -39,7 +38,7 @@ const AppSymbol = () => {
     };
 
     return (
-        <Box height="40px" width="40px"  marginTop={0.9} marginRight={0.7}>
+        <Box height="40px" width="40px">
             <Grid container columns={2} height="100%">
                 <GridItem>{generateCircle("coral")}</GridItem>
                 <GridItem>{generateCircle("white")}</GridItem>

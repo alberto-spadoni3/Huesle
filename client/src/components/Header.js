@@ -2,7 +2,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LoginIcon from "@mui/icons-material/Login";
-import { Box, Container, IconButton, Typography } from "@mui/material";
+import { Box, Container, IconButton, Stack, Typography } from "@mui/material";
 import AppSymbol from "./AppSymbol";
 
 const Header = () => {
@@ -53,16 +53,23 @@ const Header = () => {
                         paddingTop: 1,
                     }}
                 >
-                    <AppSymbol/>
-                    <Typography
-                        variant="h3"
-                        color="text.primary"
-                        sx={{
-                            textAlign: "center",
-                        }}
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={1}
                     >
-                        Huesle
-                    </Typography>
+                        <AppSymbol />
+                        <Typography
+                            variant="h3"
+                            color="text.primary"
+                            sx={{
+                                textAlign: "center",
+                            }}
+                        >
+                            Huesle
+                        </Typography>
+                    </Stack>
                 </Container>
             </Box>
         </header>
