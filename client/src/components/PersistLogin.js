@@ -2,12 +2,26 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
-import {Box, CircularProgress} from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
     const { auth, persist } = useAuth();
+
+    const Loading = () => {
+        return (
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                marginTop={4}
+                height="50vh"
+            >
+                <CircularProgress />
+            </Box>
+        );
+    };
 
     useEffect(() => {
         let isMounted = true;
@@ -31,20 +45,7 @@ const PersistLogin = () => {
         return () => (isMounted = false);
     }, []);
 
-    return (
-        <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            marginTop={4}
-        >
-            {!persist ?
-                <Outlet
-                /> : isLoading ? <CircularProgress /> :
-                    <Outlet />
-            }
-        </Box>
-    );
+    return <>{!persist ? <Outlet /> : isLoading ? <Loading /> : <Outlet />}</>;
 };
 
 export default PersistLogin;
