@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LoginIcon from "@mui/icons-material/Login";
 import { Box, Container, IconButton, Typography } from "@mui/material";
+import AppSymbol from "./AppSymbol";
 
 const Header = () => {
     const { auth } = useAuth();
@@ -52,6 +53,7 @@ const Header = () => {
                         paddingTop: 1,
                     }}
                 >
+                    <AppSymbol/>
                     <Typography
                         variant="h3"
                         color="text.primary"
@@ -61,7 +63,6 @@ const Header = () => {
                     >
                         Huesle
                     </Typography>
-                    {/* {auth?.username ? <SettingsButton /> : <LoginButton />} */}
                 </Container>
             </Box>
         </header>
