@@ -22,7 +22,7 @@ import GameRules from "./components/GameRules";
 import Match from "./components/Match";
 import { SocketProvider } from "./context/SocketProvider";
 
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -47,7 +47,6 @@ const App = () => {
                             element={<Layout setThemeMode={setThemeMode} />}
                         >
                             {/* Public routes */}
-                            <Route index element={<Home />} />
                             <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
 
@@ -55,6 +54,7 @@ const App = () => {
 
                             {/* Routes that require authentication */}
                             <Route element={<PersistLogin />}>
+                                <Route index element={<Home />} />
                                 <Route element={<RequireAuth />}>
                                     <Route
                                         path="user/profile"
