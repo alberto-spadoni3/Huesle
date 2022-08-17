@@ -23,7 +23,7 @@ const DecodeRow = ({ rowID }) => {
                 borderColor: "springgreen",
             };
         else if (rowID < attempts.length)
-            cssProps = { ...cssProps, borderColor: "rgb(239,226,219)" };
+            cssProps = { ...cssProps, borderColor: "text.secondary" };
         else cssProps = { opacity: 0.5 };
 
         return cssProps;

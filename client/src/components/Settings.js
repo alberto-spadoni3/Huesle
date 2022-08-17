@@ -84,7 +84,7 @@ const Settings = ({ themeMode, setThemeMode }) => {
                 >
                     <SettingsIcon fontSize="large" />
                 </Avatar>
-                <Typography component="h1" variant="h4">
+                <Typography color="text.primary" component="h1" variant="h4">
                     Settings
                 </Typography>
                 <Stack spacing={2} width="inherit" marginTop={4}>

@@ -11,10 +11,13 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import useLogout from "../hooks/useLogout";
 import { useNavigate } from "react-router-dom";
+import UserPicture from "./UserPicture";
+import useAuth from "../hooks/useAuth";
 
 export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
     const logout = useLogout();
     const navigate = useNavigate();
+    const { auth } = useAuth();
 
     const handleMenuClose = () => {
         setAnchorEl(null);
@@ -64,7 +67,7 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
             }}
         >
             <MenuItem onClick={(e) => navigate("/user/profile")}>
-                <Avatar /> My profile
+                <UserPicture userPic={auth.profilePicID}/> My profile
             </MenuItem>
             <Divider />
             <MenuItem onClick={(e) => navigate("/rules")}>

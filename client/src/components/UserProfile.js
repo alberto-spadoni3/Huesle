@@ -58,12 +58,12 @@ const UserProfile = () => {
                     }}
                 >
                     <UserPicture size={128} userPic={auth.profilePicID} />
-                    <Typography variant="h5" mt={1}>
+                    <Typography color="text.primary" variant="h5" mt={1}>
                         {auth.username}
                     </Typography>
                     <StatisticsCard>
                         <Stack>
-                            <Typography variant="h6" textAlign="center">
+                            <Typography color="text.primary" variant="h6" textAlign="center">
                                 Stats
                             </Typography>
                             <Typography variant="body2">

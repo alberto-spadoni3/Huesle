@@ -35,6 +35,15 @@ export const getDesignTokens = (mode) => ({
                       main: "#64748B",
                       contrastText: "#fff",
                   },
+                  background: {
+                      paper: "#C8C8C8",
+                      dashboardMenu: "#C8C8C8"
+                  },
+                  gameboard: {
+                      background: "#996633",
+                      position: "#009E73",
+                      color: "#F0E442"
+                  },
               }
             : {
                   // palette values for dark mode
@@ -62,6 +71,11 @@ export const getDesignTokens = (mode) => ({
                       default: "#303030",
                       paper: "#1a1a1a",
                       dashboardMenu: "#262626",
+                  },
+                  gameboard: {
+                      background: "rgb(96,56,31)",
+                      position: "#009E73",
+                      color: "#F0E442"
                   },
               }),
     },

@@ -97,9 +97,9 @@ const GameBoard = () => {
             <Box
                 sx={{
                     border: "3px ridge",
-                    borderColor: "palette.text.primary",
+                    borderColor: "text.primary",
                     borderRadius: "10px",
-                    backgroundColor: "rgb(96,56,31)",
+                    backgroundColor: "gameboard.background",
                     marginBottom: 1,
                     paddingY: "5px",
                 }}
@@ -120,9 +120,9 @@ const GameBoard = () => {
             <Box
                 sx={{
                     border: "3px groove",
-                    borderColor: "palette.text.primary",
+                    borderColor: "text.primary",
                     borderRadius: "10px",
-                    backgroundColor: "#1a1a1a",
+                    backgroundColor: "background.paper",
                     padding: "5px",
                     marginBottom: 2,
                 }}
@@ -131,7 +131,8 @@ const GameBoard = () => {
                 <Button
                     sx={{
                         width: "100%",
-                        border: "1px solid white",
+                        border: "1px solid",
+                        borderColor: "text.primary",
                         borderRadius: "5px",
                     }}
                     disabled={

@@ -1,5 +1,6 @@
 import useGameData from "../hooks/useGameData";
 import { useState, useLayoutEffect } from "react";
+import {darken, lighten} from "@mui/material";
 
 const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
     const {
@@ -13,6 +14,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
     } = useGameData();
 
     const [pegColor, setPegColor] = useState("");
+    const [text, setText] = useState("");
 
     const handleClick = () => {
         if (
@@ -31,9 +33,11 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
             switch (hintType) {
                 case HintTypes.ExactMatch:
                     setPegColor("white");
+                    setText("P");
                     break;
                 case HintTypes.ColorMatch:
                     setPegColor("grey");
+                    setText("C");
                     break;
                 default:
                     setPegColor("");
@@ -49,6 +53,15 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
         }
     });
 
+    const computeColorHex = (color) => {
+        color = color != ""? color: "black";
+        const a = document.createElement('div');
+        a.style.color = color;
+        const colors = window.getComputedStyle( document.body.appendChild(a) ).color.match(/\d+/g).map(function(a){ return parseInt(a,10); });
+        document.body.removeChild(a);
+        return (colors.length >= 3) ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
+    }
+
     return (
         <label
             style={{
@@ -56,18 +69,20 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
                 justifyContent: "center",
                 height: hintPeg ? "16px" : "52px",
                 width: hintPeg ? "16px" : "52px",
-                borderColor: "white",
+                color: "black",
+                border: (hintPeg ? "2px solid" : "3px solid") +  " " + darken(computeColorHex(pegColor), 0.6),
                 textAlign: "center",
                 borderRadius: "50%",
+                fontSize: "52%",
+                fontWeight: "bold",
                 display: "inline-block",
                 cursor:
                     isInRow === attempts.length && selectedColor && !hintPeg
                         ? "copy"
                         : "default",
-                border: hintPeg ? "2px solid" : "3px solid",
             }}
             onClick={handleClick}
-        ></label>
+        >{text}</label>
     );
 };
 

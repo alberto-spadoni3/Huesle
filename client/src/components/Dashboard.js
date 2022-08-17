@@ -30,6 +30,8 @@ const Dashboard = () => {
     const open = Boolean(anchorElement);
     const { loadBoard, GameStates, isMatchOver } = useGameData();
 
+    const [loading, setLoading] = useState(false);
+
     const ActiveMatchesCard = styled(Box)(({ theme }) => ({
         width: "100%",
         backgroundColor: theme.palette.background.paper,
@@ -42,6 +44,7 @@ const Dashboard = () => {
 
     async function updateMatches() {
         try {
+
             const temp_rows = [];
             const temp_endedrows = [];
             const response = await axiosPrivate.get(
@@ -72,13 +75,15 @@ const Dashboard = () => {
             });
             setRows(temp_rows);
             setEndedRows(temp_endedrows);
+
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
-        updateMatches();
+        setLoading(true);
+        updateMatches().then(() => setLoading(false));
         socket.on(MessageTypes.NEW_MATCH, () => {
             updateMatches();
         });
@@ -156,7 +161,7 @@ const Dashboard = () => {
 
     return (
         <>
-        <Fade in={true}>
+        <Fade in={!loading} style={{ transitionDelay: '30ms' }}>
             <Box
                 sx={{
                     display: "flex",
@@ -180,8 +185,8 @@ const Dashboard = () => {
                 <ActiveMatchesCard
                         sx={{
                             border: "2px solid",
-                            borderColor: "palette.text.secondary",
-                            background: "palette.background.paper",
+                            borderColor: "text.secondary",
+                            background: "background.paper",
                             marginBottom: 2,
                         }}
                     >
@@ -213,7 +218,7 @@ const Dashboard = () => {
                             </Table>
                         </TableContainer>
                     </ActiveMatchesCard>
-                    <Typography variant="h6" align="center">
+                    <Typography color="text.primary" variant="h6" align="center">
                         Completed Matches
                     </Typography>
                     <ActiveMatchesCard

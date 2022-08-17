@@ -163,7 +163,7 @@ const EditUserProfile = () => {
                     }}
                 >
                     <Box justifyContent="flex-start" width="inherit">
-                        <Typography variant="h5">Username</Typography>
+                        <Typography color="text.primary" variant="h5">Username</Typography>
                         <TextField
                             fullWidth
                             error={!validUsername && username ? true : false}
@@ -178,7 +178,7 @@ const EditUserProfile = () => {
 
                         <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
 
-                        <Typography variant="h5">Password</Typography>
+                        <Typography color="text.primary" variant="h5">Password</Typography>
                         <TextField
                             fullWidth
                             name="oldPassword"
@@ -221,7 +221,7 @@ const EditUserProfile = () => {
 
                         <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
 
-                        <Typography variant="h5">Email Address</Typography>
+                        <Typography color="text.primary" variant="h5">Email Address</Typography>
                         <TextField
                             fullWidth
                             error={!validEmail && email ? true : false}

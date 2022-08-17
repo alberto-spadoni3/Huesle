@@ -23,8 +23,11 @@ const Match = () => {
     const { auth } = useAuth();
     const [leaveMatchDialogStatus, setLeaveMatchDialogStatus] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
-        loadBoard();
+        setLoading(true);
+        loadBoard().then(() => setLoading(false));
     }, []);
 
     const Player = ({ name = "", reverse, hideLabel }) => {
@@ -43,8 +46,14 @@ const Match = () => {
 
     const Hint = ({ hintType }) => {
         const hintColor =
-            hintType === "C" ? "khaki" : hintType === "P" ? "lightgreen" : "";
-        return <Avatar sx={{ bgcolor: hintColor }}>{hintType}</Avatar>;
+            hintType === "C" ? "gameboard.color" : hintType === "P" ? "gameboard.position" : "";
+        return <Avatar
+            sx={{
+                bgcolor: hintColor,
+                color:"black",
+                border:"black",
+            }}
+        >{hintType}</Avatar>;
     };
 
     const Attempt = ({ attempt }) => {
@@ -76,14 +85,14 @@ const Match = () => {
     return (
         <>
             <BackButton />
-        <Fade in={true}>
+        <Fade in={!loading} style={{ transitionDelay: '30ms' }}>
             <Box
                 sx={{
                     display: "flex",
                     flexDirection: "column"
                 }}
             >
-                <Typography variant="h4" align="center">
+                <Typography color="text.primary" variant="h4" align="center">
                     Match details
                 </Typography>
 
@@ -93,7 +102,7 @@ const Match = () => {
                             <Player
                                 name={players[0]}
                             />
-                            <Typography variant="h3" margin="5px 0">
+                            <Typography variant="h3" color="text.primary" margin="5px 0">
                                 VS
                             </Typography>
                             <Player
@@ -102,7 +111,7 @@ const Match = () => {
                             />
                         </Stack>
 
-                        <Typography variant="h6" >Attempts</Typography>
+                        <Typography color="text.primary" variant="h6" >Attempts</Typography>
                         {attempts.length > 0 ? (
                             attempts.map((item, index) => (
                                 <Stack
@@ -113,7 +122,7 @@ const Match = () => {
                                     key={index}
                                 >
                                     <Typography variant="h7">
-                                        {index + 1 + ")"}
+                                        {index + 1 + " ·"}
                                     </Typography>
                                     <Attempt attempt={item} />
                                 </Stack>

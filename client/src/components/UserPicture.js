@@ -21,7 +21,10 @@ const UserPicture = ({ size = "64px", userPic }) => {
                     <Avatar
                         sx={{
                             width: size,
-                            height: size,
+                            height: size
+                        }}
+                        avatarStyle={{
+
                         }}
                         src={"/img/" + availablePics[userPic]}
                     ></Avatar>
