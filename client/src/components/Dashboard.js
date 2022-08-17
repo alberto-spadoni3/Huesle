@@ -39,12 +39,11 @@ const Dashboard = () => {
         margin: "1rem 0 0.4rem 0",
     }));
 
-    const [rows, setRows] = useState([]);
-    const [endedRows, setEndedRows] = useState([]);
+    const [activeMatches, setActiveMatches] = useState([]);
+    const [completedMatches, setCompletedMatches] = useState([]);
 
     async function updateMatches() {
         try {
-
             const temp_rows = [];
             const temp_endedrows = [];
             const response = await axiosPrivate.get(
@@ -73,9 +72,8 @@ const Dashboard = () => {
                           createData(match._id, opponent, match.status)
                       );
             });
-            setRows(temp_rows);
-            setEndedRows(temp_endedrows);
-
+            setActiveMatches(temp_rows);
+            setCompletedMatches(temp_endedrows);
         } catch (error) {
             console.log(error);
         }
@@ -161,28 +159,38 @@ const Dashboard = () => {
 
     return (
         <>
-        <Fade in={!loading} style={{ transitionDelay: '30ms' }}>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Button
-                    sx={{ width: "100%", height: "50px", marginTop: 3, marginBottom: 2 }}
-                    variant="contained"
-                    startIcon={<SearchIcon />}
-                    aria-label="Search Match"
-                    onClick={(e) => navigate("/searchMatch")}
+            <Fade in={!loading} style={{ transitionDelay: "30ms" }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
                 >
-                    Search Match
-                </Button>
+                    <Button
+                        sx={{
+                            width: "100%",
+                            height: "50px",
+                            marginTop: 3,
+                            marginBottom: 2,
+                        }}
+                        variant="contained"
+                        startIcon={<SearchIcon />}
+                        aria-label="Search Match"
+                        color="button"
+                        onClick={(e) => navigate("/searchMatch")}
+                    >
+                        Search Match
+                    </Button>
 
-                <Typography color="text.primary" variant="h6" align="center">
-                    Active Matches
-                </Typography>
-                <ActiveMatchesCard
+                    <Typography
+                        color="text.primary"
+                        variant="h6"
+                        align="center"
+                    >
+                        Active Matches
+                    </Typography>
+                    <ActiveMatchesCard
                         sx={{
                             border: "2px solid",
                             borderColor: "text.secondary",
@@ -190,35 +198,45 @@ const Dashboard = () => {
                             marginBottom: 2,
                         }}
                     >
-                        <TableContainer>
-                            <Table
-                                sx={{
-                                    minWidth: 250,
-                                }}
-                                aria-label="simple table"
-                            >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Match against</TableCell>
-                                        <TableCell align="center">
-                                            Status
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map((row, index) =>
-                                        generateRow(
-                                            index,
-                                            row.id,
-                                            row.name,
-                                            row.status
-                                        )
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        {activeMatches.length > 0 ? (
+                            <TableContainer>
+                                <Table
+                                    sx={{
+                                        minWidth: 250,
+                                    }}
+                                    aria-label="Active Matches table"
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Match against</TableCell>
+                                            <TableCell align="center">
+                                                Status
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {activeMatches.map((row, index) =>
+                                            generateRow(
+                                                index,
+                                                row.id,
+                                                row.name,
+                                                row.status
+                                            )
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        ) : (
+                            <Typography variant="h7" marginLeft={1}>
+                                No active matches for now
+                            </Typography>
+                        )}
                     </ActiveMatchesCard>
-                    <Typography color="text.primary" variant="h6" align="center">
+                    <Typography
+                        color="text.primary"
+                        variant="h6"
+                        align="center"
+                    >
                         Completed Matches
                     </Typography>
                     <ActiveMatchesCard
@@ -228,34 +246,40 @@ const Dashboard = () => {
                             background: "palette.background.paper",
                         }}
                     >
-                        <TableContainer>
-                            <Table
-                                sx={{
-                                    minWidth: 250,
-                                }}
-                                aria-label="simple table"
-                            >
-                                <TableHead>
-                                    <TableRow></TableRow>
-                                    <TableRow>
-                                        <TableCell>Match against</TableCell>
-                                        <TableCell align="center">
-                                            Result
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {endedRows.map((row, index) =>
-                                        generateRow(
-                                            index,
-                                            row.id,
-                                            row.name,
-                                            row.status
-                                        )
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        {completedMatches.length > 0 ? (
+                            <TableContainer>
+                                <Table
+                                    sx={{
+                                        minWidth: 250,
+                                    }}
+                                    aria-label="Completed Matches table"
+                                >
+                                    <TableHead>
+                                        <TableRow></TableRow>
+                                        <TableRow>
+                                            <TableCell>Match against</TableCell>
+                                            <TableCell align="center">
+                                                Result
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {completedMatches.map((row, index) =>
+                                            generateRow(
+                                                index,
+                                                row.id,
+                                                row.name,
+                                                row.status
+                                            )
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        ) : (
+                            <Typography variant="h7" marginLeft={1}>
+                                No active matches for now
+                            </Typography>
+                        )}
                     </ActiveMatchesCard>
                     <BottomBar></BottomBar>
                 </Box>

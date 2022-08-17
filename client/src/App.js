@@ -111,10 +111,10 @@ const App = () => {
                                     </Route>
                                 </Route>
                             </Route>
-                        </Route>
 
-                        {/* No matching route */}
-                        <Route path="*" element={<Missing />} />
+                            {/* No matching route */}
+                            <Route path="*" element={<Missing />} />
+                        </Route>
                     </Routes>
                 </SocketProvider>
             </SnackbarProvider>

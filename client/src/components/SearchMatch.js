@@ -1,13 +1,9 @@
-import {
-    Box,
-    Button, Fade,
-    Typography
-} from "@mui/material";
+import { Box, Button, Fade, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
-import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
+import PeopleOutlineRoundedIcon from "@mui/icons-material/PeopleOutlineRounded";
+import EmojiPeopleRoundedIcon from "@mui/icons-material/EmojiPeopleRounded";
 import SearchPrivateMatchDialog from "./SearchPrivateMatchDialog";
 import JoinPrivateMatchDialog from "./JoinPrivateMatchDialog";
 import BackButton from "./BackButton";
@@ -18,7 +14,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const SearchMatch = () => {
     const navigate = useNavigate();
-    const axiosPrivate = useAxiosPrivate()
+    const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
 
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
@@ -53,84 +49,87 @@ const SearchMatch = () => {
         <>
             <BackButton />
             <Fade in={true}>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    color="text.primary"
+                <Box
                     sx={{
-                        textAlign: "center",
-                        marginTop: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    Public Matches
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        color="text.primary"
+                        sx={{
+                            textAlign: "center",
+                            marginTop: 1,
+                        }}
+                    >
+                        Public Matches
+                    </Typography>
 
-                <Button
-                    sx={{
-                        width: "100%",
-                        height: "50px",
-                        marginTop: 2,
-                        marginBottom: 2,
-                    }}
-                    variant="contained"
-                    startIcon={<SearchIcon />}
-                    aria-label="Search Match"
-                    onClick={(e) => generatePublicMatch()}
-                >
-                    Search Match
-                </Button>
+                    <Button
+                        sx={{
+                            width: "100%",
+                            height: "50px",
+                            marginTop: 2,
+                            marginBottom: 2,
+                        }}
+                        color="button"
+                        variant="contained"
+                        startIcon={<SearchIcon />}
+                        aria-label="Search Match"
+                        onClick={(e) => generatePublicMatch()}
+                    >
+                        Search Match
+                    </Button>
 
-                <Typography
-                    variant="h6"
-                    color="text.primary"
-                    sx={{
-                        textAlign: "center",
-                        marginTop: 2,
-                    }}
-                >
-                    Private Matches
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        color="text.primary"
+                        sx={{
+                            textAlign: "center",
+                            marginTop: 2,
+                        }}
+                    >
+                        Private Matches
+                    </Typography>
 
-                <Button
-                    sx={{ width: "100%", height: "50px", marginTop: 2 }}
-                    variant="contained"
-                    startIcon={<EmojiPeopleRoundedIcon />}
-                    aria-label="Create Match"
-                    onClick={() => setSearchPrivateOpen(true)}
-                >
-                    Create Match
-                </Button>
-                <SearchPrivateMatchDialog
-                    connectOpen={searchPrivateOpen}
-                    setConnectOpen={setSearchPrivateOpen}
-                />
+                    <Button
+                        sx={{ width: "100%", height: "50px", marginTop: 2 }}
+                        variant="contained"
+                        startIcon={<EmojiPeopleRoundedIcon />}
+                        aria-label="Create Match"
+                        onClick={() => setSearchPrivateOpen(true)}
+                        color="button"
+                    >
+                        Create Match
+                    </Button>
+                    <SearchPrivateMatchDialog
+                        connectOpen={searchPrivateOpen}
+                        setConnectOpen={setSearchPrivateOpen}
+                    />
 
-                <Button
-                    sx={{
-                        width: "100%",
-                        height: "50px",
-                        marginTop: 2,
-                    }}
-                    variant="contained"
-                    startIcon={<PeopleOutlineRoundedIcon />}
-                    aria-label="Join Match"
-                    onClick={(e) => setJoinPrivateOpen(true)}
-                >
-                    Join Match
-                </Button>
-                <JoinPrivateMatchDialog
-                    open={joinPrivateOpen}
-                    setOpen={setJoinPrivateOpen}
-                />
-                {/* FOOTER */}
-                <BottomBar></BottomBar>
-            </Box>
+                    <Button
+                        sx={{
+                            width: "100%",
+                            height: "50px",
+                            marginTop: 2,
+                        }}
+                        variant="contained"
+                        startIcon={<PeopleOutlineRoundedIcon />}
+                        aria-label="Join Match"
+                        onClick={(e) => setJoinPrivateOpen(true)}
+                        color="button"
+                    >
+                        Join Match
+                    </Button>
+                    <JoinPrivateMatchDialog
+                        open={joinPrivateOpen}
+                        setOpen={setJoinPrivateOpen}
+                    />
+                    {/* FOOTER */}
+                    <BottomBar></BottomBar>
+                </Box>
             </Fade>
         </>
     );

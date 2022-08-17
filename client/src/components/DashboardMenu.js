@@ -38,8 +38,8 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
                     mt: "3px",
                     bgcolor: "background.dashboardMenu",
                     "& .MuiAvatar-root": {
-                        width: 32,
-                        height: 32,
+                        width: 64,
+                        height: 64,
                         ml: -0.5,
                         mr: 1,
                     } /* 
@@ -67,7 +67,7 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
             }}
         >
             <MenuItem onClick={(e) => navigate("/user/profile")}>
-                <UserPicture userPic={auth.profilePicID}/> My profile
+                <UserPicture userPic={auth.profilePicID} /> My profile
             </MenuItem>
             <Divider />
             <MenuItem onClick={(e) => navigate("/rules")}>
