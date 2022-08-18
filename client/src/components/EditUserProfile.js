@@ -68,7 +68,7 @@ const EditUserProfile = () => {
                     // await refresh();
                     setUsername("");
                     enqueueSnackbar("Username updated", { variant: "success" });
-                    setAuth({...auth, username: newUsername});
+                    setAuth({ ...auth, username: newUsername });
                 }
             } catch (error) {
                 if (!error?.response) {
@@ -152,7 +152,7 @@ const EditUserProfile = () => {
                     alignItems: "center",
                 }}
             >
-                <UserPictureSelector/>
+                <UserPictureSelector />
 
                 <Box
                     sx={{
@@ -163,7 +163,9 @@ const EditUserProfile = () => {
                     }}
                 >
                     <Box justifyContent="flex-start" width="inherit">
-                        <Typography color="text.primary" variant="h5">Username</Typography>
+                        <Typography color="text.primary" variant="h5">
+                            Username
+                        </Typography>
                         <TextField
                             fullWidth
                             error={!validUsername && username ? true : false}
@@ -178,7 +180,9 @@ const EditUserProfile = () => {
 
                         <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
 
-                        <Typography color="text.primary" variant="h5">Password</Typography>
+                        <Typography color="text.primary" variant="h5">
+                            Password
+                        </Typography>
                         <TextField
                             fullWidth
                             name="oldPassword"
@@ -221,7 +225,9 @@ const EditUserProfile = () => {
 
                         <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
 
-                        <Typography color="text.primary" variant="h5">Email Address</Typography>
+                        <Typography color="text.primary" variant="h5">
+                            Email Address
+                        </Typography>
                         <TextField
                             fullWidth
                             error={!validEmail && email ? true : false}
@@ -246,6 +252,7 @@ const EditUserProfile = () => {
                     variant="contained"
                     startIcon={<SaveIcon />}
                     aria-label="Save Changes"
+                    color="button"
                     onClick={handleEditProfile}
                 >
                     Save changes

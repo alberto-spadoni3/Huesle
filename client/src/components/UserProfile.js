@@ -19,8 +19,10 @@ const UserProfile = () => {
     const logout = useLogout();
 
     const StatisticsCard = styled(Box)(({ theme }) => ({
-        width: "100%",
+        width: "85%",
         backgroundColor: theme.palette.background.paper,
+        border: "2px solid",
+        borderColor: theme.palette.text.secondary,
         borderRadius: 5,
         display: "flex",
         justifyContent: "center",
@@ -58,21 +60,25 @@ const UserProfile = () => {
                     }}
                 >
                     <UserPicture size={128} userPic={auth.profilePicID} />
-                    <Typography color="text.primary" variant="h5" mt={1}>
+                    <Typography color="text.primary" variant="h4" mt={1} mb={2}>
                         {auth.username}
                     </Typography>
                     <StatisticsCard>
-                        <Stack>
-                            <Typography color="text.primary" variant="h6" textAlign="center">
-                                Stats
+                        <Stack margin={1}>
+                            <Typography
+                                color="text.primary"
+                                variant="h5"
+                                mb={1}
+                            >
+                                User statistics
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body1">
                                 Matches won: {stats.matches_won}
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body1">
                                 Matches lost: {stats.matches_lost}
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body1">
                                 Matches drawns: {stats.matches_drawn}
                             </Typography>
                         </Stack>
@@ -80,7 +86,7 @@ const UserProfile = () => {
                     <Button
                         sx={{ width: "100%", mb: 2 }}
                         variant="contained"
-                        color="primary"
+                        color="button"
                         startIcon={<EditIcon />}
                         aria-label="Edit Profile"
                         onClick={(e) => navigate("/user/editProfile")}

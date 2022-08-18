@@ -48,8 +48,10 @@ const Match = () => {
                 spacing={2}
             >
                 <UserPicture
-                    size={64}
-                    userPic={profilePics.find((p) => p.username == name)?.picId}
+                    size={80}
+                    userPic={
+                        profilePics.find((p) => p.username === name)?.picId
+                    }
                 />
                 {!hideLabel && <Typography variant="h6">{name}</Typography>}
             </Stack>
@@ -133,7 +135,7 @@ const Match = () => {
                                 </Typography>
                                 <Player
                                     name={players.find(
-                                        (player) => player != auth.username
+                                        (player) => player !== auth.username
                                     )}
                                     reverse
                                 />
@@ -158,7 +160,7 @@ const Match = () => {
                                     </Stack>
                                 ))
                             ) : (
-                                <Typography variant="h6">
+                                <Typography variant="body1">
                                     No attempts has been made so far.
                                 </Typography>
                             )}
@@ -172,15 +174,15 @@ const Match = () => {
                                 marginTop: 2,
                             }}
                         >
-                            {status.state == GameStates.WINNER
+                            {status.state === GameStates.WINNER
                                 ? status.abandoned
-                                    ? (status.player == auth.username
+                                    ? (status.player === auth.username
                                           ? players.find(
-                                                (p) => p != auth.username
+                                                (p) => p !== auth.username
                                             )
                                           : "You") +
                                       " left the game and admitted defeat"
-                                    : status.player == auth.username
+                                    : status.player === auth.username
                                     ? "You won!"
                                     : "You lost..."
                                 : "The match ended in a draw"}
@@ -193,6 +195,7 @@ const Match = () => {
                             marginTop: 2,
                         }}
                         variant="contained"
+                        color="button"
                         startIcon={<SportsEsportsIcon />}
                         aria-label="Play"
                         onClick={() => navigate("/gameboard")}
@@ -207,6 +210,7 @@ const Match = () => {
                                 marginTop: 2,
                             }}
                             variant="outlined"
+                            color="error"
                             startIcon={<OutlinedFlagIcon />}
                             aria-label="Leave"
                             onClick={() => setLeaveMatchDialogStatus(true)}

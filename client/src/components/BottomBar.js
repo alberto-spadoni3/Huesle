@@ -35,12 +35,12 @@ const BottomBar = () => {
     return (
         <>
             <Box
-                marginTop={2}
                 sx={{
                     display: "flex",
                     justifyContent: "center",
                     flexDirection: "column",
                     alignItems: "center",
+                    marginY: "25px",
                 }}
             >
                 <Stack
@@ -50,7 +50,7 @@ const BottomBar = () => {
                     width="inherit"
                     spacing={4}
                 >
-                    <UserPicture userPic={auth.profilePicID}/>
+                    <UserPicture userPic={auth.profilePicID} />
                     <Typography color="text.primary" variant="h6" pl={"6px"}>
                         {auth.username}
                     </Typography>
@@ -59,8 +59,8 @@ const BottomBar = () => {
                         aria-label="Open menu"
                     >
                         <MenuRoundedIcon
-                            fontSize="large"
-                            sx={{
+                            style={{
+                                fontSize: 50,
                                 border: "3px solid",
                                 borderColor: "palette.text.secondary",
                                 borderRadius: "50%",

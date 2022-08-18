@@ -10,6 +10,7 @@ import {
     Table,
     TableBody,
     Typography,
+    Divider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,11 +25,9 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 const Dashboard = () => {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
-    const [anchorElement, setAnchorElement] = useState(null);
     const { auth } = useAuth();
     const { socket, MessageTypes } = useSocket();
-    const open = Boolean(anchorElement);
-    const { loadBoard, GameStates, isMatchOver } = useGameData();
+    const { loadBoard, GameStates } = useGameData();
 
     const [loading, setLoading] = useState(false);
 
@@ -36,7 +35,9 @@ const Dashboard = () => {
         width: "100%",
         backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
-        margin: "1rem 0 0.4rem 0",
+        marginTop: "5px",
+        border: "2px solid",
+        borderColor: theme.palette.text.secondary,
     }));
 
     const [activeMatches, setActiveMatches] = useState([]);
@@ -54,17 +55,17 @@ const Dashboard = () => {
                 temp_rows.push(createData(null, "Searching...", "Waiting"));
             matches.sort((a, b) => {
                 if (
-                    a.status.state == GameStates.PLAYING &&
-                    b.status.state == GameStates.PLAYING
+                    a.status.state === GameStates.PLAYING &&
+                    b.status.state === GameStates.PLAYING
                 ) {
-                    return a.status.player == auth.username ? -1 : 1;
-                } else return a.status.state == GameStates.PLAYING ? -1 : 1;
+                    return a.status.player === auth.username ? -1 : 1;
+                } else return a.status.state === GameStates.PLAYING ? -1 : 1;
             });
             matches.forEach((match) => {
                 const opponent = match.players.find(
-                    (name) => name != auth.username
+                    (name) => name !== auth.username
                 );
-                match.status.state == GameStates.PLAYING
+                match.status.state === GameStates.PLAYING
                     ? temp_rows.push(
                           createData(match._id, opponent, match.status)
                       )
@@ -101,19 +102,21 @@ const Dashboard = () => {
         let button_label;
         let button_type = "outlined";
         let button_state = true;
+        let button_color = "success";
         switch (row_status.state) {
             case GameStates.PLAYING:
-                if (row_status.player == auth.username) {
+                if (row_status.player === auth.username) {
                     button_label = "It's your turn!";
                     button_type = "contained";
                 } else {
                     button_label = "Opponent's turn...";
+                    button_color = "warning";
                 }
                 button_state = false;
                 break;
             case GameStates.WINNER:
                 button_label =
-                    row_status.player == auth.username
+                    row_status.player === auth.username
                         ? "You won!"
                         : "You Lost...";
                 break;
@@ -131,11 +134,12 @@ const Dashboard = () => {
                 </TableCell>
                 <TableCell component="th" scope="row" align="center">
                     <Button
-                        sx={{ width: "70%", height: "50%", fontSize: "70%" }}
+                        sx={{ width: "70%", height: "50%", fontSize: "65%" }}
                         variant={button_type}
                         aria-label={row_id + "status"}
                         onClick={() => openSelectedMatch(row_id)}
                         disabled={button_state}
+                        color={button_color}
                     >
                         {button_label}
                     </Button>
@@ -190,14 +194,7 @@ const Dashboard = () => {
                     >
                         Active Matches
                     </Typography>
-                    <ActiveMatchesCard
-                        sx={{
-                            border: "2px solid",
-                            borderColor: "text.secondary",
-                            background: "background.paper",
-                            marginBottom: 2,
-                        }}
-                    >
+                    <ActiveMatchesCard>
                         {activeMatches.length > 0 ? (
                             <TableContainer>
                                 <Table
@@ -232,6 +229,9 @@ const Dashboard = () => {
                             </Typography>
                         )}
                     </ActiveMatchesCard>
+
+                    <spacer style={{ height: "16px" }}></spacer>
+
                     <Typography
                         color="text.primary"
                         variant="h6"
@@ -239,13 +239,7 @@ const Dashboard = () => {
                     >
                         Completed Matches
                     </Typography>
-                    <ActiveMatchesCard
-                        sx={{
-                            border: "2px solid",
-                            borderColor: "palette.text.secondary",
-                            background: "palette.background.paper",
-                        }}
-                    >
+                    <ActiveMatchesCard>
                         {completedMatches.length > 0 ? (
                             <TableContainer>
                                 <Table
@@ -277,11 +271,11 @@ const Dashboard = () => {
                             </TableContainer>
                         ) : (
                             <Typography variant="h7" marginLeft={1}>
-                                No active matches for now
+                                No completed matches for now
                             </Typography>
                         )}
                     </ActiveMatchesCard>
-                    <BottomBar></BottomBar>
+                    <BottomBar />
                 </Box>
             </Fade>
         </>

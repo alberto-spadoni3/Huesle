@@ -9,8 +9,8 @@ const BackButton = () => {
         <Box sx={{ marginY: 1 }}>
             <IconButton onClick={(e) => navigate(-1)}>
                 <ArrowBackIcon
-                    fontSize="large"
-                    sx={{
+                    style={{
+                        fontSize: 50,
                         border: "2px solid",
                         borderColor: "palette.text.primary",
                         borderRadius: "50%",

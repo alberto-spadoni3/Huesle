@@ -1,4 +1,4 @@
-import {Box, Typography, Avatar, Stack, Switch, Fade} from "@mui/material";
+import { Box, Typography, Avatar, Stack, Switch, Fade } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect } from "react";
 import BackButton from "./BackButton";
@@ -66,62 +66,69 @@ const Settings = ({ themeMode, setThemeMode }) => {
         <>
             <BackButton />
             <Fade in={true}>
-            <Box
-                sx={{
-                    width: "inherit",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Avatar
+                <Box
                     sx={{
-                        m: 1,
-                        bgcolor: "primary.main",
-                        width: 64,
-                        height: 64,
+                        width: "inherit",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    <SettingsIcon fontSize="large" />
-                </Avatar>
-                <Typography color="text.primary" component="h1" variant="h4">
-                    Settings
-                </Typography>
-                <Stack spacing={2} width="inherit" marginTop={4}>
-                    <SettingContainer>
-                        <Typography variant="h6" textAlign={"center"}>
-                            Dark mode
-                        </Typography>
-                        <Switch
-                            checked={themeMode === "dark"}
-                            onChange={(e) => {
-                                const darkMode =
-                                    themeMode === "dark" ? "light" : "dark";
-                                setThemeMode(darkMode);
-                                saveSettings(
-                                    darkMode === "dark",
-                                    colorblindMode
-                                );
-                            }}
-                            inputProps={dmSwitch}
+                    <Avatar
+                        sx={{
+                            m: 1,
+                            bgcolor: "#555580",
+                            width: 80,
+                            height: 80,
+                        }}
+                    >
+                        <SettingsIcon
+                            fontSize="large"
+                            style={{ color: "white" }}
                         />
-                    </SettingContainer>
-                    <SettingContainer>
-                        <Typography variant="h6" textAlign={"center"}>
-                            Colorblind mode
-                        </Typography>
-                        <Switch
-                            checked={colorblindMode}
-                            onClick={(e) => {
-                                const cbMode = !colorblindMode;
-                                setColorblindMode(cbMode);
-                                saveSettings(themeMode === "dark", cbMode);
-                            }}
-                            inputProps={cbSwitch}
-                        />
-                    </SettingContainer>
-                </Stack>
-            </Box>
+                    </Avatar>
+                    <Typography
+                        color="text.primary"
+                        component="h1"
+                        variant="h4"
+                    >
+                        Settings
+                    </Typography>
+                    <Stack spacing={2} width="inherit" marginTop={4}>
+                        <SettingContainer>
+                            <Typography variant="h6" textAlign={"center"}>
+                                Dark mode
+                            </Typography>
+                            <Switch
+                                checked={themeMode === "dark"}
+                                onChange={(e) => {
+                                    const darkMode =
+                                        themeMode === "dark" ? "light" : "dark";
+                                    setThemeMode(darkMode);
+                                    saveSettings(
+                                        darkMode === "dark",
+                                        colorblindMode
+                                    );
+                                }}
+                                inputProps={dmSwitch}
+                            />
+                        </SettingContainer>
+                        <SettingContainer>
+                            <Typography variant="h6" textAlign={"center"}>
+                                Colorblind mode
+                            </Typography>
+                            <Switch
+                                checked={colorblindMode}
+                                onClick={(e) => {
+                                    const cbMode = !colorblindMode;
+                                    setColorblindMode(cbMode);
+                                    saveSettings(themeMode === "dark", cbMode);
+                                }}
+                                inputProps={cbSwitch}
+                            />
+                        </SettingContainer>
+                    </Stack>
+                </Box>
             </Fade>
         </>
     );

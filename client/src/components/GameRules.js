@@ -1,6 +1,7 @@
-import {Box, Typography, styled, Fade} from "@mui/material";
+import { Box, Typography, styled, Fade, Avatar } from "@mui/material";
 import React from "react";
 import BackButton from "./BackButton";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 const GameRules = () => {
     const rules = [
@@ -16,12 +17,13 @@ const GameRules = () => {
     const RulesBox = styled(Box)(({ theme }) => ({
         width: "100%",
         backgroundColor: theme.palette.background.paper,
-        border: "2px solid white",
+        border: "2px solid",
+        borderColor: theme.palette.text.secondary,
         borderRadius: 5,
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
-        marginTop: "16px",
+        marginTop: "32px",
         padding: "8px",
     }));
 
@@ -29,25 +31,42 @@ const GameRules = () => {
         <>
             <BackButton />
             <Fade in={true}>
-            <Box
-                sx={{
-                    width: "inherit",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Typography color="text.primary" variant="h4">How to play</Typography>
-                <RulesBox>
-                    {rules.map((rule, index) => (
-                        <Typography
-                            textAlign='justify'
-                            key={index} variant="body1">
-                            {rule}
-                        </Typography>
-                    ))}
-                </RulesBox>
-            </Box>
+                <Box
+                    sx={{
+                        width: "inherit",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
+                    <Avatar
+                        sx={{
+                            m: 1,
+                            bgcolor: "#555580",
+                            width: 80,
+                            height: 80,
+                        }}
+                    >
+                        <QuestionMarkIcon
+                            fontSize="large"
+                            style={{ color: "white" }}
+                        />
+                    </Avatar>
+                    <Typography color="text.primary" variant="h4">
+                        How to play
+                    </Typography>
+                    <RulesBox>
+                        {rules.map((rule, index) => (
+                            <Typography
+                                textAlign="justify"
+                                key={index}
+                                variant="body1"
+                            >
+                                {rule}
+                            </Typography>
+                        ))}
+                    </RulesBox>
+                </Box>
             </Fade>
         </>
     );
