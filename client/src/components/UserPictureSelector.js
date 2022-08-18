@@ -8,29 +8,22 @@ import { useSnackbar } from "notistack";
 import UserPicture from "./UserPicture";
 import useAuth from "../hooks/useAuth";
 
+const USER_PICS_NUMBER = 10;
+
 const UserPictureSelector = ({ size }) => {
     const { enqueueSnackbar } = useSnackbar();
     const axiosPrivate = useAxiosPrivate();
     const { auth, setAuth } = useAuth();
 
-    const [picSelector, setPicSelector] = useState(auth.profilePicID? auth.profilePicID: 0);
-    const availablePics = [
-        "fran-FNCNNGESmPg-unsplash.jpg",
-        "irish83-0A6bEhfE6B0-unsplash.jpg",
-        "janko-ferlic-sfL_QOnmy00-unsplash.jpg",
-        "k-k-LZW0_GQGBFM-unsplash.jpg",
-        "levi-loot-O1BwdrrZWfg-unsplash.jpg",
-        "luka-e-ryJZpXk79qE-unsplash.jpg",
-        "michael-2v1xGvytGfw-unsplash.jpg",
-        "prometheus-design-Xqnf71EKEc8-unsplash.jpg",
-        "yaroslav-melnychuk-uOz_-zNdWpM-unsplash.jpg",
-    ];
+    const [picSelector, setPicSelector] = useState(
+        auth.profilePicID ? auth.profilePicID : 0
+    );
 
     const [currentUserPic, setCurrentUserPic] = useState(auth.profilePicID);
 
     const changePic = (up = false) => {
         let newPicID = up ? picSelector + 1 : picSelector - 1;
-        if (newPicID < 0 || newPicID >= availablePics.length) return;
+        if (newPicID < 0 || newPicID >= USER_PICS_NUMBER) return;
         setPicSelector(newPicID);
     };
 
@@ -44,7 +37,7 @@ const UserPictureSelector = ({ size }) => {
             if (response.status === 200) {
                 setCurrentUserPic(picSelector);
                 enqueueSnackbar(response.data.message, { variant: "success" });
-                setAuth({...auth, profilePicID: picSelector});
+                setAuth({ ...auth, profilePicID: picSelector });
             }
         } catch (error) {
             console.log(error);
@@ -80,12 +73,10 @@ const UserPictureSelector = ({ size }) => {
                         >
                             <ArrowLeftRoundedIcon fontSize="large" />
                         </IconButton>
-                        <UserPicture size={200} userPic={picSelector}/>
+                        <UserPicture size={200} userPic={picSelector} />
                         <IconButton
                             aria-label="select right image"
-                            disabled={
-                                picSelector === availablePics.length - 1
-                            }
+                            disabled={picSelector === USER_PICS_NUMBER - 1}
                             onClick={() => changePic(true)}
                         >
                             <ArrowRightRoundedIcon fontSize="large" />
