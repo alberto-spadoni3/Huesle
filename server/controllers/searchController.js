@@ -144,7 +144,7 @@ const leaveSearchPrivateMatch = async (req, res) => {
 
 function createMatch(p1, p2, repetitions) {
     const players = [p1, p2];
-    const first_player = players[Math.floor((Math.random()*players.length))];
+    const first_player = players[Math.floor(Math.random() * players.length)];
     const matchDoc = {
         players: players,
         status: {
