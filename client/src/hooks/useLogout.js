@@ -9,11 +9,11 @@ const useLogout = () => {
     const { setAuth } = useAuth();
 
     const logout = async () => {
-        setAuth({});
         try {
             await axios.get(BACKEND_LOGOUT_ENDPOINT, {
                 withCredentials: true,
             });
+            setAuth({});
             navigate("/");
         } catch (error) {
             console.error(error);

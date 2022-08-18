@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
 import BackButton from "./BackButton";
-import { Box, Avatar, Typography, Stack, Button, Fade } from "@mui/material";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import { Box, Typography, Stack, Button, Fade } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -19,7 +18,7 @@ const UserProfile = () => {
     const logout = useLogout();
 
     const StatisticsCard = styled(Box)(({ theme }) => ({
-        width: "85%",
+        width: "100%",
         backgroundColor: theme.palette.background.paper,
         border: "2px solid",
         borderColor: theme.palette.text.secondary,
