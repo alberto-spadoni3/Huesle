@@ -94,40 +94,67 @@ const Settings = ({ themeMode, setThemeMode }) => {
                     >
                         Settings
                     </Typography>
-                    <Stack spacing={2} width="inherit" marginTop={4}>
-                        <SettingContainer>
-                            <Typography variant="h6" textAlign={"center"}>
-                                Dark mode
-                            </Typography>
-                            <Switch
-                                checked={themeMode === "dark"}
-                                onChange={(e) => {
-                                    const darkMode =
-                                        themeMode === "dark" ? "light" : "dark";
-                                    setThemeMode(darkMode);
-                                    saveSettings(
-                                        darkMode === "dark",
-                                        colorblindMode
-                                    );
-                                }}
-                                inputProps={dmSwitch}
-                            />
-                        </SettingContainer>
-                        <SettingContainer>
-                            <Typography variant="h6" textAlign={"center"}>
-                                Colorblind mode
-                            </Typography>
-                            <Switch
-                                checked={colorblindMode}
-                                onClick={(e) => {
-                                    const cbMode = !colorblindMode;
-                                    setColorblindMode(cbMode);
-                                    saveSettings(themeMode === "dark", cbMode);
-                                }}
-                                inputProps={cbSwitch}
-                            />
-                        </SettingContainer>
-                    </Stack>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            mt: 4,
+                            bgcolor: "background.dashboardMenu",
+                            border: "2px solid",
+                            borderColor: "palette.text.secondary",
+                            borderRadius: 8,
+                            padding: 2,
+                        }}
+                    >
+                        <Stack spacing={2} width="inherit">
+                            <SettingContainer>
+                                <Typography
+                                    variant="h6"
+                                    textAlign="center"
+                                    color="text.primary"
+                                >
+                                    Dark mode
+                                </Typography>
+                                <Switch
+                                    color="switch"
+                                    checked={themeMode === "dark"}
+                                    onChange={(e) => {
+                                        const darkMode =
+                                            themeMode === "dark"
+                                                ? "light"
+                                                : "dark";
+                                        setThemeMode(darkMode);
+                                        saveSettings(
+                                            darkMode === "dark",
+                                            colorblindMode
+                                        );
+                                    }}
+                                    inputProps={dmSwitch}
+                                />
+                            </SettingContainer>
+                            <SettingContainer>
+                                <Typography
+                                    variant="h6"
+                                    textAlign="center"
+                                    color="text.primary"
+                                >
+                                    Colorblind mode
+                                </Typography>
+                                <Switch
+                                    color="switch"
+                                    checked={colorblindMode}
+                                    onClick={(e) => {
+                                        const cbMode = !colorblindMode;
+                                        setColorblindMode(cbMode);
+                                        saveSettings(
+                                            themeMode === "dark",
+                                            cbMode
+                                        );
+                                    }}
+                                    inputProps={cbSwitch}
+                                />
+                            </SettingContainer>
+                        </Stack>
+                    </Box>
                 </Box>
             </Fade>
         </>

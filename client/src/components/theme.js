@@ -37,12 +37,15 @@ export const getDesignTokens = (mode) => ({
                   },
                   background: {
                       paper: "#C8C8C8",
-                      dashboardMenu: "#C8C8C8"
+                      dashboardMenu: "#C8C8C8",
                   },
                   gameboard: {
                       background: "#996633",
                       position: "#009E73",
-                      color: "#F0E442"
+                      color: "#F0E442",
+                  },
+                  switch: {
+                      main: "#0C7BDC",
                   },
               }
             : {
@@ -75,7 +78,10 @@ export const getDesignTokens = (mode) => ({
                   gameboard: {
                       background: "rgb(96,56,31)",
                       position: "#009E73",
-                      color: "#F0E442"
+                      color: "#F0E442",
+                  },
+                  switch: {
+                      main: "#0C7BDC",
                   },
               }),
     },
