@@ -42,7 +42,7 @@ const GameRules = () => {
                     <Avatar
                         sx={{
                             m: 1,
-                            bgcolor: "#555580",
+                            bgcolor: "gray",
                             width: 80,
                             height: 80,
                         }}

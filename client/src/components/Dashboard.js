@@ -9,8 +9,7 @@ import {
     TableHead,
     Table,
     TableBody,
-    Typography,
-    Divider,
+    Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +36,7 @@ const Dashboard = () => {
         borderRadius: 5,
         marginTop: "5px",
         border: "2px solid",
-        borderColor: theme.palette.text.secondary,
+        borderColor: theme.palette.background.default,
     }));
 
     const [activeMatches, setActiveMatches] = useState([]);
@@ -102,7 +101,7 @@ const Dashboard = () => {
         let button_label;
         let button_type = "outlined";
         let button_state = true;
-        let button_color = "success";
+        let button_color = "button";
         switch (row_status.state) {
             case GameStates.PLAYING:
                 if (row_status.player === auth.username) {
@@ -110,9 +109,9 @@ const Dashboard = () => {
                     button_type = "contained";
                 } else {
                     button_label = "Opponent's turn...";
-                    button_color = "warning";
                 }
                 button_state = false;
+                button_color = "button";
                 break;
             case GameStates.WINNER:
                 button_label =
@@ -129,15 +128,19 @@ const Dashboard = () => {
         }
         return (
             <TableRow key={index} onClick={() => openSelectedMatch(row_id)}>
-                <TableCell component="th" scope="row">
-                    {row_name}
+                <TableCell component="th" scope="row" align="center">
+                    <Typography
+                        color="text.primary"
+                        variant="subtitle2"
+                    >
+                        {row_name}
+                    </Typography>
                 </TableCell>
                 <TableCell component="th" scope="row" align="center">
                     <Button
                         sx={{ width: "70%", height: "50%", fontSize: "65%" }}
                         variant={button_type}
                         aria-label={row_id + "status"}
-                        onClick={() => openSelectedMatch(row_id)}
                         disabled={button_state}
                         color={button_color}
                     >
@@ -203,11 +206,24 @@ const Dashboard = () => {
                                     }}
                                     aria-label="Active Matches table"
                                 >
-                                    <TableHead>
+                                    <TableHead color="background.tableheader">
                                         <TableRow>
-                                            <TableCell>Match against</TableCell>
+                                            <TableCell>
+                                                    <Typography
+                                                        color="text.primary"
+                                                        align="center"
+                                                        variant="subtitle1"
+                                                    >
+                                                        Match against
+                                                    </Typography>
+                                                </TableCell>
                                             <TableCell align="center">
-                                                Status
+                                                <Typography
+                                                    color="text.primary"
+                                                    variant="subtitle1"
+                                                >
+                                                    Status
+                                                </Typography>
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -230,7 +246,7 @@ const Dashboard = () => {
                         )}
                     </ActiveMatchesCard>
 
-                    <spacer style={{ height: "16px" }}></spacer>
+                    <Box style={{ height: "16px" }}></Box>
 
                     <Typography
                         color="text.primary"
@@ -251,9 +267,22 @@ const Dashboard = () => {
                                     <TableHead>
                                         <TableRow></TableRow>
                                         <TableRow>
-                                            <TableCell>Match against</TableCell>
+                                            <TableCell>
+                                                <Typography
+                                                    color="text.primary"
+                                                    align="center"
+                                                    variant="subtitle1"
+                                                >
+                                                    Match against
+                                                </Typography>
+                                            </TableCell>
                                             <TableCell align="center">
-                                                Result
+                                                <Typography
+                                                    color="text.primary"
+                                                    variant="subtitle1"
+                                                >
+                                                    Result
+                                                </Typography>
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>

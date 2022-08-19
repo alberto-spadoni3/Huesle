@@ -10,23 +10,18 @@ export const getDesignTokens = (mode) => ({
         mode,
         ...(mode === "light"
             ? {
-                  // palette values for light mode
-                  /* primary: {
-                      main: "#6573C3",
-                  }, */
                   text: {
-                      primary: grey[900],
-                      link: "#2692E6",
+                      primary: "#1F1F1F",
+                      secondary: "#2F2F2F"
                   },
                   link: {
                       main: "#2692E6",
                   },
                   action: {
-                      button: "#6573C3",
                       active: grey[800],
                   },
                   button: {
-                      main: "#3f51b5",
+                      main: "#388697",
                   },
                   colorBox: {
                       main: grey[900],
@@ -36,23 +31,24 @@ export const getDesignTokens = (mode) => ({
                       contrastText: "#fff",
                   },
                   background: {
-                      paper: "#C8C8C8",
-                      dashboardMenu: "#C8C8C8",
+                      default: "#FFFFFF",
+                      paper: "#E6E8E6",
+                      dashboardMenu: "#E6E8E6",
                   },
                   gameboard: {
-                      background: "#996633",
+                      background: "#DCCCBB",
                       position: "#009E73",
                       color: "#F0E442",
                   },
                   switch: {
-                      main: "#0C7BDC",
+                      main: "#69b6c7",
                   },
               }
             : {
                   // palette values for dark mode
                   text: {
                       primary: grey[200],
-                      secondary: grey[300],
+                      secondary: "#D9DCD6",
                   },
                   link: {
                       main: "#2692E6",
@@ -61,7 +57,9 @@ export const getDesignTokens = (mode) => ({
                       active: grey[100],
                   },
                   button: {
-                      main: "#3f51b5",
+                      main: "#388697",
+                      inactive: "#6b6e70",
+                      negative: "#388697",
                   },
                   colorBox: {
                       main: grey[900],
@@ -71,17 +69,17 @@ export const getDesignTokens = (mode) => ({
                       contrastText: "#fff",
                   },
                   background: {
-                      default: "#303030",
-                      paper: "#1a1a1a",
-                      dashboardMenu: "#262626",
+                      default: "#1F1F1F",
+                      paper: "#2F2F2F",
+                      dashboardMenu: "#2F2F2F",
                   },
                   gameboard: {
-                      background: "rgb(96,56,31)",
+                      background: "#433423",
                       position: "#009E73",
                       color: "#F0E442",
                   },
                   switch: {
-                      main: "#0C7BDC",
+                      main: "#388697",
                   },
               }),
     },

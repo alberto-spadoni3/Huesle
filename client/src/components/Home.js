@@ -52,12 +52,14 @@ const Home = () => {
                                 variant="outlined"
                                 size="small"
                                 onClick={() => navigate("/login")}
+                                color="button"
                             >
                                 Log in
                             </Button>
                             <Button
                                 variant="outlined"
                                 size="small"
+                                color="button"
                                 onClick={() => navigate("/register")}
                             >
                                 Create an account
