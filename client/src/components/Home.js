@@ -18,8 +18,8 @@ const Home = () => {
     return (
         <Box
             sx={{
-                height: "100vh",
                 display: "flex",
+                marginTop: "40%",
                 justifyContent: "center",
                 alignItems: "center",
             }}

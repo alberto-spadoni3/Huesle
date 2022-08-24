@@ -21,7 +21,7 @@ export const getDesignTokens = (mode) => ({
                       active: grey[800],
                   },
                   button: {
-                      main: "#388697",
+                      main: "#8980F5",
                   },
                   colorBox: {
                       main: grey[900],

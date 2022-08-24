@@ -10,7 +10,7 @@ const Header = () => {
                     maxWidth="xs"
                     sx={{
                         display: "flex",
-                        alighItems: "center",
+                        alignItems: "center",
                         paddingTop: 1,
                     }}
                 >

@@ -102,6 +102,7 @@ const GameBoard = () => {
                     backgroundColor: "gameboard.background",
                     marginBottom: 1,
                     paddingY: "5px",
+                    minWidth: "min-content"
                 }}
             >
                 <Stack
@@ -125,6 +126,7 @@ const GameBoard = () => {
                     backgroundColor: "background.paper",
                     padding: "5px",
                     marginBottom: 2,
+                    minWidth: "350px"
                 }}
             >
                 <ColorSelector />

@@ -31,12 +31,14 @@ const Layout = ({ setThemeMode }) => {
     }, [auth.username]);
 
     return (
-        <Box color="text.secondary" height="100vh">
+        <>
             <Header />
-            <MainContainer>
-                <Outlet />
-            </MainContainer>
-        </Box>
+            <Box height="100vh">
+                <MainContainer >
+                    <Outlet />
+                </MainContainer>
+            </Box>
+        </>
     );
 };
 
