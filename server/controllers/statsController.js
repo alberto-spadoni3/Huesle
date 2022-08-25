@@ -3,6 +3,7 @@ import { GameStates } from "../model/gameLogic.js";
 import { UserModel } from "../model/UserModel.js";
 import { MatchModel } from "../model/MatchModel.js";
 import { PendingRequestModel } from "../model/PendingRequestModel.js";
+import {NotificationModel} from "../model/NotificationModel.js";
 
 async function findUserId(username) {
     const account = await UserModel.findOne({ username: username }, "_id");
@@ -99,9 +100,72 @@ const getUserStats = async (req, res) => {
     });
 };
 
+const getNotifications = async (req, res) => {
+    const userID = await findUserId(req.username);
+    if (!userID)
+        return res.status(400).json({
+            message: "Username not valid",
+        });
+
+    const newNotification = await NotificationModel.find({
+        userID: userID,
+        read: false,
+    }).sort('-date');
+
+    const readNotification = await NotificationModel.find({
+        userID: userID,
+        read: true,
+    }).sort({'date': -1}).limit(5);
+
+    res.status(200).json({
+        notifications: newNotification.concat(readNotification)
+    });
+};
+
+const areNewNotifications = async (req, res) => {
+    const userID = await findUserId(req.username);
+    if (!userID)
+        return res.status(400).json({
+            message: "Username not valid",
+        });
+
+    const newNotification = await NotificationModel.findOne({
+        userID: userID,
+        read: false,
+    });
+
+    res.status(200).json({
+        newNotification: newNotification? true: false
+    });
+};
+
+const signalNotificationsRead = async (req, res) => {
+    const { date } = req.body;
+    const userID = await findUserId(req.username);
+    if (!userID)
+        return res.status(400).json({
+            message: "Username not valid",
+        });
+    const notifications = await NotificationModel.find({
+        userID: userID,
+        read: false,
+        date: {$lte: date}
+    });
+
+    for (let index in notifications) {
+        notifications[index].read = true;
+        notifications[index].save();
+    }
+
+    res.sendStatus(200);
+};
+
 export const statsController = {
     getActiveMatchesOfUser,
     getOngoingMatches,
     getAllMatchesOfUser,
     getUserStats,
+    getNotifications,
+    areNewNotifications,
+    signalNotificationsRead
 };

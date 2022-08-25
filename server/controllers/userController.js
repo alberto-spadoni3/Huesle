@@ -161,24 +161,25 @@ const handleUserLogout = async (req, res) => {
 
 const handleResetPasswordRequest = async (req, res) => {
     const { username, email } = req.query;
-    const userInDB = await UserModel.findOne({ username: username, email: email });
+    const userInDB = await UserModel.findOne({ username: username, email: email }, ["_id"]);
     if (!userInDB) return res.status(404).json({
         message: `An account with these fields doesn't exist`,
     });
+    const userID = userInDB._id.toString();
 
     var date = new Date()
     date.setMinutes(date.getMinutes()+10);
     var expiringDate = new Date(date)
 
-    const token = await bcrypt.hash(username + date.toString(), 10);
+    const token = await bcrypt.hash(userID + date.toString() + Math.floor(Math.random() * 1000), 10);
 
-    const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({ username: username});
+    const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({ userID: userID});
     if(requestAlreadyPresent) return res.status(405).json({
         message: `An email has already been sent to that address`,
     });;
 
     await ResetPasswordTokenModel.create({
-        username: username,
+        userID: userID,
         token: token,
         expireAt: expiringDate
     })
@@ -193,8 +194,6 @@ const handleResetPasswordRequest = async (req, res) => {
         },
         tls: {rejectUnauthorized: false}
     });
-
-    const router = express.Router();
 
     const mailOptions = {
         from: 'Huesle <huesle.service@gmail.com>',
@@ -219,16 +218,23 @@ const checkResetPasswordToken = async (req, res) => {
 
     const request = await ResetPasswordTokenModel.findOne({token});
     if(!request) return res.sendStatus(404)
-    else return res.status(200).json({
-        username: request.username
+
+    const userInDB = await UserModel.findById(request.userID, ["username"]);
+
+    return res.status(200).json({
+        username: userInDB.username
     });
 };
 
 const resetPassword = async (req, res) => {
     const { token, username, password } = req.body;
-    const userInDB = await UserModel.findOne({ username });
-    const tokenCheck = await ResetPasswordTokenModel.findOne({token});
-    if (!userInDB || !tokenCheck) {
+    const userInDB = await UserModel.findOne({ username }, ["_id"]);
+    if (!userInDB) {
+        return res.sendStatus(401);
+    }
+    const userID = userInDB._id.toString();
+    const tokenCheck = await ResetPasswordTokenModel.findOne({userID});
+    if (!tokenCheck) {
         return res.sendStatus(401);
     }
 

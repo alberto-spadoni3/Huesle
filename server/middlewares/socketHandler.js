@@ -1,9 +1,11 @@
 import { MatchModel } from "../model/MatchModel.js";
 import { UserModel } from "../model/UserModel.js";
-import { GameStates } from "../model/gameLogic.js";
+import {createRandomSolutionWithRepetition, createSolutionWithoutRepetition, GameStates} from "../model/gameLogic.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+import {NotificationModel} from "../model/NotificationModel.js";
 
 const app = express();
 const port = process.env.SOCKET_IO_PORT || 8081;
@@ -76,6 +78,12 @@ export function emitNewMatch(players, matchId) {
     io.to(matchId).emit(MessageTypes.NEW_MATCH, {
         content: matchId,
     });
+    findUsername(players[1]).then(username => createNotification(players[0], matchId,
+        "New match started against " + username));
+    findUsername(players[0]).then(username => createNotification(players[1], matchId,
+        "New match started against " + username));
+    ;
+
 }
 
 export function emitNewMove(playerNotified, originPlayer, matchId) {
@@ -83,14 +91,35 @@ export function emitNewMove(playerNotified, originPlayer, matchId) {
         content: matchId,
         opponent: originPlayer,
     });
+    createNotification(playerNotified, matchId,
+        originPlayer + " has made a move made in a match");
 }
 
 export async function emitMatchOver(matchId, players_id) {
     const players = [];
     for (let index in players_id) {
-        const name = await UserModel.findById(players_id[index], ["username"]);
-        players.push(name.username);
+        const username = await findUsername(players_id[index]);
+        players.push(username);
     }
     io.to(matchId).emit(MessageTypes.MATCH_OVER, JSON.stringify(players));
+    createNotification(players[0], matchId,
+        "Match against " + players[1] + " is over!");
+    createNotification(players[1], matchId,
+        "Match against " + players[0] + " is over!");
     io.socketsLeave(matchId);
+}
+
+async function findUsername(playerId) {
+    const name = await UserModel.findById(playerId, ["username"]);
+    return name?.username;
+}
+
+function createNotification(userId, matchId, message) {
+    const notification = {
+        userID: userId,
+        matchId,
+        message
+    };
+    const notif = new NotificationModel(notification);
+    notif.save();
 }

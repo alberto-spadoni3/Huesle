@@ -28,3 +28,7 @@ export const BACKEND_GET_USER_STATS_ENDPOINT = "/stats/userStats";
 export const BACKEND_FORGOT_PASSWORD_ENDPOINT = "/user/forgotPassword";
 export const BACKEND_CHECK_REQUEST_TOKEN_ENDPOINT = "/user/checkRequestToken";
 export const BACKEND_RESET_PASSWORD_ENDPOINT = "/user/resetPassword";
+
+//Notifications
+export const BACKEND_NOTIFICATIONS_ENDPOINT = "/stats/notifications";
+export const BACKEND_NEW_NOTIFICATIONS_ENDPOINT = "/stats/newNotifications";

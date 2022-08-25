@@ -10,8 +10,24 @@ import useLogout from "../hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import UserPicture from "./UserPicture";
 import useAuth from "../hooks/useAuth";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
+import * as PropTypes from "prop-types";
+import {BACKEND_GET_NOTIFICATIONS_ENDPOINT, BACKEND_NEW_NOTIFICATIONS_ENDPOINT} from "../api/backend_endpoints";
+import {useState, useEffect} from "react";
+
+function StyledBadge(props) {
+    return null;
+}
+
+StyledBadge.propTypes = {
+    overlap: PropTypes.string,
+    variant: PropTypes.string,
+    anchorOrigin: PropTypes.shape({horizontal: PropTypes.string, vertical: PropTypes.string})
+};
+export default function DashboardMenu({ anchorEl, setAnchorEl, open, newNotifications}) {
     const logout = useLogout();
     const navigate = useNavigate();
     const { auth } = useAuth();
@@ -39,19 +55,7 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
                         height: 64,
                         ml: -0.5,
                         mr: 1,
-                    } /* 
-                    "&:before": {
-                        content: '""',
-                        display: "block",
-                        position: "absolute",
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: "red",
-                        transform: "translateY(-50%) rotate(45deg)",
-                        zIndex: 0,
-                    }, */,
+                    }
                 },
             }}
             anchorOrigin={{
@@ -67,6 +71,12 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open }) {
                 <UserPicture userPic={auth.profilePicID} /> My profile
             </MenuItem>
             <Divider />
+            <MenuItem onClick={(e) => navigate("/notifications")}>
+                <ListItemIcon>
+                    {newNotifications? (<NotificationsActiveIcon fontSize="small" sx={{color:"button.main"}}/>):(<NotificationsNoneIcon fontSize="small" />)}
+                </ListItemIcon>
+                Notifications
+            </MenuItem>
             <MenuItem onClick={(e) => navigate("/rules")}>
                 <ListItemIcon>
                     <QuestionMarkIcon fontSize="small" />

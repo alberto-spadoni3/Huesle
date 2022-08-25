@@ -33,7 +33,7 @@ const Layout = ({ setThemeMode }) => {
     return (
         <>
             <Header />
-            <Box height="100vh">
+            <Box height="100vh" minWidth="400px">
                 <MainContainer >
                     <Outlet />
                 </MainContainer>
