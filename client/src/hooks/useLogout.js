@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "./useAuth";
-
-const BACKEND_LOGOUT_ENDPOINT = "/user/logout";
+import { BACKEND_LOGOUT_ENDPOINT } from "../api/backend_endpoints";
 
 const useLogout = () => {
     const navigate = useNavigate();

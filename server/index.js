@@ -15,9 +15,9 @@ import { verifyJWT } from "./middlewares/verifyJWT.js";
 //TRIAL
 import "./middlewares/socketHandler.js";
 
-const port = 8080;
-const app = express();
 dotenv.config();
+const app = express();
+const port = process.env.PORT || 8080;
 
 app.use(cors);
 app.use(cookieParser());
@@ -30,10 +30,8 @@ app.use("/search", searchRoutes);
 app.use("/stats", statsRoutes);
 app.use("/setting", settingRoutes);
 
-const DB_URL = "mongodb://localhost:27017";
-
 try {
-    mongoose.connect(DB_URL, { dbName: "huesle" }, () => {
+    mongoose.connect(process.env.MONGODB_URL, { dbName: "huesle" }, () => {
         console.log("DB ready");
         // the server start listening only after the DB is up and running
         app.listen(port, () => console.log(`Server listening on port ${port}`));

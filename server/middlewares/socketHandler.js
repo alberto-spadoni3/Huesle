@@ -6,15 +6,16 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 const app = express();
+const port = process.env.SOCKET_IO_PORT || 8081;
 const httpServer = createServer(app);
-const io = new Server(3001, {
+const io = new Server(port, {
     upgrade: false,
     cors: {
         origin: "http://localhost:3000",
         credentials: true,
         methods: ["GET", "POST"],
-        transports: ['websocket']
-    }
+        transports: ["websocket"],
+    },
 });
 io.attach(httpServer);
 
@@ -39,14 +40,14 @@ io.use((socket, next) => {
     }
 
     socket.emit(MessageTypes.SESSION, {
-        userID: socket.userID
+        userID: socket.userID,
     });
 });
 
 io.on(MessageTypes.CONNECTION, (socket) => {
     socket.join(socket.userID);
     socket.emit(MessageTypes.SESSION, {
-        userID: socket.userID
+        userID: socket.userID,
     });
     connectUserToMatchSockets(socket.userID);
 });
@@ -61,7 +62,7 @@ async function connectUserToMatchSockets(id) {
     const matches = await MatchModel.find(
         {
             players: id,
-            "status.state" : GameStates.PLAYING
+            "status.state": GameStates.PLAYING,
         },
         "_id"
     );
@@ -73,23 +74,21 @@ async function connectUserToMatchSockets(id) {
 export function emitNewMatch(players, matchId) {
     io.in(players).socketsJoin(matchId);
     io.to(matchId).emit(MessageTypes.NEW_MATCH, {
-        content: matchId
+        content: matchId,
     });
 }
 
 export function emitNewMove(playerNotified, originPlayer, matchId) {
     io.to(playerNotified).emit(MessageTypes.NEW_MOVE, {
         content: matchId,
-        opponent: originPlayer
+        opponent: originPlayer,
     });
 }
 
 export async function emitMatchOver(matchId, players_id) {
     const players = [];
     for (let index in players_id) {
-        const name = await UserModel.findById(players_id[index], [
-            "username",
-        ]);
+        const name = await UserModel.findById(players_id[index], ["username"]);
         players.push(name.username);
     }
     io.to(matchId).emit(MessageTypes.MATCH_OVER, JSON.stringify(players));
