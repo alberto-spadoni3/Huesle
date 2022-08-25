@@ -3,25 +3,12 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
 import { Box, CircularProgress } from "@mui/material";
+import Loading from "./Loading";
 
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
     const { auth, persist } = useAuth();
-
-    const Loading = () => {
-        return (
-            <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                marginTop={4}
-                height="50vh"
-            >
-                <CircularProgress />
-            </Box>
-        );
-    };
 
     useEffect(() => {
         let isMounted = true;

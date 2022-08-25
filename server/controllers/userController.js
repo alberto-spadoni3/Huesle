@@ -159,7 +159,7 @@ const handleUserLogout = async (req, res) => {
     });
 };
 
-const handleResetPassword = async (req, res) => {
+const handleResetPasswordRequest = async (req, res) => {
     const { username, email } = req.query;
     const userInDB = await UserModel.findOne({ username: username, email: email });
     if (!userInDB) return res.status(404).json({
@@ -195,14 +195,13 @@ const handleResetPassword = async (req, res) => {
     });
 
     const router = express.Router();
-    console.log(req.baseUrl)
 
     const mailOptions = {
         from: 'Huesle <huesle.service@gmail.com>',
-        to: 'niwax18356@seinfaq.com',
+        to: email,
         subject: 'Huesle Reset Password Request',
         text: 'Do not respond to this email! Use the following link to reset your password:\n' +
-            "http://localhost:3000/resetPassword?token=" + token + "\n" +
+            req.protocol + "://" + req.hostname + ":3000/resetPassword?token=" + token + "\n" +
             'The link will expire in 10 minutes.'
     };
 
@@ -215,10 +214,38 @@ const handleResetPassword = async (req, res) => {
     });
 };
 
+const checkResetPasswordToken = async (req, res) => {
+    const { token } = req.body;
+
+    const request = await ResetPasswordTokenModel.findOne({token});
+    if(!request) return res.sendStatus(404)
+    else return res.status(200).json({
+        username: request.username
+    });
+};
+
+const resetPassword = async (req, res) => {
+    const { token, username, password } = req.body;
+    const userInDB = await UserModel.findOne({ username });
+    const tokenCheck = await ResetPasswordTokenModel.findOne({token});
+    if (!userInDB || !tokenCheck) {
+        return res.sendStatus(401);
+    }
+
+    tokenCheck.deleteOne();
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    userInDB.password = hashedPassword;
+    await userInDB.save();
+    res.status(200).json({ message: "Password updated" });
+};
+
 export const userController = {
     handleUserRegistration,
     handleUserLogin,
     refreshAccessToken,
     handleUserLogout,
-    handleResetPassword
+    handleResetPasswordRequest,
+    checkResetPasswordToken,
+    resetPassword
 };

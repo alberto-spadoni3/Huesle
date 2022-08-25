@@ -63,7 +63,7 @@ export default function Register() {
             else if (!validEmail) message = "The email selected is not valid.";
             else if (!validPassword)
                 message =
-                    "The password selected is not valid. It must contain at least a number, a lower and a higher case letter and a special character.";
+                    "The password selected is not valid. It must contain at least 8 characters, a number, a lower and a higher case letter and a special character.";
             else if (!validMatchPassword)
                 message = "The two password inserted don't match";
             enqueueSnackbar(message, { variant: "warning" });

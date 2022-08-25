@@ -93,7 +93,7 @@ export default function ForgotPassword() {
                             />
                         </Avatar>
                         <Typography component="h1" variant="h4">
-                            Reset Password
+                            Forgot Password
                         </Typography>
                         <Box
                             component="form"
@@ -124,7 +124,7 @@ export default function ForgotPassword() {
                                 value={email}
                                 autoComplete="off"
                             />
-                            <Typography component="h1" variant="body1" sx={{ mt: 2.5 }}>
+                            <Typography component="h1" variant="body1" sx={{ mt: 2.5, ml: 1 }}>
                                 Insert the username and email of the account to recover.
                             </Typography>
                             {!loading ? (<Button

@@ -139,7 +139,7 @@ const EditUserProfile = () => {
         }
 
         if (!(usernamePresentAndValid || passwordPresentAndValid))
-            enqueueSnackbar("Anything has changed");
+            enqueueSnackbar("Nothing has changed");
     };
 
     return (

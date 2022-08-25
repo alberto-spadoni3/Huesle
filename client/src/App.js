@@ -22,8 +22,8 @@ import GameRules from "./components/GameRules";
 import Match from "./components/Match";
 import { SocketProvider } from "./context/SocketProvider";
 
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -51,6 +51,7 @@ const App = () => {
                             <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
                             <Route path="forgotPassword" element={<ForgotPassword />} />
+                            <Route path="resetPassword" element={<ResetPassword />} />
 
                             <Route path="rules" element={<GameRules />} />
 

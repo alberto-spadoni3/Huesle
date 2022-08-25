@@ -14,7 +14,7 @@ const Missing = () => {
         >
             <Stack spacing={1}>
                 <Typography variant="h5">Route not found</Typography>
-                <Button variant="outlined" onClick={() => navigate("/")}>
+                <Button variant="outlined" color="button" onClick={() => navigate("/")}>
                     Go to the Homepage
                 </Button>
             </Stack>
