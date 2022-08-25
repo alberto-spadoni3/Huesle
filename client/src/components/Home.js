@@ -5,7 +5,7 @@ import {
     CardContent,
     Typography,
     Divider,
-    Button,
+    Button, Fade,
 } from "@mui/material";
 import React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ const Home = () => {
     const navigate = useNavigate();
 
     return (
+        <Fade in={true}>
         <Box
             sx={{
                 display: "flex",
@@ -69,6 +70,7 @@ const Home = () => {
                 </>
             )}
         </Box>
+        </Fade>
     );
 };
 

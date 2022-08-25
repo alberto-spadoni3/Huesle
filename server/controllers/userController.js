@@ -1,6 +1,9 @@
 import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {ResetPasswordTokenModel} from "../model/ResetPasswordTokenModel.js";
+import nodemailer from 'nodemailer';
+import express from "express";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -156,9 +159,66 @@ const handleUserLogout = async (req, res) => {
     });
 };
 
+const handleResetPassword = async (req, res) => {
+    const { username, email } = req.query;
+    const userInDB = await UserModel.findOne({ username: username, email: email });
+    if (!userInDB) return res.status(404).json({
+        message: `An account with these fields doesn't exist`,
+    });
+
+    var date = new Date()
+    date.setMinutes(date.getMinutes()+10);
+    var expiringDate = new Date(date)
+
+    const token = await bcrypt.hash(username + date.toString(), 10);
+
+    const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({ username: username});
+    if(requestAlreadyPresent) return res.status(405).json({
+        message: `An email has already been sent to that address`,
+    });;
+
+    await ResetPasswordTokenModel.create({
+        username: username,
+        token: token,
+        expireAt: expiringDate
+    })
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: 'huesle.service@gmail.com',
+            pass: 'bhwkygyzxcvjoiff'
+        },
+        tls: {rejectUnauthorized: false}
+    });
+
+    const router = express.Router();
+    console.log(req.baseUrl)
+
+    const mailOptions = {
+        from: 'Huesle <huesle.service@gmail.com>',
+        to: 'niwax18356@seinfaq.com',
+        subject: 'Huesle Reset Password Request',
+        text: 'Do not respond to this email! Use the following link to reset your password:\n' +
+            "http://localhost:3000/resetPassword?token=" + token + "\n" +
+            'The link will expire in 10 minutes.'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(200);
+        }
+    });
+};
+
 export const userController = {
     handleUserRegistration,
     handleUserLogin,
     refreshAccessToken,
     handleUserLogout,
+    handleResetPassword
 };

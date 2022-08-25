@@ -34,9 +34,9 @@ const Dashboard = () => {
         width: "100%",
         backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
-        marginTop: "5px",
-        border: "2px solid",
-        borderColor: theme.palette.background.default,
+        marginTop: "3px",
+        border: "3px solid",
+        borderColor: theme.palette.background.paper,
     }));
 
     const [activeMatches, setActiveMatches] = useState([]);
@@ -206,8 +206,10 @@ const Dashboard = () => {
                                     }}
                                     aria-label="Active Matches table"
                                 >
-                                    <TableHead color="background.tableheader">
-                                        <TableRow>
+                                    <TableHead >
+                                        <TableRow sx={{
+                                            bgcolor:"background.border"
+                                        }}>
                                             <TableCell>
                                                     <Typography
                                                         color="text.primary"
@@ -265,8 +267,7 @@ const Dashboard = () => {
                                     aria-label="Completed Matches table"
                                 >
                                     <TableHead>
-                                        <TableRow></TableRow>
-                                        <TableRow>
+                                        <TableRow sx={{bgcolor:"background.border"}}>
                                             <TableCell>
                                                 <Typography
                                                     color="text.primary"

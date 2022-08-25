@@ -13,6 +13,7 @@ import axios from "../api/axios";
 import BackButton from "./BackButton";
 import { useSnackbar } from "notistack";
 import { BACKEND_REGISTRATION_ENDPOINT } from "../api/backend_endpoints";
+import {Fade} from "@mui/material";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -116,122 +117,129 @@ export default function Register() {
     return (
         <>
             <BackButton />
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Avatar
-                    sx={{
-                        m: 1,
-                        bgcolor: "primary.main",
-                        width: 64,
-                        height: 64,
-                    }}
-                >
-                    <LockOutlinedIcon fontSize="large" />
-                </Avatar>
-                <Typography component="h1" variant="h4">
-                    Sign up
-                </Typography>
-
-                <Box
-                    component="form"
-                    noValidate
-                    onSubmit={handleSubmit}
-                    sx={{ mt: 3 }}
-                >
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                error={!validEmail && email ? true : false}
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                error={
-                                    !validUsername && username ? true : false
-                                }
-                                id="username"
-                                label="Username"
-                                name="username"
-                                autoComplete="off"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                error={
-                                    !validPassword && password ? true : false
-                                }
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="off"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                error={
-                                    !validMatchPassword && matchPassword
-                                        ? true
-                                        : false
-                                }
-                                name="matchPassword"
-                                label="Confirm Password"
-                                type="password"
-                                id="matchPassword"
-                                autoComplete="off"
-                                value={matchPassword}
-                                onChange={(e) =>
-                                    setMatchPassword(e.target.value)
-                                }
-                            />
-                        </Grid>
-                    </Grid>
-
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="button"
-                        sx={{ mt: 3, mb: 1 }}
+            <Fade in={true}>
+                <Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
                     >
-                        Sign Up
-                    </Button>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link
-                                component={RouterLink}
-                                to="/login"
-                                variant="body2"
+                        <Avatar
+                            sx={{
+                                m: 1,
+                                bgcolor: "gray",
+                                width: 64,
+                                height: 64,
+                            }}
+                        >
+                            <LockOutlinedIcon
+                                fontSize="large"
+                                style={{ color: "white" }}
+                            />
+                        </Avatar>
+                        <Typography component="h1" variant="h4">
+                            Sign up
+                        </Typography>
+
+                        <Box
+                            component="form"
+                            noValidate
+                            onSubmit={handleSubmit}
+                            sx={{ mt: 3 }}
+                        >
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        error={!validEmail && email ? true : false}
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        error={
+                                            !validUsername && username ? true : false
+                                        }
+                                        id="username"
+                                        label="Username"
+                                        name="username"
+                                        autoComplete="off"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        error={
+                                            !validPassword && password ? true : false
+                                        }
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="off"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        error={
+                                            !validMatchPassword && matchPassword
+                                                ? true
+                                                : false
+                                        }
+                                        name="matchPassword"
+                                        label="Confirm Password"
+                                        type="password"
+                                        id="matchPassword"
+                                        autoComplete="off"
+                                        value={matchPassword}
+                                        onChange={(e) =>
+                                            setMatchPassword(e.target.value)
+                                        }
+                                    />
+                                </Grid>
+                            </Grid>
+
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="button"
+                                sx={{ mt: 3, mb: 1 }}
                             >
-                                Already have an account? Sign in
-                            </Link>
-                        </Grid>
-                    </Grid>
+                                Sign Up
+                            </Button>
+                            <Grid container justifyContent="flex-end">
+                                <Grid item>
+                                    <Link
+                                        component={RouterLink}
+                                        to="/login"
+                                        variant="body2"
+                                    >
+                                        Already have an account? Sign in
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Box>
                 </Box>
-            </Box>
+            </Fade>
         </>
     );
 }

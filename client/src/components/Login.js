@@ -9,7 +9,7 @@ import {
     Avatar,
     Link,
     FormControlLabel,
-    Checkbox,
+    Checkbox, Fade,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
@@ -91,95 +91,107 @@ export default function Login() {
     return (
         <>
             <BackButton />
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Avatar
-                    sx={{
-                        m: 1,
-                        bgcolor: "primary.main",
-                        width: 64,
-                        height: 64,
-                    }}
-                >
-                    <LockOutlinedIcon fontSize="large" />
-                </Avatar>
-                <Typography component="h1" variant="h4">
-                    Sign in
-                </Typography>
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    noValidate
-                    sx={{ mt: 3 }}
-                >
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        onChange={(e) => setUsername(e.target.value)}
-                        value={username}
-                        autoComplete="off"
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                        autoComplete="off"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                value="remember"
-                                checked={persist}
-                                onChange={togglePersist}
+            <Fade in={true}>
+                <Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Avatar
+                            sx={{
+                                m: 1,
+                                bgcolor: "gray",
+                                width: 64,
+                                height: 64,
+                            }}
+                        >
+                            <LockOutlinedIcon
+                                fontSize="large"
+                                style={{ color: "white" }}
                             />
-                        }
-                        label="Trust this device"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="button"
-                        sx={{ mt: 3, mb: 1 }}
-                    >
-                        Sign In
-                    </Button>
-                    <Grid
-                        container
-                        direction="column"
-                        justifyContent="flex-start"
-                        alignItems="flex-end"
-                    >
-                        <Grid item xs>
-                            <Link variant="body2">Forgot password?</Link>
-                        </Grid>
-                        <Grid item>
-                            <Link
-                                ariant="body2"
-                                component={RouterLink}
-                                to="/register"
+                        </Avatar>
+                        <Typography component="h1" variant="h4">
+                            Sign in
+                        </Typography>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            noValidate
+                            sx={{ mt: 3 }}
+                        >
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="username"
+                                label="Username"
+                                name="username"
+                                onChange={(e) => setUsername(e.target.value)}
+                                value={username}
+                                autoComplete="off"
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                value={password}
+                                autoComplete="off"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        value="remember"
+                                        checked={persist}
+                                        onChange={togglePersist}
+                                    />
+                                }
+                                label="Trust this device"
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="button"
+                                sx={{ mt: 3, mb: 1 }}
                             >
-                                Don't have an account? Sign Up
-                            </Link>
-                        </Grid>
-                    </Grid>
+                                Sign In
+                            </Button>
+                            <Grid
+                                container
+                                direction="column"
+                                justifyContent="flex-start"
+                                alignItems="flex-end"
+                            >
+                                <Grid item xs>
+                                    <Link
+                                        variant="body2"
+                                          component={RouterLink}
+                                          to="/forgotPassword">
+                                        Forgot password?
+                                    </Link>
+                                </Grid>
+                                <Grid item>
+                                    <Link
+                                        ariant="body2"
+                                        component={RouterLink}
+                                        to="/register"
+                                    >
+                                        Don't have an account? Sign Up
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Box>
                 </Box>
-            </Box>
+            </Fade>
         </>
     );
 }

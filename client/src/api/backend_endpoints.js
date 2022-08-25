@@ -29,3 +29,6 @@ export const BACKEND_GET_MATCHES_ENDPOINT = "/stats/allMatches";
 export const BACKEND_UPDATE_USERPIC_ENDPOIND = "/setting/profilePics";
 
 export const BACKEND_GET_USER_STATS_ENDPOINT = "/stats/userStats";
+
+//Password Reset
+export const BACKEND_FORGOT_PASSWORD_ENDPOINT = "/user/resetPassword";

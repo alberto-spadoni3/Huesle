@@ -32,6 +32,7 @@ export const getDesignTokens = (mode) => ({
                   },
                   background: {
                       default: "#FFFFFF",
+                      border: "#c6cac6",
                       paper: "#E6E8E6",
                       dashboardMenu: "#E6E8E6",
                   },
@@ -70,11 +71,13 @@ export const getDesignTokens = (mode) => ({
                   },
                   background: {
                       default: "#1F1F1F",
+                      border: "#3c3c3c",
                       paper: "#2F2F2F",
                       dashboardMenu: "#2F2F2F",
                   },
                   gameboard: {
                       background: "#433423",
+
                       position: "#009E73",
                       color: "#F0E442",
                   },

@@ -11,4 +11,6 @@ router.route("/refreshToken").get(userController.refreshAccessToken);
 
 router.route("/logout").get(userController.handleUserLogout);
 
+router.route("/resetPassword").get(userController.handleResetPassword);
+
 export default router;

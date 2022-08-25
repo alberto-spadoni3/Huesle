@@ -23,6 +23,7 @@ import Match from "./components/Match";
 import { SocketProvider } from "./context/SocketProvider";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -49,6 +50,7 @@ const App = () => {
                             {/* Public routes */}
                             <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
+                            <Route path="forgotPassword" element={<ForgotPassword />} />
 
                             <Route path="rules" element={<GameRules />} />
 
