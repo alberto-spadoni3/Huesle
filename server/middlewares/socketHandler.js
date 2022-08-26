@@ -102,9 +102,9 @@ export async function emitMatchOver(matchId, players_id) {
         players.push(username);
     }
     io.to(matchId).emit(MessageTypes.MATCH_OVER, JSON.stringify(players));
-    createNotification(players[0], matchId,
+    createNotification(players_id[0], matchId,
         "Match against " + players[1] + " is over!");
-    createNotification(players[1], matchId,
+    createNotification(players_id[1], matchId,
         "Match against " + players[0] + " is over!");
     io.socketsLeave(matchId);
 }

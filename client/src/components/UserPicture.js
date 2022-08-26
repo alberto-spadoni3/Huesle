@@ -1,9 +1,8 @@
 import { Avatar, Skeleton } from "@mui/material";
 
 const UserPicture = ({ size = "64px", userPic }) => {
-    const defaultUserPicture = "blank-profile-picture.jpeg";
     const pictureURL =
-        userPic === 0 ? defaultUserPicture : `/img/profile-pic-${userPic}.jpg`;
+        userPic === 0 ? "" : `/img/profile-pic-${userPic}.jpg`;
 
     return (
         <>

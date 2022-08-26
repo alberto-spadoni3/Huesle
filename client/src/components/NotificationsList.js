@@ -13,23 +13,17 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
 import {
-    BACKEND_GET_MATCHES_ENDPOINT,
-    BACKEND_GET_NOTIFICATIONS_ENDPOINT,
     BACKEND_NOTIFICATIONS_ENDPOINT
 } from "../api/backend_endpoints";
-import useAuth from "../hooks/useAuth";
 import useGameData from "../hooks/useGameData";
 import useSocket from "../hooks/useSocket";
-import BottomBar from "./BottomBar";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import BackButton from "./BackButton";
 
 const NotificationsList = () => {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
-    const { auth } = useAuth();
     const { loadBoard } = useGameData();
 
     const { socket} = useSocket();
@@ -96,7 +90,8 @@ const NotificationsList = () => {
                                 width: "40%"
                             }}
                         >
-                            {formatDate.getDate() + "-" + formatDate.getMonth() + "-" + formatDate.getFullYear()}
+                            {formatDate.getDate() + "-" + (formatDate.getMonth()+1) + "-" + formatDate.getFullYear()}
+
                         </Typography>
                         <Typography
                             color="text.primary"
@@ -109,10 +104,9 @@ const NotificationsList = () => {
                     </TableCell>
                     <TableCell component="th" scope="row" align="center">
                         <Button
-                            sx={{ width: "70%", height: "50%", fontSize: "65%" }}
+                            sx={{ width: "70%", height: "50%", fontSize: "65%", color:"text.secondary" }}
                             variant="outlined"
                             aria-label={matchId + date}
-                            color="button"
                         >
                             Go to Match
                         </Button>

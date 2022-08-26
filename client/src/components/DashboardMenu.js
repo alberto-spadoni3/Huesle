@@ -12,11 +12,8 @@ import UserPicture from "./UserPicture";
 import useAuth from "../hooks/useAuth";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 import * as PropTypes from "prop-types";
-import {BACKEND_GET_NOTIFICATIONS_ENDPOINT, BACKEND_NEW_NOTIFICATIONS_ENDPOINT} from "../api/backend_endpoints";
-import {useState, useEffect} from "react";
 
 function StyledBadge(props) {
     return null;
@@ -73,7 +70,24 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open, newNotifica
             <Divider />
             <MenuItem onClick={(e) => navigate("/notifications")}>
                 <ListItemIcon>
-                    {newNotifications? (<NotificationsActiveIcon fontSize="small" sx={{color:"button.main"}}/>):(<NotificationsNoneIcon fontSize="small" />)}
+                    {newNotifications? (
+                        <NotificationsActiveIcon fontSize="small" sx={{
+                            color:"button.pulsing",
+                            animation: "pulse-icon 2s infinite",
+                            boxShadow: "0px 0px 1px 1px #0000001a",
+                            borderRadius: "50%",
+                            '@keyframes pulse-icon': {
+                                '0%': {
+                                    boxShadow: "0 0 0 0px",
+                                },
+                                '100%': {
+                                    boxShadow: "0 0 0 10px transparent",
+                                },
+                            }
+                        }}/>
+                    ):(
+                        <NotificationsNoneIcon fontSize="small" />
+                    )}
                 </ListItemIcon>
                 Notifications
             </MenuItem>

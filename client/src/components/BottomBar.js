@@ -3,9 +3,8 @@ import {
     styled,
     Stack,
     Typography,
-    IconButton,
+    IconButton, Badge,
 } from "@mui/material";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import {useEffect, useState} from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardMenu from "./DashboardMenu";
@@ -23,6 +22,26 @@ const BottomBar = () => {
     const { socket} = useSocket();
 
     const [newNotifications, setNewNotifications] = useState(false);
+
+    const PulsingButton = styled(MenuRoundedIcon)(({ theme }) => ({
+        fontSize: 50,
+        border: "3px solid",
+        borderColor: "text.secondary",
+        borderRadius: "50%",
+        padding: "5px",
+        animation: "pulse-animation 2s infinite",
+        boxShadow: "0px 0px 1px 1px #0000001a",
+
+        '@keyframes pulse-animation': {
+            '0%': {
+                boxShadow: "0 0 0 0px " + theme.palette.button.pulsing,
+            },
+            '100%': {
+                boxShadow: "0 0 0 15px transparent",
+            },
+        }
+    }));
+
 
     const handleMenuOpening = (event) => {
         setAnchorElement(event.currentTarget);
@@ -47,16 +66,6 @@ const BottomBar = () => {
         update();
     }, [socket])
 
-    const MenuTooltip = styled(({ className, ...props }) => (
-        <Tooltip {...props} classes={{ popper: className }} />
-    ))(({ theme }) => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: theme.palette.tooltip.main,
-            color: theme.palette.text.secondary,
-            fontSize: 16,
-        },
-    }));
-
     return (
         <>
             <Box
@@ -75,24 +84,26 @@ const BottomBar = () => {
                     width="inherit"
                     spacing={4}
                 >
-                    <UserPicture userPic={auth.profilePicID} />
+                    <UserPicture userPic={auth.profilePicID}/>
                     <Typography color="text.primary" variant="h6" pl={"6px"}>
                         {auth.username}
                     </Typography>
                     <IconButton
                         onClick={(e) => handleMenuOpening(e)}
                         aria-label="Open menu"
+                        flexDirection="column"
                     >
-                        <MenuRoundedIcon
-                            sx={{
-                                fontSize: 50,
-                                border: "3px solid",
-                                borderColor: newNotifications? "button.main": "palette.text.secondary",
-                                borderRadius: "50%",
-                                padding: "5px",
-                                animation:"wave"
-                            }}
-                        />
+                        {newNotifications?
+                            (<PulsingButton/>) :
+                            (<MenuRoundedIcon
+                                    sx={{
+                                        fontSize: 50,
+                                        border: "3px solid",
+                                        borderColor: "palette.text.secondary",
+                                        borderRadius: "50%",
+                                        padding: "5px",}}
+                                />
+                            )}
                     </IconButton>
                 </Stack>
                 <DashboardMenu
