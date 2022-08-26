@@ -3,14 +3,16 @@ import { settingController } from "../controllers/settingController.js";
 
 const router = express.Router();
 
+router.route("/updateEmail").post(settingController.updateEmail);
+
 router.route("/updateUsername").post(settingController.updateUsername);
 
 router.route("/updatePassword").post(settingController.updatePassword);
 
 router
     .route("/profileSetting")
-    .put(settingController.updateSettings)
-    .get(settingController.getSettings);
+    .get(settingController.getSettings)
+    .put(settingController.updateSettings);
 
 router
     .route("/profilePics")

@@ -6,18 +6,20 @@ import useAuth from "../hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import {
+    BACKEND_UPDATE_EMAIL,
     BACKEND_UPDATE_USERNAME,
     BACKEND_UPDATE_PASSWORD_ENDPOINT,
 } from "../api/backend_endpoints";
 import UserPictureSelector from "./UserPictureSelector";
+import useRefreshToken from "../hooks/useRefreshToken";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PASSWORD_REGEX =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const EditUserProfile = () => {
     const { auth, setAuth } = useAuth();
+    const refresh = useRefreshToken();
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -50,9 +52,42 @@ const EditUserProfile = () => {
 
     const handleEditProfile = async (e) => {
         const newUsername = username.trim() !== "" ? username : auth.username;
+        const emailPresentAndValid = email.trim() !== "" && validEmail;
         const usernamePresentAndValid = username.trim() !== "" && validUsername;
         const passwordPresentAndValid =
             password.trim() !== "" && validPassword && validMatchPassword;
+
+        if (emailPresentAndValid) {
+            try {
+                const response = await axiosPrivate.post(
+                    BACKEND_UPDATE_EMAIL,
+                    JSON.stringify({ newEmail: email })
+                );
+
+                if (response.status === 200) {
+                    console.log("Email updated");
+                    setEmail("");
+                    enqueueSnackbar(response.data.message, {
+                        variant: "success",
+                    });
+                }
+            } catch (error) {
+                if (!error?.response) {
+                    console.log("No Server Response");
+                    enqueueSnackbar("No Server Response", { variant: "info" });
+                } else if (error.response?.status === 409) {
+                    console.log(error.response?.data?.message);
+                    enqueueSnackbar(error.response?.data?.message, {
+                        variant: "warning",
+                    });
+                } else {
+                    console.log("Username update failed");
+                    enqueueSnackbar("Username update failed", {
+                        variant: "error",
+                    });
+                }
+            }
+        }
 
         // update username if present
         if (usernamePresentAndValid) {
@@ -65,10 +100,11 @@ const EditUserProfile = () => {
                 if (response.status === 200) {
                     console.log("username updated");
                     // refresh the username and the accessToken wich reflects the updated username
-                    // await refresh();
+                    await refresh();
                     setUsername("");
-                    enqueueSnackbar("Username updated", { variant: "success" });
-                    setAuth({ ...auth, username: newUsername });
+                    enqueueSnackbar(response.data.message, {
+                        variant: "success",
+                    });
                 }
             } catch (error) {
                 if (!error?.response) {
@@ -138,7 +174,13 @@ const EditUserProfile = () => {
             }
         }
 
-        if (!(usernamePresentAndValid || passwordPresentAndValid))
+        if (
+            !(
+                emailPresentAndValid ||
+                usernamePresentAndValid ||
+                passwordPresentAndValid
+            )
+        )
             enqueueSnackbar("Nothing has changed");
     };
 
@@ -163,6 +205,23 @@ const EditUserProfile = () => {
                     }}
                 >
                     <Box justifyContent="flex-start" width="inherit">
+                        <Typography color="text.primary" variant="h5">
+                            Email Address
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            error={!validEmail && email ? true : false}
+                            id="editEmail"
+                            label="New Email"
+                            name="editEmail"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            sx={{ mt: 1 }}
+                        />
+
+                        <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
+
                         <Typography color="text.primary" variant="h5">
                             Username
                         </Typography>
@@ -220,24 +279,6 @@ const EditUserProfile = () => {
                             autoComplete="off"
                             value={matchPassword}
                             onChange={(e) => setMatchPassword(e.target.value)}
-                            sx={{ mt: 1 }}
-                        />
-
-                        <Divider sx={{ m: 3, borderBottomWidth: "thick" }} />
-
-                        <Typography color="text.primary" variant="h5">
-                            Email Address
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            error={!validEmail && email ? true : false}
-                            id="editEmail"
-                            label="New Email"
-                            name="editEmail"
-                            autoComplete="email"
-                            value={email}
-                            disabled
-                            onChange={(e) => setEmail(e.target.value)}
                             sx={{ mt: 1 }}
                         />
                     </Box>

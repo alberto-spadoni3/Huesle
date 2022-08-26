@@ -1,8 +1,8 @@
 import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {ResetPasswordTokenModel} from "../model/ResetPasswordTokenModel.js";
-import nodemailer from 'nodemailer';
+import { ResetPasswordTokenModel } from "../model/ResetPasswordTokenModel.js";
+import nodemailer from "nodemailer";
 import express from "express";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
@@ -28,7 +28,9 @@ const handleUserRegistration = async (req, res) => {
         username
     );
     if (possibleDuplicateUser.length > 0)
-        return res.status(409).json({ message: "The username is already in use" });
+        return res
+            .status(409)
+            .json({ message: "The username is already in use" });
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -97,7 +99,10 @@ const handleUserLogin = async (req, res) => {
         });
 
         // send the access token as a JSON object
-        res.status(200).json({ accessToken,  profilePicID: userInDB.profilePicID});
+        res.status(200).json({
+            accessToken,
+            profilePicID: userInDB.profilePicID,
+        });
     } else {
         res.sendStatus(401);
     }
@@ -115,27 +120,23 @@ const refreshAccessToken = async (req, res) => {
         return res.sendStatus(403);
     }
 
-    const {username, profilePicID} = userInDB;
+    const { email, username, profilePicID } = userInDB;
 
-    jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        (error, decodedRefreshToken) => {
-            if (error || userInDB.email !== decodedRefreshToken.email) {
-                return res.sendStatus(403);
-            }
-
-            const newAccessToken = jwt.sign(
-                {
-                    email: decodedRefreshToken.email,
-                    username,
-                },
-                process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
-            );
-            res.json({ username, newAccessToken, profilePicID });
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, _) => {
+        if (error) {
+            return res.sendStatus(403);
         }
-    );
+
+        const newAccessToken = jwt.sign(
+            {
+                email,
+                username,
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+        );
+        res.json({ username, newAccessToken, profilePicID });
+    });
 };
 
 const handleUserLogout = async (req, res) => {
@@ -161,51 +162,64 @@ const handleUserLogout = async (req, res) => {
 
 const handleResetPasswordRequest = async (req, res) => {
     const { username, email } = req.query;
-    const userInDB = await UserModel.findOne({ username: username, email: email });
-    if (!userInDB) return res.status(404).json({
-        message: `An account with these fields doesn't exist`,
+    const userInDB = await UserModel.findOne({
+        username: username,
+        email: email,
     });
+    if (!userInDB)
+        return res.status(404).json({
+            message: `An account with these fields doesn't exist`,
+        });
 
-    var date = new Date()
-    date.setMinutes(date.getMinutes()+10);
-    var expiringDate = new Date(date)
+    var date = new Date();
+    date.setMinutes(date.getMinutes() + 10);
+    var expiringDate = new Date(date);
 
     const token = await bcrypt.hash(username + date.toString(), 10);
 
-    const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({ username: username});
-    if(requestAlreadyPresent) return res.status(405).json({
-        message: `An email has already been sent to that address`,
-    });;
+    const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({
+        username: username,
+    });
+    if (requestAlreadyPresent)
+        return res.status(405).json({
+            message: `An email has already been sent to that address`,
+        });
 
     await ResetPasswordTokenModel.create({
         username: username,
         token: token,
-        expireAt: expiringDate
-    })
+        expireAt: expiringDate,
+    });
 
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: "smtp.gmail.com",
         port: 465,
         secure: true,
         auth: {
-            user: 'huesle.service@gmail.com',
-            pass: 'bhwkygyzxcvjoiff'
+            user: "huesle.service@gmail.com",
+            pass: "bhwkygyzxcvjoiff",
         },
-        tls: {rejectUnauthorized: false}
+        tls: { rejectUnauthorized: false },
     });
 
     const router = express.Router();
 
     const mailOptions = {
-        from: 'Huesle <huesle.service@gmail.com>',
+        from: "Huesle <huesle.service@gmail.com>",
         to: email,
-        subject: 'Huesle Reset Password Request',
-        text: 'Do not respond to this email! Use the following link to reset your password:\n' +
-            req.protocol + "://" + req.hostname + ":3000/resetPassword?token=" + token + "\n" +
-            'The link will expire in 10 minutes.'
+        subject: "Huesle Reset Password Request",
+        text:
+            "Do not respond to this email! Use the following link to reset your password:\n" +
+            req.protocol +
+            "://" +
+            req.hostname +
+            ":3000/resetPassword?token=" +
+            token +
+            "\n" +
+            "The link will expire in 10 minutes.",
     };
 
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             res.sendStatus(400);
         } else {
@@ -217,17 +231,18 @@ const handleResetPasswordRequest = async (req, res) => {
 const checkResetPasswordToken = async (req, res) => {
     const { token } = req.body;
 
-    const request = await ResetPasswordTokenModel.findOne({token});
-    if(!request) return res.sendStatus(404)
-    else return res.status(200).json({
-        username: request.username
-    });
+    const request = await ResetPasswordTokenModel.findOne({ token });
+    if (!request) return res.sendStatus(404);
+    else
+        return res.status(200).json({
+            username: request.username,
+        });
 };
 
 const resetPassword = async (req, res) => {
     const { token, username, password } = req.body;
     const userInDB = await UserModel.findOne({ username });
-    const tokenCheck = await ResetPasswordTokenModel.findOne({token});
+    const tokenCheck = await ResetPasswordTokenModel.findOne({ token });
     if (!userInDB || !tokenCheck) {
         return res.sendStatus(401);
     }
@@ -247,5 +262,5 @@ export const userController = {
     handleUserLogout,
     handleResetPasswordRequest,
     checkResetPasswordToken,
-    resetPassword
+    resetPassword,
 };

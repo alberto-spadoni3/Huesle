@@ -1,10 +1,46 @@
 import { UserModel } from "../model/UserModel.js";
 import bcrypt from "bcrypt";
 
-const updatePassword = async (req, res) => {
-    const { prevPassword, newPassword } = req.body;
+const updateEmail = async (req, res) => {
+    const username = req.username;
+    const { newEmail } = req.body;
 
-    const userInDB = await UserModel.findOne({ username: req.username });
+    const userInDB = await UserModel.findOne({ username });
+    if (!userInDB) return res.sendStatus(401);
+
+    if (userInDB.email === newEmail)
+        return res
+            .status(409)
+            .json({ message: "This email address is already in use" });
+
+    userInDB.email = newEmail;
+    await userInDB.save();
+    res.status(200).json({ message: "Email address updated!" });
+};
+
+const updateUsername = async (req, res) => {
+    const currentUsername = req.username;
+    const { newUsername } = req.body;
+
+    const possibleDuplicateUsername = await UserModel.where("username").equals(
+        newUsername
+    );
+
+    if (possibleDuplicateUsername.length > 0)
+        return res
+            .status(409)
+            .json({ message: "This username is already in use" });
+
+    const userInDB = await UserModel.findOne({ username: currentUsername });
+    userInDB.username = newUsername;
+    await userInDB.save();
+    res.status(200).json({ message: "Username updated!" });
+};
+
+const updatePassword = async (req, res) => {
+    const { username, prevPassword, newPassword } = req.body;
+
+    const userInDB = await UserModel.findOne({ username });
     if (!userInDB) {
         return res.sendStatus(401);
     }
@@ -20,25 +56,6 @@ const updatePassword = async (req, res) => {
             .status(400)
             .json({ message: "The old password is wrong! No update is made." });
     }
-};
-
-const updateUsername = async (req, res) => {
-    const currentUsername = req.username;
-    const { newUsername } = req.body;
-
-    const possibleDuplicateUsername = await UserModel.where("username").equals(
-        newUsername
-    );
-
-    if (possibleDuplicateUsername.length > 0)
-        return res
-            .status(409)
-            .json({ message: "The username is already in use" });
-
-    const userInDB = await UserModel.findOne({ username: currentUsername });
-    userInDB.username = newUsername;
-    await userInDB.save();
-    res.status(200).json({ message: "Username updated" });
 };
 
 const getSettings = async (req, res) => {
@@ -103,8 +120,9 @@ const updateProfilePic = async (req, res) => {
 };
 
 export const settingController = {
-    updatePassword,
+    updateEmail,
     updateUsername,
+    updatePassword,
     getSettings,
     updateSettings,
     getUserPic,

@@ -3,6 +3,7 @@ export const BACKEND_LOGIN_ENDPOINT = "/user/login";
 export const BACKEND_SETTINGS_ENDPOINT = "/setting/profileSetting";
 export const BACKEND_REGISTRATION_ENDPOINT = "/user/register";
 export const BACKEND_UPDATE_USERNAME = "/setting/updateUsername";
+export const BACKEND_UPDATE_EMAIL = "/setting/updateEmail";
 export const BACKEND_UPDATE_PASSWORD_ENDPOINT = "/setting/updatePassword";
 export const BACKEND_REFRESH_TOKEN_ENDPOINT = "/user/refreshToken";
 export const BACKEND_LOGOUT_ENDPOINT = "/user/logout";
