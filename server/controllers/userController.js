@@ -186,21 +186,21 @@ const handleResetPasswordRequest = async (req, res) => {
 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 465,
+        port: process.env.NODEMAILER_PORT,
         secure: true,
         auth: {
-            user: 'huesle.service@gmail.com',
-            pass: 'bhwkygyzxcvjoiff'
+            user: process.env.NODEMAILER_EMAIL,
+            pass: process.env.NODEMAILER_PASSWORD
         },
         tls: {rejectUnauthorized: false}
     });
 
     const mailOptions = {
-        from: 'Huesle <huesle.service@gmail.com>',
+        from: 'Huesle <' + process.env.NODEMAILER_EMAIL + '>',
         to: email,
         subject: 'Huesle Reset Password Request',
         text: 'Do not respond to this email! Use the following link to reset your password:\n' +
-            req.protocol + "://" + req.hostname + ":3000/resetPassword?token=" + token + "\n" +
+            req.protocol + "://" + req.hostname + "/resetPassword?token=" + token + "\n" +
             'The link will expire in 10 minutes.'
     };
 
