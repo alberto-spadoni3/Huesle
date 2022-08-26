@@ -24,6 +24,7 @@ import { SocketProvider } from "./context/SocketProvider";
 
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import NotificationsList from "./components/NotificationsList";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -94,7 +95,14 @@ const App = () => {
 
                                     <Route element={<RequireAuth />}>
                                         <Route
-                                            path="/searchMatch"
+                                            path="notifications"
+                                            element={<NotificationsList />}
+                                        />
+                                    </Route>
+
+                                    <Route element={<RequireAuth />}>
+                                        <Route
+                                            path="searchMatch"
                                             element={<SearchMatch />}
                                         />
                                     </Route>

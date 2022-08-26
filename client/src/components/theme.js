@@ -21,7 +21,8 @@ export const getDesignTokens = (mode) => ({
                       active: grey[800],
                   },
                   button: {
-                      main: "#8980F5",
+                      main: "#72bddb",
+                      pulsing: "#246f8d"
                   },
                   colorBox: {
                       main: grey[900],
@@ -40,6 +41,9 @@ export const getDesignTokens = (mode) => ({
                       background: "#DCCCBB",
                       position: "#009E73",
                       color: "#F0E442",
+                      hintPosition: "#000000",
+                      hintColor: "#5e5e5e",
+                      hintLabel: "#ffffff"
                   },
                   switch: {
                       main: "#69b6c7",
@@ -59,6 +63,7 @@ export const getDesignTokens = (mode) => ({
                   },
                   button: {
                       main: "#388697",
+                      pulsing: "#388697",
                       inactive: "#6b6e70",
                       negative: "#388697",
                   },
@@ -77,9 +82,11 @@ export const getDesignTokens = (mode) => ({
                   },
                   gameboard: {
                       background: "#433423",
-
                       position: "#009E73",
                       color: "#F0E442",
+                      hintPosition: "#ffffff",
+                      hintColor: "#a3a3a3",
+                      hintLabel: "#000000"
                   },
                   switch: {
                       main: "#388697",

@@ -86,7 +86,12 @@ const Match = () => {
                 alignItems="center"
                 marginBottom={2}
             >
-                <Player name={attempt.playerName} hideLabel />
+                <UserPicture
+                    size={50}
+                    userPic={
+                        profilePics.find((p) => p.username === attempt.playerName)?.picId
+                    }
+                />
                 <AvatarGroup max={4}>
                     {Array(attempt.rightPositions)
                         .fill()

@@ -10,7 +10,7 @@ const resetPasswordTokenSchema = new Schema({
         type: String,
         required: true
     },
-    username: {
+    userID: {
         type: String,
         required: true
     },
@@ -18,4 +18,4 @@ const resetPasswordTokenSchema = new Schema({
 
 resetPasswordTokenSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
-export const ResetPasswordTokenModel = mongoose.model("ResetPasswordToken", resetPasswordTokenSchema, 'resetPasswordToken');
+export const ResetPasswordTokenModel = mongoose.model("ResetPasswordToken", resetPasswordTokenSchema, 'resetPasswordTokens');

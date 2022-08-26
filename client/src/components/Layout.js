@@ -11,7 +11,6 @@ const Layout = ({ setThemeMode }) => {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
 
-    // this useEffect it's used to load the preferred theme mod after the login is done
     useEffect(() => {
         if (auth?.username) {
             axiosPrivate
@@ -33,7 +32,7 @@ const Layout = ({ setThemeMode }) => {
     return (
         <>
             <Header />
-            <Box height="100vh">
+            <Box height="100vh" minWidth="400px">
                 <MainContainer >
                     <Outlet />
                 </MainContainer>

@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResetPasswordTokenModel } from "../model/ResetPasswordTokenModel.js";
 import nodemailer from "nodemailer";
-import express from "express";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -162,6 +161,7 @@ const handleUserLogout = async (req, res) => {
 
 const handleResetPasswordRequest = async (req, res) => {
     const { username, email } = req.query;
+
     const userInDB = await UserModel.findOne({
         username: username,
         email: email,
@@ -170,15 +170,19 @@ const handleResetPasswordRequest = async (req, res) => {
         return res.status(404).json({
             message: `An account with these fields doesn't exist`,
         });
+    const userID = userInDB._id.toString();
 
     var date = new Date();
     date.setMinutes(date.getMinutes() + 10);
     var expiringDate = new Date(date);
 
-    const token = await bcrypt.hash(username + date.toString(), 10);
+    const token = await bcrypt.hash(
+        userID + date.toString() + Math.floor(Math.random() * 1000),
+        10
+    );
 
     const requestAlreadyPresent = await ResetPasswordTokenModel.findOne({
-        username: username,
+        userID: userID,
     });
     if (requestAlreadyPresent)
         return res.status(405).json({
@@ -186,26 +190,24 @@ const handleResetPasswordRequest = async (req, res) => {
         });
 
     await ResetPasswordTokenModel.create({
-        username: username,
+        userID: userID,
         token: token,
         expireAt: expiringDate,
     });
 
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
-        port: 465,
+        port: process.env.NODEMAILER_PORT,
         secure: true,
         auth: {
-            user: "huesle.service@gmail.com",
-            pass: "bhwkygyzxcvjoiff",
+            user: process.env.NODEMAILER_EMAIL,
+            pass: process.env.NODEMAILER_PASSWORD,
         },
         tls: { rejectUnauthorized: false },
     });
 
-    const router = express.Router();
-
     const mailOptions = {
-        from: "Huesle <huesle.service@gmail.com>",
+        from: "Huesle <" + process.env.NODEMAILER_EMAIL + ">",
         to: email,
         subject: "Huesle Reset Password Request",
         text:
@@ -213,7 +215,7 @@ const handleResetPasswordRequest = async (req, res) => {
             req.protocol +
             "://" +
             req.hostname +
-            ":3000/resetPassword?token=" +
+            "/resetPassword?token=" +
             token +
             "\n" +
             "The link will expire in 10 minutes.",
@@ -233,17 +235,24 @@ const checkResetPasswordToken = async (req, res) => {
 
     const request = await ResetPasswordTokenModel.findOne({ token });
     if (!request) return res.sendStatus(404);
-    else
-        return res.status(200).json({
-            username: request.username,
-        });
+
+    const userInDB = await UserModel.findById(request.userID, ["username"]);
+
+    return res.status(200).json({
+        username: userInDB.username,
+    });
 };
 
 const resetPassword = async (req, res) => {
     const { token, username, password } = req.body;
-    const userInDB = await UserModel.findOne({ username });
-    const tokenCheck = await ResetPasswordTokenModel.findOne({ token });
-    if (!userInDB || !tokenCheck) {
+
+    const userInDB = await UserModel.findOne({ username }, ["_id"]);
+    if (!userInDB) {
+        return res.sendStatus(401);
+    }
+    const userID = userInDB._id.toString();
+    const tokenCheck = await ResetPasswordTokenModel.findOne({ userID });
+    if (!tokenCheck) {
         return res.sendStatus(401);
     }
 

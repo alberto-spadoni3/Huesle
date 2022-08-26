@@ -1,8 +1,8 @@
 import useGameData from "../hooks/useGameData";
 import { useState, useLayoutEffect } from "react";
-import { darken } from "@mui/material";
+import {Box, darken, styled} from "@mui/material";
 
-const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
+const Peg = ({ pegID, isInRow, hintPeg, hintType}) => {
     const {
         selectedColor,
         setCurrentPegsColor,
@@ -15,6 +15,7 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
 
     const [pegColor, setPegColor] = useState("");
     const [text, setText] = useState("");
+    const [textColor, setTextColor] = useState("black");
 
     const handleClick = () => {
         if (
@@ -32,11 +33,9 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
         if (hintPeg) {
             switch (hintType) {
                 case HintTypes.ExactMatch:
-                    setPegColor("white");
                     setText("P");
                     break;
                 case HintTypes.ColorMatch:
-                    setPegColor("grey");
                     setText("C");
                     break;
                 default:
@@ -53,8 +52,18 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
         }
     });
 
+    function getPegColor(theme) {
+        switch (hintType) {
+            case HintTypes.ExactMatch:
+                return theme.hintPosition;
+            case HintTypes.ColorMatch:
+                return theme.hintColor;
+            default:
+                return;
+        }
+    }
+
     const computeColorHex = (color) => {
-        color = color != "" ? color : "black";
         const a = document.createElement("div");
         a.style.color = color;
         const colors = window
@@ -72,37 +81,37 @@ const Peg = ({ pegID, isInRow, hintPeg, hintType }) => {
             : false;
     };
 
+    const MyBox = styled(Box)(({ theme }) => ({
+        backgroundColor: hintPeg ? getPegColor(theme.palette.gameboard) : pegColor,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: hintPeg ? "18px" : "52px",
+        width: hintPeg ? "18px" : "52px",
+        color:  theme.palette.gameboard.hintLabel,
+        border:
+            (hintPeg ? "2px solid" : "3px solid") +
+            " " +
+            darken(computeColorHex(pegColor), 0.6),
+        textAlign: "center",
+        borderRadius: "50%",
+        fontSize: "70%",
+        fontWeight: "bold",
+        cursor:
+            isInRow === attempts.length &&
+            selectedColor &&
+            !hintPeg &&
+            isItActivePlayer()
+                ? "copy"
+                : "default",
+    }));
+
     return (
-        <label
-            style={{
-                backgroundColor: pegColor,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: hintPeg ? "16px" : "52px",
-                width: hintPeg ? "16px" : "52px",
-                color: "black",
-                border:
-                    (hintPeg ? "2px solid" : "3px solid") +
-                    " " +
-                    darken(computeColorHex(pegColor), 0.6),
-                textAlign: "center",
-                borderRadius: "50%",
-                fontSize: "52%",
-                fontWeight: "bold",
-                // display: "inline-block",
-                cursor:
-                    isInRow === attempts.length &&
-                    selectedColor &&
-                    !hintPeg &&
-                    isItActivePlayer()
-                        ? "copy"
-                        : "default",
-            }}
+        <MyBox
             onClick={handleClick}
         >
             {text}
-        </label>
+        </MyBox>
     );
 };
 
