@@ -5,13 +5,13 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 const GameRules = () => {
     const rules = [
-        "This is a revised version of the classic Mastermind game in which two players play together in order to guess a six-color code randomly generated where colors can be repetead.",
-        "The players will alternate making submission in a synchronous way: for each guess a feedback will be given, where each Ⓒ peg indicates a correct color in the wrong position and a Ⓟ peg indicates a correct color in the correct position.",
-        "Players have a total of 10 attempts to correctly guess the code. A match is lost if, after the submission of the tenth guess, the code is still not be predicted or if the adversary guess the code correctly first.",
+        "This is a revised version of the classic Mastermind game, in which two players play together in order to guess a six-color code randomly generated: in the code the same color can appear multiple times.",
+        "The players will take turns making submission in a synchronous way: after each guess an hint will be given, with a Ⓒ peg for each correct color in the wrong position and a Ⓟ peg for each correct color in the correct position.",
+        "Players have a total of 10 attempts to correctly guess the code. A match is lost if, after the tenth attempt, the code is still not guessed correctly or if the adversary guess the code correctly first.",
         "A user that wants to play can proceed in three different ways:",
         "- Search for a public match with another random player.",
         "- Create a private match associated to a secret key.",
-        "- Join a private match using the corresponding secret key.",
+        "- Join a private match using the corresponding secret key."
     ];
 
     const RulesBox = styled(Box)(({ theme }) => ({
@@ -65,6 +65,13 @@ const GameRules = () => {
                                 {rule}
                             </Typography>
                         ))}
+                        <Typography
+                            textAlign="justify"
+                            variant="body1"
+                            mt={3}
+                        >
+                            Have fun with Huesle!
+                        </Typography>
                     </RulesBox>
                 </Box>
             </Fade>
