@@ -7,12 +7,15 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import DashboardMenu from "./DashboardMenu";
 import useAuth from "../hooks/useAuth";
 import UserPicture from "./UserPicture";
 import {BACKEND_NEW_NOTIFICATIONS_ENDPOINT} from "../api/backend_endpoints";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useSocket from "../hooks/useSocket";
+import {useNavigate} from "react-router-dom";
 
 const BottomBar = () => {
     const [anchorElement, setAnchorElement] = useState(null);
@@ -20,13 +23,15 @@ const BottomBar = () => {
     const open = Boolean(anchorElement);
     const axiosPrivate = useAxiosPrivate();
     const { socket} = useSocket();
+    const navigate = useNavigate();
 
     const [newNotifications, setNewNotifications] = useState(false);
 
-    const PulsingButton = styled(MenuRoundedIcon)(({ theme }) => ({
+    const PulsingButton = styled(NotificationsActiveIcon)(({ theme }) => ({
         fontSize: 50,
         border: "3px solid",
         borderColor: "text.secondary",
+        color: theme.palette.button.pulsing,
         borderRadius: "50%",
         padding: "5px",
         animation: "pulse-animation 2s infinite",
@@ -82,35 +87,65 @@ const BottomBar = () => {
                     justifyContent="space-evenly"
                     alignItems="center"
                     width="inherit"
-                    spacing={4}
+                    spacing={3}
                 >
-                    <UserPicture userPic={auth.profilePicID}/>
+                    <UserPicture size={"72px"} userPic={auth.profilePicID}/>
                     <Typography color="text.primary" variant="h6" pl={"6px"}>
                         {auth.username}
                     </Typography>
                     <IconButton
                         onClick={(e) => handleMenuOpening(e)}
                         aria-label="Open menu"
-                        flexDirection="column"
                     >
-                        {newNotifications?
-                            (<PulsingButton/>) :
-                            (<MenuRoundedIcon
-                                    sx={{
-                                        fontSize: 50,
-                                        border: "3px solid",
-                                        borderColor: "palette.text.secondary",
-                                        borderRadius: "50%",
-                                        padding: "5px",}}
-                                />
-                            )}
+                        <Stack align={"column"} alignItems={"center"}>
+                            <MenuRoundedIcon
+                                sx={{
+                                    fontSize: 50,
+                                    border: "3px solid",
+                                    borderColor: "palette.text.secondary",
+                                    borderRadius: "50%",
+                                    padding: "5px",}}
+                            />
+
+                            <Typography
+                                color="text.primary"
+                                fontSize={"10px"}
+                                mt={0.2}
+                            >
+                                Main Menu
+                            </Typography>
+                        </Stack>
+                    </IconButton>
+                    <IconButton
+                        onClick={() => navigate("/notifications")}
+                        aria-label="Open menu"
+                    >
+                        <Stack align={"column"} alignItems={"center"}>
+                            {newNotifications?
+                                (<PulsingButton/>) :
+                                (<NotificationsNoneIcon
+                                        sx={{
+                                            fontSize: 50,
+                                            border: "3px solid",
+                                            borderColor: "palette.text.secondary",
+                                            borderRadius: "50%",
+                                            padding: "5px",}}
+                                    />
+                                )}
+                            <Typography
+                                color="text.primary"
+                                fontSize={"10px"}
+                                mt={0.2}
+                            >
+                                Notifications
+                            </Typography>
+                        </Stack>
                     </IconButton>
                 </Stack>
                 <DashboardMenu
                     anchorEl={anchorElement}
                     setAnchorEl={setAnchorElement}
                     open={open}
-                    newNotifications={newNotifications}
                 />
             </Box>
         </>

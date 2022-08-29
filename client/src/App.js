@@ -25,6 +25,7 @@ import { SocketProvider } from "./context/SocketProvider";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import NotificationsList from "./components/NotificationsList";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
     const [themeMode, setThemeMode] = useState("dark");
@@ -43,6 +44,7 @@ const App = () => {
                 autoHideDuration={3000}
             >
                 <SocketProvider>
+                    <ScrollToTop>
                     <Routes>
                         <Route
                             path="/"
@@ -127,6 +129,7 @@ const App = () => {
                             <Route path="*" element={<Missing />} />
                         </Route>
                     </Routes>
+                    </ScrollToTop>
                 </SocketProvider>
             </SnackbarProvider>
         </ThemeProvider>

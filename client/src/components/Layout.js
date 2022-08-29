@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import {Outlet, withRouter} from "react-router-dom";
 import Header from "./Header";
 import MainContainer from "./MainContainer";
 import { useEffect } from "react";

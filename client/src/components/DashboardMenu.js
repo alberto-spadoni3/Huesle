@@ -24,7 +24,7 @@ StyledBadge.propTypes = {
     variant: PropTypes.string,
     anchorOrigin: PropTypes.shape({horizontal: PropTypes.string, vertical: PropTypes.string})
 };
-export default function DashboardMenu({ anchorEl, setAnchorEl, open, newNotifications}) {
+export default function DashboardMenu({ anchorEl, setAnchorEl, open}) {
     const logout = useLogout();
     const navigate = useNavigate();
     const { auth } = useAuth();
@@ -68,29 +68,6 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open, newNotifica
                 <UserPicture userPic={auth.profilePicID} /> My profile
             </MenuItem>
             <Divider />
-            <MenuItem onClick={(e) => navigate("/notifications")}>
-                <ListItemIcon>
-                    {newNotifications? (
-                        <NotificationsActiveIcon fontSize="small" sx={{
-                            color:"button.pulsing",
-                            animation: "pulse-icon 2s infinite",
-                            boxShadow: "0px 0px 1px 1px #0000001a",
-                            borderRadius: "50%",
-                            '@keyframes pulse-icon': {
-                                '0%': {
-                                    boxShadow: "0 0 0 0px",
-                                },
-                                '100%': {
-                                    boxShadow: "0 0 0 10px transparent",
-                                },
-                            }
-                        }}/>
-                    ):(
-                        <NotificationsNoneIcon fontSize="small" />
-                    )}
-                </ListItemIcon>
-                Notifications
-            </MenuItem>
             <MenuItem onClick={(e) => navigate("/rules")}>
                 <ListItemIcon>
                     <QuestionMarkIcon fontSize="small" />

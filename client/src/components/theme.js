@@ -22,7 +22,7 @@ export const getDesignTokens = (mode) => ({
                   },
                   button: {
                       main: "#72bddb",
-                      pulsing: "#246f8d"
+                      pulsing: "coral"
                   },
                   colorBox: {
                       main: grey[900],
@@ -63,7 +63,7 @@ export const getDesignTokens = (mode) => ({
                   },
                   button: {
                       main: "#388697",
-                      pulsing: "#388697",
+                      pulsing: "coral",
                       inactive: "#6b6e70",
                       negative: "#388697",
                   },
