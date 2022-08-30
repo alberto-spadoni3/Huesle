@@ -5,7 +5,7 @@ import {
     CardContent,
     Typography,
     Divider,
-    Button, Fade,
+    Button, Fade, Stack,
 } from "@mui/material";
 import React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ const Home = () => {
         <Box
             sx={{
                 display: "flex",
-                marginTop: "40%",
+                marginTop: "30%",
                 justifyContent: "center",
                 alignItems: "center",
             }}
@@ -29,7 +29,8 @@ const Home = () => {
                 <Navigate to="/dashboard" />
             ) : (
                 <>
-                    <Card variant="outlined" sx={{ marginBottom: "200px" }}>
+                    <Stack align="column" alignItems={"center"}>
+                    <Card variant="outlined" sx={{ marginBottom: "60px" }}>
                         <CardContent>
                             <Typography variant="h4" align="center">
                                 You are not logged in
@@ -53,20 +54,50 @@ const Home = () => {
                                 variant="outlined"
                                 size="small"
                                 onClick={() => navigate("/login")}
-                                color="button"
+                                sx={{ color: "text.secondary" }}
                             >
                                 Log in
                             </Button>
                             <Button
                                 variant="outlined"
                                 size="small"
-                                color="button"
+                                sx={{ color: "text.secondary" }}
                                 onClick={() => navigate("/register")}
                             >
                                 Create an account
                             </Button>
                         </CardActions>
                     </Card>
+                    <Card variant="outlined" sx={{width:"80%"}}>
+                        <CardContent>
+                            <Typography variant="h5" align="center">
+                                Before rushing in...
+                            </Typography>
+                            <Divider
+                                sx={{ marginY: 1, borderBottomWidth: "thick" }}
+                            />
+                            <Typography variant="body1" align="center">
+                                ...learn the rules of the game!
+                            </Typography>
+                        </CardContent>
+                        <Divider />
+                        <CardActions
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => navigate("/rules")}
+                                sx={{ color: "text.secondary" }}
+                            >
+                                How To Play
+                            </Button>
+                        </CardActions>
+                    </Card>
+                    </Stack>
                 </>
             )}
         </Box>
