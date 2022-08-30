@@ -1,8 +1,7 @@
 import { Avatar, Skeleton } from "@mui/material";
 
 const UserPicture = ({ size = "64px", userPic }) => {
-    const pictureURL =
-        userPic === 0 ? "" : `/img/profile-pic-${userPic}.jpg`;
+    const pictureURL = userPic === 0 ? "" : `/img/profile-pic-${userPic}.jpg`;
 
     return (
         <>
@@ -13,6 +12,7 @@ const UserPicture = ({ size = "64px", userPic }) => {
                             width: size,
                             height: size,
                         }}
+                        imgProps={{ alt: `profile picture ${userPic}` }}
                         src={pictureURL}
                     ></Avatar>
                 </>

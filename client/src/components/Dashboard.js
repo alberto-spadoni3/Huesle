@@ -9,7 +9,7 @@ import {
     TableHead,
     Table,
     TableBody,
-    Typography
+    Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -129,10 +129,7 @@ const Dashboard = () => {
         return (
             <TableRow key={index} onClick={() => openSelectedMatch(row_id)}>
                 <TableCell component="th" scope="row" align="center">
-                    <Typography
-                        color="text.primary"
-                        variant="subtitle2"
-                    >
+                    <Typography color="text.primary" variant="subtitle2">
                         {row_name}
                     </Typography>
                 </TableCell>
@@ -140,7 +137,7 @@ const Dashboard = () => {
                     <Button
                         sx={{ width: "70%", height: "50%", fontSize: "65%" }}
                         variant={button_type}
-                        aria-label={row_id + "status"}
+                        aria-label={button_label}
                         disabled={button_state}
                         color={button_color}
                     >
@@ -206,20 +203,25 @@ const Dashboard = () => {
                                     }}
                                     aria-label="Active Matches table"
                                 >
-                                    <TableHead >
-                                        <TableRow sx={{
-                                            bgcolor:"background.border"
-                                        }}>
-                                            <TableCell>
-                                                    <Typography
-                                                        color="text.primary"
-                                                        align="center"
-                                                        variant="subtitle1"
-                                                    >
-                                                        Match against
-                                                    </Typography>
-                                                </TableCell>
-                                            <TableCell align="center">
+                                    <TableHead>
+                                        <TableRow
+                                            sx={{
+                                                bgcolor: "background.border",
+                                            }}
+                                        >
+                                            <TableCell size="small">
+                                                <Typography
+                                                    color="text.primary"
+                                                    align="center"
+                                                    variant="subtitle1"
+                                                >
+                                                    Match against
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                size="small"
+                                            >
                                                 <Typography
                                                     color="text.primary"
                                                     variant="subtitle1"
@@ -267,8 +269,12 @@ const Dashboard = () => {
                                     aria-label="Completed Matches table"
                                 >
                                     <TableHead>
-                                        <TableRow sx={{bgcolor:"background.border"}}>
-                                            <TableCell>
+                                        <TableRow
+                                            sx={{
+                                                bgcolor: "background.border",
+                                            }}
+                                        >
+                                            <TableCell size="small">
                                                 <Typography
                                                     color="text.primary"
                                                     align="center"
@@ -277,7 +283,10 @@ const Dashboard = () => {
                                                     Match against
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell
+                                                align="center"
+                                                size="small"
+                                            >
                                                 <Typography
                                                     color="text.primary"
                                                     variant="subtitle1"

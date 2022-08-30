@@ -89,7 +89,9 @@ const Match = () => {
                 <UserPicture
                     size={50}
                     userPic={
-                        profilePics.find((p) => p.username === attempt.playerName)?.picId
+                        profilePics.find(
+                            (p) => p.username === attempt.playerName
+                        )?.picId
                     }
                 />
                 <AvatarGroup max={4}>
@@ -202,7 +204,7 @@ const Match = () => {
                         variant="contained"
                         color="button"
                         startIcon={<SportsEsportsIcon />}
-                        aria-label="Play"
+                        aria-label={!isMatchOver() ? "Play" : "Show game board"}
                         onClick={() => navigate("/gameboard")}
                     >
                         {!isMatchOver() ? "Play" : "Show game board"}
@@ -217,7 +219,7 @@ const Match = () => {
                             variant="outlined"
                             color="error"
                             startIcon={<OutlinedFlagIcon />}
-                            aria-label="Leave"
+                            aria-label="Leave Match"
                             onClick={() => setLeaveMatchDialogStatus(true)}
                         >
                             Leave Match

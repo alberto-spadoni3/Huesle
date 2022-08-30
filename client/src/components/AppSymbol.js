@@ -1,11 +1,9 @@
 import { Grid, Box } from "@mui/material";
-import useGameData from "../hooks/useGameData";
-import Peg from "./Peg";
 
 const AppSymbol = () => {
     const generateCircle = (pegColor) => {
         return (
-            <label
+            <Box
                 style={{
                     backgroundColor: pegColor,
                     justifyContent: "center",
@@ -17,7 +15,7 @@ const AppSymbol = () => {
                     display: "inline-block",
                     border: "2px solid",
                 }}
-            ></label>
+            ></Box>
         );
     };
 

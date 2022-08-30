@@ -6,16 +6,13 @@ import {
     TableCell,
     TableContainer,
     TableRow,
-    TableHead,
     Table,
     TableBody,
-    Typography
+    Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    BACKEND_NOTIFICATIONS_ENDPOINT
-} from "../api/backend_endpoints";
+import { BACKEND_NOTIFICATIONS_ENDPOINT } from "../api/backend_endpoints";
 import useGameData from "../hooks/useGameData";
 import useSocket from "../hooks/useSocket";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -26,7 +23,7 @@ const NotificationsList = () => {
     const axiosPrivate = useAxiosPrivate();
     const { loadBoard } = useGameData();
 
-    const { socket} = useSocket();
+    const { socket } = useSocket();
 
     const NotificationsCards = styled(Box)(({ theme }) => ({
         width: "100%",
@@ -54,7 +51,7 @@ const NotificationsList = () => {
             const date = new Date();
             await axiosPrivate.post(
                 BACKEND_NOTIFICATIONS_ENDPOINT,
-                JSON.stringify({ date }),
+                JSON.stringify({ date })
             );
         } catch (error) {
             console.log(error);
@@ -71,47 +68,59 @@ const NotificationsList = () => {
 
     function generateRow(index, date, matchId, message, read) {
         let bgcolor;
-        if(!read) {
+        if (!read) {
             bgcolor = "background.border";
         } else {
             bgcolor = "background.paper";
         }
         const formatDate = new Date(date);
         return (
-                <TableRow key={index} onClick={() => openSelectedMatch(matchId)} sx={{bgcolor:bgcolor}}>
-                    <TableCell component="th" scope="row" align="center">
-                        <Typography
-                            color="text.primary"
-                            variant="subtitle2"
-                            sx={{
-                                borderRadius: 5,
-                                border: "1px solid",
-                                borderColor: "text.primary",
-                                width: "40%"
-                            }}
-                        >
-                            {formatDate.getDate() + "-" + (formatDate.getMonth()+1) + "-" + formatDate.getFullYear()}
-
-                        </Typography>
-                        <Typography
-                            color="text.primary"
-                            variant="body2"
-                            textAlign="justify"
-                            mt={1}
-                        >
-                            {message}
-                        </Typography>
-                    </TableCell>
-                    <TableCell component="th" scope="row" align="center">
-                        <Button
-                            sx={{ width: "70%", height: "50%", fontSize: "65%", color:"text.secondary" }}
-                            variant="outlined"
-                            aria-label={matchId + date}
-                        >
-                            Go to Match
-                        </Button>
-                    </TableCell>
-                </TableRow>
+            <TableRow
+                key={index}
+                onClick={() => openSelectedMatch(matchId)}
+                sx={{ bgcolor: bgcolor }}
+            >
+                <TableCell component="th" scope="row" align="center">
+                    <Typography
+                        color="text.primary"
+                        variant="subtitle2"
+                        sx={{
+                            borderRadius: 5,
+                            border: "1px solid",
+                            borderColor: "text.primary",
+                            width: "40%",
+                        }}
+                    >
+                        {formatDate.getDate() +
+                            "-" +
+                            (formatDate.getMonth() + 1) +
+                            "-" +
+                            formatDate.getFullYear()}
+                    </Typography>
+                    <Typography
+                        color="text.primary"
+                        variant="body2"
+                        textAlign="justify"
+                        mt={1}
+                    >
+                        {message}
+                    </Typography>
+                </TableCell>
+                <TableCell component="th" scope="row" align="center">
+                    <Button
+                        sx={{
+                            width: "70%",
+                            height: "50%",
+                            fontSize: "65%",
+                            color: "text.secondary",
+                        }}
+                        variant="outlined"
+                        aria-label="Go to Match"
+                    >
+                        Go to Match
+                    </Button>
+                </TableCell>
+            </TableRow>
         );
     }
 
@@ -122,7 +131,9 @@ const NotificationsList = () => {
         }
 
         try {
-            loadBoard(matchId).then(() => navigate("/match-details", { replace: true }));
+            loadBoard(matchId).then(() =>
+                navigate("/match-details", { replace: true })
+            );
         } catch (error) {
             console.log(error);
         }
@@ -130,7 +141,7 @@ const NotificationsList = () => {
 
     return (
         <>
-            <BackButton/>
+            <BackButton />
             <Fade in={true} style={{ transitionDelay: "30ms" }}>
                 <Box
                     sx={{
@@ -139,7 +150,6 @@ const NotificationsList = () => {
                         alignItems: "center",
                     }}
                 >
-
                     <Typography
                         color="text.primary"
                         variant="h5"

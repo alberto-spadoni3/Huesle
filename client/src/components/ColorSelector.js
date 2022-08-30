@@ -49,9 +49,7 @@ const ColorSelector = ({ theme }) => {
                             },
                         }}
                         inputProps={{
-                            "aria-label": `Click to select color ${
-                                pegColor(index).color
-                            }`,
+                            "aria-label": `Color ${pegColor(index).color}`,
                         }}
                     />
                 ))}
