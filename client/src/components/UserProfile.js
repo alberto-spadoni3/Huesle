@@ -2,30 +2,24 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useLogout from "../hooks/useLogout";
 import BackButton from "./BackButton";
-import {
-    Box,
-    Typography,
-    Stack,
-    Button,
-    Fade,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    TableContainer
-} from "@mui/material";
+import { Box, Typography, Stack, Button, Fade } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { BACKEND_GET_USER_STATS_ENDPOINT } from "../api/backend_endpoints";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+    BACKEND_GET_USER_STATS_ENDPOINT,
+    BACKEND_DELETE_USER_ENDPOINT,
+} from "../api/backend_endpoints";
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import UserPicture from "./UserPicture";
+import { useSnackbar } from "notistack";
 
 const UserProfile = () => {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
+    const { enqueueSnackbar } = useSnackbar();
     const { auth } = useAuth();
     const logout = useLogout();
 
@@ -45,6 +39,21 @@ const UserProfile = () => {
         matches_lost: 0,
         matches_drawn: 0,
     });
+
+    const handleAccountDeletion = async () => {
+        console.log("object");
+        try {
+            const response = await axiosPrivate.delete(
+                BACKEND_DELETE_USER_ENDPOINT
+            );
+            if (response.status === 200) {
+                enqueueSnackbar(response.data.message, { variant: "success" });
+                await logout();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         try {
@@ -95,7 +104,7 @@ const UserProfile = () => {
                         </Stack>
                     </StatisticsCard>
                     <Button
-                        sx={{ width: "100%", mb: 2 }}
+                        sx={{ width: "100%", mb: 3.5 }}
                         variant="contained"
                         color="button"
                         startIcon={<EditIcon />}
@@ -104,16 +113,28 @@ const UserProfile = () => {
                     >
                         Edit profile
                     </Button>
-                    <Button
-                        sx={{ width: "100%" }}
-                        variant="contained"
-                        color="error"
-                        startIcon={<LogoutIcon />}
-                        aria-label="Logout"
-                        onClick={logout}
-                    >
-                        Logout
-                    </Button>
+                    <Stack spacing={1.5} width="100%">
+                        <Button
+                            sx={{ width: "100%" }}
+                            variant="contained"
+                            color="error"
+                            startIcon={<LogoutIcon />}
+                            aria-label="Logout"
+                            onClick={logout}
+                        >
+                            Logout
+                        </Button>
+                        <Button
+                            sx={{ width: "100%" }}
+                            variant="outlined"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            aria-label="Delete account"
+                            onClick={handleAccountDeletion}
+                        >
+                            Delete account
+                        </Button>
+                    </Stack>
                 </Box>
             </Fade>
         </>

@@ -3,6 +3,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ResetPasswordTokenModel } from "../model/ResetPasswordTokenModel.js";
 import nodemailer from "nodemailer";
+import { MatchModel } from "../model/MatchModel.js";
+import { PendingRequestModel } from "../model/PendingRequestModel.js";
+import { changePlayer, GameStates } from "../model/gameLogic.js";
+import { emitMatchOver } from "../middlewares/socketHandler.js";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -61,7 +65,7 @@ const handleUserLogin = async (req, res) => {
     }
 
     const userInDB = await UserModel.findOne({ username });
-    if (!userInDB) {
+    if (!userInDB || userInDB?.disabled === true) {
         return res.sendStatus(401);
     }
 
@@ -157,6 +161,44 @@ const handleUserLogout = async (req, res) => {
     res.status(200).json({
         message: `The user ${userInDB.username} is successfully logged out`,
     });
+};
+
+const deleteUserAccount = async (req, res) => {
+    const username = req.username;
+
+    const userInDB = await UserModel.findOne({ username });
+    const userID = userInDB._id.toString();
+
+    try {
+        // deleting all matches with this user as player that didn't ended yet
+        const matches = await MatchModel.find().where("players").equals(userID);
+
+        matches
+            .filter((match) => match.status.state === GameStates.PLAYING)
+            .forEach((match) => {
+                match.status.state = GameStates.WINNER;
+                match.status.player = changePlayer(match.players, userID);
+                match.status.abandoned = true;
+                match.save();
+                emitMatchOver(match._id.toString(), match.players);
+            });
+
+        // now let's delete all the possible pending requests for a
+        // new match made by this user
+        const pendingRequests = await PendingRequestModel.find({
+            playerId: userID,
+        });
+
+        if (pendingRequests) pendingRequests.forEach((req) => req.deleteOne());
+
+        // finally we permanently disable the user account
+        userInDB.disabled = true;
+        await userInDB.save();
+    } catch (error) {
+        console.log(error);
+    }
+
+    res.status(200).json({ message: "Account deleted succesfully!" });
 };
 
 const handleResetPasswordRequest = async (req, res) => {
@@ -269,6 +311,7 @@ export const userController = {
     handleUserLogin,
     refreshAccessToken,
     handleUserLogout,
+    deleteUserAccount,
     handleResetPasswordRequest,
     checkResetPasswordToken,
     resetPassword,

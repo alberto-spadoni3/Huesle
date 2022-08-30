@@ -31,6 +31,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 export const UserModel = mongoose.model("User", userSchema, "users");
