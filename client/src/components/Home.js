@@ -54,14 +54,14 @@ const Home = () => {
                                 variant="outlined"
                                 size="small"
                                 onClick={() => navigate("/login")}
-                                color="button"
+                                sx={{ color: "text.secondary" }}
                             >
                                 Log in
                             </Button>
                             <Button
                                 variant="outlined"
                                 size="small"
-                                color="button"
+                                sx={{ color: "text.secondary" }}
                                 onClick={() => navigate("/register")}
                             >
                                 Create an account
@@ -91,7 +91,7 @@ const Home = () => {
                                 variant="outlined"
                                 size="small"
                                 onClick={() => navigate("/rules")}
-                                color="button"
+                                sx={{ color: "text.secondary" }}
                             >
                                 How To Play
                             </Button>

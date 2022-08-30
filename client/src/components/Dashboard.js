@@ -101,7 +101,6 @@ const Dashboard = () => {
         let button_label;
         let button_type = "outlined";
         let button_bgcolor = "";
-        let button_textColor = "text.secondary";
         let button_borderColor = "background.border";
         switch (row_status.state) {
             case GameStates.PLAYING:
@@ -142,7 +141,7 @@ const Dashboard = () => {
                     <Button
                         sx={{
                             width: "70%", height: "50%", fontSize: "65%",
-                            backgroundColor: button_bgcolor, borderColor: button_borderColor, color: button_textColor,
+                            backgroundColor: button_bgcolor, borderColor: button_borderColor, color: "text.secondary",
                             '&:hover': {
                                 borderColor: button_borderColor,
                                 backgroundColor: button_bgcolor
