@@ -7,6 +7,7 @@ export const BACKEND_UPDATE_EMAIL = "/setting/updateEmail";
 export const BACKEND_UPDATE_PASSWORD_ENDPOINT = "/setting/updatePassword";
 export const BACKEND_REFRESH_TOKEN_ENDPOINT = "/user/refreshToken";
 export const BACKEND_LOGOUT_ENDPOINT = "/user/logout";
+export const BACKEND_DELETE_USER_ENDPOINT = "/user/delete";
 
 //Match Search
 export const BACKEND_SEARCH_MATCH_ENDPOINT = "/search/searchMatch";
