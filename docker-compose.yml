@@ -1,4 +1,8 @@
 services:
+    client:
+        build: ./client
+        ports:
+            - "80:3000"
     server:
         build: ./server
         ports:
