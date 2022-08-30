@@ -100,24 +100,26 @@ const Dashboard = () => {
     function generateRow(index, row_id, row_name, row_status) {
         let button_label;
         let button_type = "outlined";
-        let button_state = true;
-        let button_color = "button";
+        let button_bgcolor = "";
+        let button_textColor = "text.secondary";
+        let button_borderColor = "background.border";
         switch (row_status.state) {
             case GameStates.PLAYING:
                 if (row_status.player === auth.username) {
                     button_label = "It's your turn!";
                     button_type = "contained";
+                    button_bgcolor = "button.main";
                 } else {
                     button_label = "Opponent's turn...";
                 }
-                button_state = false;
-                button_color = "button";
+                button_borderColor = "button.main";
                 break;
             case GameStates.WINNER:
                 button_label =
                     row_status.player === auth.username
                         ? "You won!"
                         : "You Lost...";
+
                 break;
             case GameStates.DRAW:
                 button_label = "Draw";
@@ -138,11 +140,15 @@ const Dashboard = () => {
                 </TableCell>
                 <TableCell component="th" scope="row" align="center">
                     <Button
-                        sx={{ width: "70%", height: "50%", fontSize: "65%" }}
+                        sx={{
+                            width: "70%", height: "50%", fontSize: "65%",
+                            backgroundColor: button_bgcolor, borderColor: button_borderColor, color: button_textColor,
+                            '&:hover': {
+                                borderColor: button_borderColor,
+                                backgroundColor: button_bgcolor
+                            }}}
                         variant={button_type}
                         aria-label={row_id + "status"}
-                        disabled={button_state}
-                        color={button_color}
                     >
                         {button_label}
                     </Button>
