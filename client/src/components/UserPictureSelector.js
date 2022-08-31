@@ -107,7 +107,7 @@ const UserPictureSelector = ({ size }) => {
             <Button
                 variant="outlined"
                 disabled={currentUserPic === picSelector}
-                sx={{ mt: 1.5, mb: 1.5 }}
+                sx={{ mt: 1.5, mb: 1.5, borderColor: "button.main", color: "text.secondary"  }}
                 onClick={updateUserPicture}
             >
                 Update picture

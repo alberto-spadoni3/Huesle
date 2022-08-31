@@ -15,11 +15,14 @@ import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
 import useGameData from "../hooks/useGameData";
 import useAuth from "../hooks/useAuth";
 import BottomBar from "./BottomBar";
-import LeaveMatchDialog from "./LeaveMatchDialog";
 import UserPicture from "./UserPicture";
+import ConfirmationDialog from "./ConfirmationDialog";
+import {BACKEND_LEAVE_MATCH_ENDPOINT} from "../api/backend_endpoints";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Match = () => {
     const {
+        id,
         loadBoard,
         players,
         profilePics,
@@ -31,6 +34,7 @@ const Match = () => {
     const navigate = useNavigate();
     const { auth } = useAuth();
     const [leaveMatchDialogStatus, setLeaveMatchDialogStatus] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
 
     const [loading, setLoading] = useState(false);
 
@@ -227,9 +231,23 @@ const Match = () => {
                             Leave Match
                         </Button>
                     )}
-                    <LeaveMatchDialog
-                        leaveMatchDialogStatus={leaveMatchDialogStatus}
-                        setLeaveMatchDialogStatus={setLeaveMatchDialogStatus}
+                    <ConfirmationDialog
+                        openStatus={leaveMatchDialogStatus}
+                        setOpenStatus={setLeaveMatchDialogStatus}
+                        title={"Abandon Match"}
+                        message={"Are you sure you want to admit defeat to " + players.find(p => p != auth.username) + "?"}
+                        callbackOnYes={async () => {
+                            try {
+                                await axiosPrivate.put(
+                                    BACKEND_LEAVE_MATCH_ENDPOINT,
+                                    {
+                                        matchId: id
+                                    }
+                                );
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }}
                     />
                     {/* FOOTER */}
                     <BottomBar></BottomBar>

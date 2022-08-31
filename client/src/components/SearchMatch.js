@@ -17,15 +17,16 @@ const SearchMatch = () => {
     const axiosPrivate = useAxiosPrivate();
     const { enqueueSnackbar } = useSnackbar();
 
+    const [creatingPrivateMatch, setCreatingPrivateMatch] = useState(false);
     const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
+    const [secretCode, setSecretCode] = useState("");
     const [joinPrivateOpen, setJoinPrivateOpen] = useState(false);
 
     const generatePublicMatch = async () => {
         try {
-            const secret = false;
             const response = await axiosPrivate.post(
                 BACKEND_SEARCH_MATCH_ENDPOINT,
-                JSON.stringify({ secret })
+                JSON.stringify({ secret: false })
             );
 
             const message = "Searching public match...";
@@ -42,6 +43,25 @@ const SearchMatch = () => {
                 variant: "error",
                 autoHideDuration: 2500,
             });
+        }
+    };
+
+    const generatePrivateMatch = async () => {
+        setCreatingPrivateMatch(true);
+        try {
+            const response = await axiosPrivate.post(
+                BACKEND_SEARCH_MATCH_ENDPOINT,
+                JSON.stringify({ secret: true }),
+            );
+            setSecretCode(response.data.secretCode);
+            setSearchPrivateOpen(true);
+        } catch (error) {
+            enqueueSnackbar("Error in comunicating with Server", {
+                variant: "error",
+                autoHideDuration: 2500,
+            });
+            setSearchPrivateOpen(false);
+            setCreatingPrivateMatch(false);
         }
     };
 
@@ -93,20 +113,36 @@ const SearchMatch = () => {
                     >
                         Private Matches
                     </Typography>
-
-                    <Button
+                    {!creatingPrivateMatch? (<Button
                         sx={{ width: "100%", height: "50px", marginTop: 2 }}
                         variant="contained"
                         startIcon={<EmojiPeopleRoundedIcon />}
                         aria-label="Create Match"
-                        onClick={() => setSearchPrivateOpen(true)}
+                        onClick={() => generatePrivateMatch()}
                         color="button"
                     >
                         Create Match
-                    </Button>
+                    </Button>) : (<Button
+                            sx={{
+                                width: "100%",
+                                height: "50px",
+                                marginTop: 2,
+                                borderColor: "background.border"
+                            }}
+                            variant="outlined"
+                            disableRipple={true}
+                            startIcon={<EmojiPeopleRoundedIcon />}
+                            aria-label="Join Match"
+                            color="button"
+                        >
+                            Generating Match...
+                        </Button>
+                        )}
                     <SearchPrivateMatchDialog
                         connectOpen={searchPrivateOpen}
                         setConnectOpen={setSearchPrivateOpen}
+                        secretCode={secretCode}
+                        setSearchOver={setCreatingPrivateMatch}
                     />
 
                     <Button

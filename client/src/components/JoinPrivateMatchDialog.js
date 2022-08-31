@@ -82,7 +82,7 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                         id="alert-dialog-slide-description"
                         textAlign="center"
                     >
-                        Insert match's secret code and hit SEARCH
+                        Insert the secret code and hit SEARCH
                     </DialogContentText>
                     <TextField
                         margin="normal"
@@ -97,8 +97,8 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCodeClose}>Cancel</Button>
-                    <Button onClick={handleSearch}>Search</Button>
+                    <Button sx={{color:"text.secondary"}} onClick={handleCodeClose}>Cancel</Button>
+                    <Button sx={{color:"text.secondary"}} onClick={handleSearch}>Search</Button>
                 </DialogActions>
             </Dialog>
             <Dialog
@@ -114,12 +114,12 @@ export default function JoinPrivateMatchDialog({ open, setOpen }) {
                         id="alert-dialog-slide-description"
                         textAlign="center"
                     >
-                        Codice Segreto: {secretCode}
+                        Secret Code: {secretCode}
                     </DialogContentText>
                     <LinearProgress sx={{ m: 1.5 }} color="inherit" />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleSearchClose}>Abbandona</Button>
+                    <Button sx={{color:"text.secondary"}} onClick={handleSearchClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </div>

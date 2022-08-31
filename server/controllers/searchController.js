@@ -47,7 +47,7 @@ const searchMatch = async (req, res) => {
 
     if (pendingRequest) {
         return res.status(400).json({
-            message: "User already pending for match with those specifics",
+            message: "User already pending for a match",
         });
     }
 

@@ -23,32 +23,14 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function SearchPrivateMatchDialog({
     connectOpen,
     setConnectOpen,
+    secretCode,
+    setSearchOver
 }) {
 
-    const [searchPrivateOpen, setSearchPrivateOpen] = useState(false);
-    const [secretCode, setSecretCode] = useState("");
     const { enqueueSnackbar } = useSnackbar();
     const axiosPrivate = useAxiosPrivate()
     const {socket, MessageTypes} = useSocket();
     const navigate = useNavigate();
-
-    const generateMatch = async () => {
-        setConnectOpen(true);
-        try {
-            const secret = true;
-            const response = await axiosPrivate.post(
-                BACKEND_SEARCH_MATCH_ENDPOINT,
-                JSON.stringify({ secret }),
-            );
-            return response;
-        } catch (error) {
-            enqueueSnackbar("Error in comunicating with Server", {
-                variant: "error",
-                autoHideDuration: 2500,
-            });
-            setConnectOpen(false);
-        }
-    };
 
     const handleClose = async (event) => {
         event.preventDefault();
@@ -65,25 +47,17 @@ export default function SearchPrivateMatchDialog({
                 console.log(error);
             }
         }
-        setSearchPrivateOpen(false);
+        setConnectOpen(false);
+        setSearchOver(false);
     };
 
     useEffect(() => {
-        if (connectOpen) {
-            generateMatch().then((response) => {
-                if (response) {
-                    setSecretCode(response.data.secretCode);
-                    setConnectOpen(false);
-                    setSearchPrivateOpen(true);
-
-                    socket.off(MessageTypes.NEW_MATCH).on(MessageTypes.NEW_MATCH, data => {
-                        socket.off(MessageTypes.NEW_MATCH);
-                        setSearchPrivateOpen(false);
-                        navigate("/dashboard", { replace: true });
-                    });
-                }
-            });
-        }
+        socket.off(MessageTypes.NEW_MATCH).on(MessageTypes.NEW_MATCH, data => {
+            socket.off(MessageTypes.NEW_MATCH);
+            setConnectOpen(false);
+            setSearchOver(false);
+            navigate("/dashboard", { replace: true });
+        });
 
         window.addEventListener('unload', handleClose);
         return () => {
@@ -97,39 +71,21 @@ export default function SearchPrivateMatchDialog({
                 open={connectOpen}
                 TransitionComponent={Transition}
                 keepMounted
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle>{"Ricerca Partita Privata"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText
-                        id="alert-dialog-slide-description"
-                        textAlign="center"
-                    >
-                        Generating New Match...
-                    </DialogContentText>
-                    <LinearProgress sx={{ m: 1.5 }} color="inherit" />
-                </DialogContent>
-            </Dialog>
-
-            <Dialog
-                open={searchPrivateOpen}
-                TransitionComponent={Transition}
-                keepMounted
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Ricerca Partita Privata"}</DialogTitle>
+                <DialogTitle>{"Private Match Search"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText
                         id="alert-dialog-slide-description"
                         textAlign="center"
                     >
-                        Codice Segreto: {secretCode}
+                        Secret Code: {secretCode}
                     </DialogContentText>
                     <LinearProgress sx={{ m: 1.5 }} color="inherit" />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Abbandona</Button>
+                    <Button sx={{color:"text.secondary"}} onClick={handleClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </div>
