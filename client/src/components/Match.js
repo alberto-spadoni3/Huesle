@@ -184,9 +184,11 @@ const Match = () => {
                             {status.state === GameStates.WINNER
                                 ? status.abandoned
                                     ? (status.player === auth.username
-                                          ? players.find(
-                                                (p) => p !== auth.username
-                                            )
+                                          ? players
+                                                .find(
+                                                    (p) => p !== auth.username
+                                                )
+                                                .split(" ")[0]
                                           : "You") +
                                       " left the game and admitted defeat"
                                     : status.player === auth.username

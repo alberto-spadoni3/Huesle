@@ -1,11 +1,15 @@
 import { MatchModel } from "../model/MatchModel.js";
 import { UserModel } from "../model/UserModel.js";
-import {createRandomSolutionWithRepetition, createSolutionWithoutRepetition, GameStates} from "../model/gameLogic.js";
+import {
+    createRandomSolutionWithRepetition,
+    createSolutionWithoutRepetition,
+    GameStates,
+} from "../model/gameLogic.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
-import {NotificationModel} from "../model/NotificationModel.js";
+import { NotificationModel } from "../model/NotificationModel.js";
 
 const app = express();
 const port = process.env.SOCKET_IO_PORT || 8081;
@@ -78,12 +82,20 @@ export function emitNewMatch(players, matchId) {
     io.to(matchId).emit(MessageTypes.NEW_MATCH, {
         content: matchId,
     });
-    findUsername(players[1]).then(username => createNotification(players[0], matchId,
-        "New match started against " + username));
-    findUsername(players[0]).then(username => createNotification(players[1], matchId,
-        "New match started against " + username));
-    ;
-
+    findUsername(players[1]).then((username) =>
+        createNotification(
+            players[0],
+            matchId,
+            "New match started against " + username
+        )
+    );
+    findUsername(players[0]).then((username) =>
+        createNotification(
+            players[1],
+            matchId,
+            "New match started against " + username
+        )
+    );
 }
 
 export function emitNewMove(playerNotified, originPlayer, matchId) {
@@ -91,8 +103,11 @@ export function emitNewMove(playerNotified, originPlayer, matchId) {
         content: matchId,
         opponent: originPlayer,
     });
-    createNotification(playerNotified, matchId,
-        originPlayer + " has made a move made in a match");
+    createNotification(
+        playerNotified,
+        matchId,
+        originPlayer + " has made a move made in a match"
+    );
 }
 
 export async function emitMatchOver(matchId, players_id) {
@@ -102,10 +117,16 @@ export async function emitMatchOver(matchId, players_id) {
         players.push(username);
     }
     io.to(matchId).emit(MessageTypes.MATCH_OVER, JSON.stringify(players));
-    createNotification(players_id[0], matchId,
-        "Match against " + players[1] + " is over!");
-    createNotification(players_id[1], matchId,
-        "Match against " + players[0] + " is over!");
+    createNotification(
+        players_id[0],
+        matchId,
+        "Match against " + players[1] + " is over!"
+    );
+    createNotification(
+        players_id[1],
+        matchId,
+        "Match against " + players[0] + " is over!"
+    );
     io.socketsLeave(matchId);
 }
 
@@ -118,8 +139,12 @@ function createNotification(userId, matchId, message) {
     const notification = {
         userID: userId,
         matchId,
-        message
+        message,
     };
     const notif = new NotificationModel(notification);
     notif.save();
 }
+
+export const closeSocket = (playedID) => {
+    io.in(playedID).disconnectSockets();
+};

@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 import { MatchModel } from "../model/MatchModel.js";
 import { PendingRequestModel } from "../model/PendingRequestModel.js";
 import { changePlayer, GameStates } from "../model/gameLogic.js";
-import { emitMatchOver } from "../middlewares/socketHandler.js";
+import { closeSocket, emitMatchOver } from "../middlewares/socketHandler.js";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -169,6 +169,9 @@ const deleteUserAccount = async (req, res) => {
     const userInDB = await UserModel.findOne({ username });
     const userID = userInDB._id.toString();
 
+    // disconnect the socket for this user
+    closeSocket(userID);
+
     try {
         // deleting all matches with this user as player that didn't ended yet
         const matches = await MatchModel.find().where("players").equals(userID);
@@ -192,6 +195,8 @@ const deleteUserAccount = async (req, res) => {
         if (pendingRequests) pendingRequests.forEach((req) => req.deleteOne());
 
         // finally we permanently disable the user account
+        userInDB.email = undefined;
+        userInDB.username = userInDB.username + " (deleted)";
         userInDB.disabled = true;
         await userInDB.save();
     } catch (error) {
