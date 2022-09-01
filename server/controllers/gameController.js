@@ -9,12 +9,7 @@ import {
 import { UserModel } from "../model/UserModel.js";
 import { MatchModel } from "../model/MatchModel.js";
 import { emitNewMove, emitMatchOver } from "../middlewares/socketHandler.js";
-
-async function findUserId(username) {
-    const account = await UserModel.findOne({ username: username }, "_id");
-    if (!account) return;
-    else return account._id.toString();
-}
+import {findUserId} from "./utilityFunctions.js";
 
 const doGuess = async (req, res) => {
     const { matchId, sequence } = req.body;

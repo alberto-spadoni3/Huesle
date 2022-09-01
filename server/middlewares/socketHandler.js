@@ -1,15 +1,13 @@
 import { MatchModel } from "../model/MatchModel.js";
 import { UserModel } from "../model/UserModel.js";
 import {
-    createRandomSolutionWithRepetition,
-    createSolutionWithoutRepetition,
     GameStates,
 } from "../model/gameLogic.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import mongoose from "mongoose";
 import { NotificationModel } from "../model/NotificationModel.js";
+import {findUserId, findUsername} from "../controllers/utilityFunctions.js";
 
 const app = express();
 const port = process.env.SOCKET_IO_PORT || 8081;
@@ -38,7 +36,7 @@ io.use((socket, next) => {
         socket.disconnect();
     } else {
         const username = socket.handshake.auth.username;
-        fetchUsernameId(username).then((id) => {
+        findUserId(username).then((id) => {
             socket.userID = id;
             socket.username = username;
             next();
@@ -57,12 +55,6 @@ io.on(MessageTypes.CONNECTION, (socket) => {
     });
     connectUserToMatchSockets(socket.userID);
 });
-
-async function fetchUsernameId(username) {
-    const id = await UserModel.findOne({ username: username }, "_id");
-    if (!id) return;
-    else return id._id.toString();
-}
 
 async function connectUserToMatchSockets(id) {
     const matches = await MatchModel.find(
@@ -128,11 +120,6 @@ export async function emitMatchOver(matchId, players_id) {
         "Match against " + players[0] + " is over!"
     );
     io.socketsLeave(matchId);
-}
-
-async function findUsername(playerId) {
-    const name = await UserModel.findById(playerId, ["username"]);
-    return name?.username;
 }
 
 function createNotification(userId, matchId, message) {
