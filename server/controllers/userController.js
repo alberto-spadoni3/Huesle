@@ -7,6 +7,7 @@ import { MatchModel } from "../model/MatchModel.js";
 import { PendingRequestModel } from "../model/PendingRequestModel.js";
 import { changePlayer, GameStates } from "../model/gameLogic.js";
 import { closeSocket, emitMatchOver } from "../middlewares/socketHandler.js";
+import {findUserId} from "./utilityFunctions.js";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -165,8 +166,7 @@ const handleUserLogout = async (req, res) => {
 const deleteUserAccount = async (req, res) => {
     const username = req.username;
 
-    const userInDB = await UserModel.findOne({ username });
-    const userID = userInDB._id.toString();
+    const userID = findUserId(username);
 
     // disconnect the socket for this user
     closeSocket(userID);
@@ -257,13 +257,13 @@ const handleResetPasswordRequest = async (req, res) => {
         to: email,
         subject: "Huesle Reset Password Request",
         text:
-            "Do not respond to this email! Use the following link to reset your password:\n" +
+            "Do not respond to this email! Use the following link to reset your password:\n[ " +
             req.protocol +
             "://" +
             req.hostname +
             "/resetPassword?token=" +
             token +
-            "\n" +
+            " ]\n" +
             "The link will expire in 10 minutes.",
     };
 
@@ -297,7 +297,7 @@ const resetPassword = async (req, res) => {
         return res.sendStatus(401);
     }
     const userID = userInDB._id.toString();
-    const tokenCheck = await ResetPasswordTokenModel.findOne({ userID });
+    const tokenCheck = await ResetPasswordTokenModel.findOne({ userID:userID, token:token });
     if (!tokenCheck) {
         return res.sendStatus(401);
     }

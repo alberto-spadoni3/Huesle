@@ -14,12 +14,7 @@ import {
     emitNewMove,
     emitMatchOver,
 } from "../middlewares/socketHandler.js";
-
-async function findUserId(username) {
-    const account = await UserModel.findOne({ username: username }, "_id");
-    if (!account) return;
-    else return account._id.toString();
-}
+import {findUserId} from "./utilityFunctions.js";
 
 const searchMatch = async (req, res) => {
     const username = req.username;

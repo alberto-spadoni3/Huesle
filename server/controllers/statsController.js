@@ -1,15 +1,9 @@
 import { GameStates } from "../model/gameLogic.js";
-
 import { UserModel } from "../model/UserModel.js";
 import { MatchModel } from "../model/MatchModel.js";
 import { PendingRequestModel } from "../model/PendingRequestModel.js";
 import {NotificationModel} from "../model/NotificationModel.js";
-
-async function findUserId(username) {
-    const account = await UserModel.findOne({ username: username }, "_id");
-    if (!account) return;
-    else return account._id.toString();
-}
+import {findUserId} from "./utilityFunctions.js";
 
 const getActiveMatchesOfUser = async (req, res) => {
     const requesterId = await findUserId(req.username);
