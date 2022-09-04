@@ -4,7 +4,7 @@ import {
     Stack,
     Typography,
     IconButton,
-    Badge,
+    Divider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -74,77 +74,86 @@ const BottomBar = () => {
     return (
         <>
             <Box
+                width="100%"
                 sx={{
                     display: "flex",
                     justifyContent: "center",
                     flexDirection: "column",
                     alignItems: "center",
-                    marginY: "25px",
+                    marginTop: "40px",
+                    marginBottom: "25px",
                 }}
             >
                 <Stack
                     direction="row"
-                    justifyContent="space-evenly"
-                    alignItems="center"
+                    justifyContent="space-around"
                     width="inherit"
-                    spacing={3}
+                    spacing={5}
                 >
-                    <UserPicture size="72px" userPic={auth.profilePicID} />
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                        <UserPicture size="72px" userPic={auth.profilePicID} />
 
-                    <Typography color="text.primary" variant="h6" pl={"6px"}>
-                        {auth.username}
-                    </Typography>
-                    <IconButton
-                        onClick={(e) => handleMenuOpening(e)}
-                        aria-label="Open menu"
-                    >
-                        <Stack align={"column"} alignItems={"center"}>
-                            <MenuRoundedIcon
-                                sx={{
-                                    fontSize: 50,
-                                    border: "3px solid",
-                                    borderColor: "palette.text.secondary",
-                                    borderRadius: "50%",
-                                    padding: "5px",
-                                }}
-                            />
+                        <Typography color="text.primary" variant="h6">
+                            {auth.username}
+                        </Typography>
+                    </Stack>
 
-                            <Typography
-                                color="text.primary"
-                                fontSize={"10px"}
-                                mt={0.2}
-                            >
-                                Main Menu
-                            </Typography>
-                        </Stack>
-                    </IconButton>
-                    <IconButton
-                        onClick={() => navigate("/notifications")}
-                        aria-label="Open menu"
-                    >
-                        <Stack align={"column"} alignItems={"center"}>
-                            {newNotifications ? (
-                                <PulsingButton />
-                            ) : (
-                                <NotificationsNoneIcon
+                    <Stack direction="row" spacing={2}>
+                        <IconButton
+                            onClick={(e) => handleMenuOpening(e)}
+                            aria-label="Open menu"
+                            sx={{ padding: 0 }}
+                        >
+                            <Stack align={"column"} alignItems={"center"}>
+                                <MenuRoundedIcon
                                     sx={{
                                         fontSize: 50,
                                         border: "3px solid",
                                         borderColor: "palette.text.secondary",
                                         borderRadius: "50%",
-                                        padding: "5px",
+                                        padding: "3px",
                                     }}
                                 />
-                            )}
-                            <Typography
-                                color="text.primary"
-                                fontSize={"10px"}
-                                mt={0.2}
-                            >
-                                Notifications
-                            </Typography>
-                        </Stack>
-                    </IconButton>
+
+                                <Typography
+                                    color="text.primary"
+                                    fontSize={"14px"}
+                                    mt={0.2}
+                                >
+                                    Main Menu
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                        <IconButton
+                            onClick={() => navigate("/notifications")}
+                            aria-label="Open menu"
+                            sx={{ padding: 0 }}
+                        >
+                            <Stack align={"column"} alignItems={"center"}>
+                                {newNotifications ? (
+                                    <PulsingButton />
+                                ) : (
+                                    <NotificationsNoneIcon
+                                        sx={{
+                                            fontSize: 50,
+                                            border: "3px solid",
+                                            borderColor:
+                                                "palette.text.secondary",
+                                            borderRadius: "50%",
+                                            padding: "3px",
+                                        }}
+                                    />
+                                )}
+                                <Typography
+                                    color="text.primary"
+                                    fontSize={"14px"}
+                                    mt={0.2}
+                                >
+                                    Notifications
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                    </Stack>
                 </Stack>
                 <DashboardMenu
                     anchorEl={anchorElement}
