@@ -11,7 +11,8 @@ const GameRules = () => {
         "A user that wants to play can proceed in three different ways:",
         "- Search for a public match with another random player.",
         "- Create a private match associated to a secret key.",
-        "- Join a private match using the corresponding secret key."
+        "- Join a private match using the corresponding secret key.",
+        "To do an attempt, choose a color from the bottom palette and then select where in the highlighted row you want to locate it."
     ];
 
     const RulesBox = styled(Box)(({ theme }) => ({
