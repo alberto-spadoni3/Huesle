@@ -69,23 +69,20 @@ const handleUserLogin = async (req, res) => {
         return res.sendStatus(401);
     }
 
+    const userID = userInDB._id.toString();
+
     // checking the password
     const match = await bcrypt.compare(password, userInDB.password);
     if (match) {
         // create the access and refresh tokens
         const accessToken = jwt.sign(
-            {
-                email: userInDB.email,
-                username: userInDB.username,
-            },
+            { userID, username },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
         );
 
         const refreshToken = jwt.sign(
-            {
-                email: userInDB.email,
-            },
+            { userID },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
         );
@@ -123,23 +120,25 @@ const refreshAccessToken = async (req, res) => {
         return res.sendStatus(403);
     }
 
-    const { email, username, profilePicID } = userInDB;
+    const { username, profilePicID } = userInDB;
+    const userID = userInDB._id.toString();
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, _) => {
-        if (error) {
-            return res.sendStatus(403);
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (error, decodedToken) => {
+            if (error || decodedToken.userID !== userID) {
+                return res.sendStatus(403);
+            }
+
+            const newAccessToken = jwt.sign(
+                { userID },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+            );
+            res.json({ username, newAccessToken, profilePicID });
         }
-
-        const newAccessToken = jwt.sign(
-            {
-                email,
-                username,
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
-        );
-        res.json({ username, newAccessToken, profilePicID });
-    });
+    );
 };
 
 const handleUserLogout = async (req, res) => {
