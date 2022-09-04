@@ -15,7 +15,8 @@ import useRefreshToken from "../hooks/useRefreshToken";
 
 const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const PASSWORD_REGEX =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const EditUserProfile = () => {
     const { auth, setAuth } = useAuth();
@@ -99,8 +100,6 @@ const EditUserProfile = () => {
 
                 if (response.status === 200) {
                     console.log("username updated");
-                    // refresh the username and the accessToken wich reflects the updated username
-                    await refresh();
                     setUsername("");
                     enqueueSnackbar(response.data.message, {
                         variant: "success",
@@ -174,14 +173,7 @@ const EditUserProfile = () => {
             }
         }
 
-        if (
-            !(
-                emailPresentAndValid ||
-                usernamePresentAndValid ||
-                passwordPresentAndValid
-            )
-        )
-            enqueueSnackbar("Nothing has changed");
+        if (emailPresentAndValid || usernamePresentAndValid) await refresh();
     };
 
     return (

@@ -7,7 +7,7 @@ import { MatchModel } from "../model/MatchModel.js";
 import { PendingRequestModel } from "../model/PendingRequestModel.js";
 import { changePlayer, GameStates } from "../model/gameLogic.js";
 import { closeSocket, emitMatchOver } from "../middlewares/socketHandler.js";
-import {findUserId} from "./utilityFunctions.js";
+import { findUserId } from "./utilityFunctions.js";
 
 const ACCESS_TOKEN_EXPIRES_IN = "10m";
 const REFRESH_TOKEN_EXPIRES_IN = "1d";
@@ -103,6 +103,7 @@ const handleUserLogin = async (req, res) => {
         res.status(200).json({
             accessToken,
             profilePicID: userInDB.profilePicID,
+            email: userInDB.email,
         });
     } else {
         res.sendStatus(401);
@@ -121,7 +122,7 @@ const refreshAccessToken = async (req, res) => {
         return res.sendStatus(403);
     }
 
-    const { username, profilePicID } = userInDB;
+    const { email, username, profilePicID } = userInDB;
     const userID = userInDB._id.toString();
 
     jwt.verify(
@@ -133,11 +134,11 @@ const refreshAccessToken = async (req, res) => {
             }
 
             const newAccessToken = jwt.sign(
-                { userID },
+                { userID, username },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
             );
-            res.json({ username, newAccessToken, profilePicID });
+            res.json({ username, newAccessToken, profilePicID, email });
         }
     );
 };
@@ -297,7 +298,10 @@ const resetPassword = async (req, res) => {
         return res.sendStatus(401);
     }
     const userID = userInDB._id.toString();
-    const tokenCheck = await ResetPasswordTokenModel.findOne({ userID:userID, token:token });
+    const tokenCheck = await ResetPasswordTokenModel.findOne({
+        userID: userID,
+        token: token,
+    });
     if (!tokenCheck) {
         return res.sendStatus(401);
     }

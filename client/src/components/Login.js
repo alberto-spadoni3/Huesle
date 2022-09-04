@@ -9,7 +9,8 @@ import {
     Avatar,
     Link,
     FormControlLabel,
-    Checkbox, Fade,
+    Checkbox,
+    Fade,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "../api/axios";
@@ -43,8 +44,8 @@ export default function Login() {
             );
 
             // let's take and store the accessToken given by the backend
-            const {accessToken, profilePicID} = response?.data;
-            setAuth({ username, accessToken, profilePicID });
+            const { accessToken, profilePicID, email } = response?.data;
+            setAuth({ username, accessToken, profilePicID, email });
 
             // cleaning the form
             setUsername("");
@@ -173,8 +174,9 @@ export default function Login() {
                                 <Grid item xs>
                                     <Link
                                         variant="body2"
-                                          component={RouterLink}
-                                          to="/forgotPassword">
+                                        component={RouterLink}
+                                        to="/forgotPassword"
+                                    >
                                         Forgot password?
                                     </Link>
                                 </Grid>

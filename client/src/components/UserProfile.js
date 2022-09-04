@@ -9,7 +9,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
     BACKEND_GET_USER_STATS_ENDPOINT,
-    BACKEND_DELETE_USER_ENDPOINT
+    BACKEND_DELETE_USER_ENDPOINT,
 } from "../api/backend_endpoints";
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -23,7 +23,8 @@ const UserProfile = () => {
     const { enqueueSnackbar } = useSnackbar();
     const { auth } = useAuth();
     const logout = useLogout();
-    const [deleteAccountDialogStatus, setDeleteAccountDialogStatus] = useState(false);
+    const [deleteAccountDialogStatus, setDeleteAccountDialogStatus] =
+        useState(false);
 
     const StatisticsCard = styled(Box)(({ theme }) => ({
         width: "100%",
@@ -67,9 +68,14 @@ const UserProfile = () => {
                     }}
                 >
                     <UserPicture size={128} userPic={auth.profilePicID} />
-                    <Typography color="text.primary" variant="h4" mt={1} mb={2}>
+
+                    <Typography color="text.primary" variant="h4" mt={1}>
                         {auth.username}
                     </Typography>
+                    <Typography variant="h7" mb={2}>
+                        {`(${auth.email})`}
+                    </Typography>
+
                     <StatisticsCard>
                         <Stack margin={1}>
                             <Typography
@@ -126,15 +132,19 @@ const UserProfile = () => {
                         openStatus={deleteAccountDialogStatus}
                         setOpenStatus={setDeleteAccountDialogStatus}
                         title={"Delete Account"}
-                        message={"Are you sure you want to delete your account?" +
-                            " All your data will be lost forever!"}
+                        message={
+                            "Are you sure you want to delete your account?" +
+                            " All your data will be lost forever!"
+                        }
                         callbackOnYes={async () => {
                             try {
                                 const response = await axiosPrivate.delete(
                                     BACKEND_DELETE_USER_ENDPOINT
                                 );
                                 if (response.status === 200) {
-                                    enqueueSnackbar(response.data.message, { variant: "success" });
+                                    enqueueSnackbar(response.data.message, {
+                                        variant: "success",
+                                    });
                                     await logout();
                                 }
                             } catch (error) {
