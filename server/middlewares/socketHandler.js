@@ -1,13 +1,11 @@
 import { MatchModel } from "../model/MatchModel.js";
 import { UserModel } from "../model/UserModel.js";
-import {
-    GameStates,
-} from "../model/gameLogic.js";
+import { GameStates } from "../model/gameLogic.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { NotificationModel } from "../model/NotificationModel.js";
-import {findUserId, findUsername} from "../controllers/utilityFunctions.js";
+import { findUserId, findUsername } from "../controllers/utilityFunctions.js";
 
 const app = express();
 const port = process.env.SOCKET_IO_PORT || 8081;
@@ -98,7 +96,7 @@ export function emitNewMove(playerNotified, originPlayer, matchId) {
     createNotification(
         playerNotified,
         matchId,
-        originPlayer + " has made a move made in a match"
+        originPlayer + " has made a move in a match"
     );
 }
 
