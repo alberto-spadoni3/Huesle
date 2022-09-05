@@ -64,22 +64,20 @@ export default function DashboardMenu({ anchorEl, setAnchorEl, open}) {
                 horizontal: "center",
             }}
         >
-            <MenuItem onClick={(e) => navigate("/user/profile")}>
-                <UserPicture userPic={auth.profilePicID} /> My profile
-            </MenuItem>
-            <Divider />
             <MenuItem onClick={(e) => navigate("/rules")}>
                 <ListItemIcon>
                     <QuestionMarkIcon fontSize="small" />
                 </ListItemIcon>
                 How To Play
             </MenuItem>
+            <Divider/>
             <MenuItem onClick={(e) => navigate("/settings")}>
                 <ListItemIcon>
                     <Settings fontSize="small" />
                 </ListItemIcon>
                 Settings
             </MenuItem>
+            <Divider/>
             <MenuItem onClick={logout}>
                 <ListItemIcon>
                     <Logout color="error" fontSize="small" />
